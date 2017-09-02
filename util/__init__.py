@@ -41,7 +41,7 @@ def get_scrappers():
     for root, dirs, files in os.walk(path.join(base_dir, 'spiders')):
         scrappers['spiders'] = get_scrapper_files(files)
 
-    scrappers['all'] = scrappers['rss'] + scrappers['spiders']
+    scrappers['all'] = ['all'] + scrappers['rss'] + scrappers['spiders']
     return scrappers
 
 
@@ -69,10 +69,17 @@ def run_scrappers(args, scrappers):
     data = []
     names_set = set(args.names)
 
-    for feed in set(scrappers['rss']).intersection(names_set):
+    if 'all' in names_set:
+        rss_handlers = scrappers['rss']
+        spider_handlers = scrappers['spiders']
+    else:
+        rss_handlers = set(scrappers['rss']).intersection(names_set)
+        spider_handlers = set(scrappers['spiders']).intersection(names_set)
+
+    for feed in rss_handlers:
         data += parse_feed_by_name(feed)
 
-    for spider in set(scrappers['spiders']).intersection(names_set):
+    for spider in spider_handlers:
         data += run_spider_by_name(spider)
 
     data.sort(key=lambda item: item['published'], reverse=True)
