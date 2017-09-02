@@ -26,7 +26,6 @@ def get_cli_args(scrappers=None):
         scrappers = get_scrappers()
 
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--file', dest='file', help='Output file')
     arg_parser.add_argument('--log-level', default=logging.INFO)
 
     action_parsers = arg_parser.add_subparsers(dest='action', help='Actions')
@@ -61,13 +60,8 @@ def get_scrappers():
     return scrappers
 
 
-def send_data(args, data):
-    json_data = json.dumps(data, indent=2)
-
-    if args.file is None:
-        print json_data
-    else:
-        open(args.output, 'w').write(json_data)
+def write_data(args, data):
+    print json.dumps(data, indent=2)
 
 
 def get_scrapper_files(files):
@@ -111,5 +105,5 @@ def run_scrappers(args, scrappers):
     log.info('End sorting data')
 
     log.info('Start send data to user')
-    send_data(args, data)
+    write_data(args, data)
     log.info('End send data to user')

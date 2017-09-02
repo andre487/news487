@@ -8,7 +8,7 @@ def main():
     util.setup(args)
 
     if args.action == 'list':
-        util.send_data(args, scrappers['all'])
+        util.write_data(args, scrappers['all'])
     elif args.action == 'run':
         util.run_scrappers(args, scrappers)
     else:
