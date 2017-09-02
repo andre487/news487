@@ -1,0 +1,10 @@
+#!/usr/bin/env bash -e
+
+CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${CUR_DIR}/_common"
+
+docker build \
+    -t "${REPO_NAME}:latest" \
+    --force-rm \
+    -f .deploy/Dockerfile \
+    .

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash -e
+
+CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${CUR_DIR}/_common"
+
+docker run \
+    --rm \
+    "$REPO_NAME" \
+    /usr/local/bin/app/scrap.py run all
