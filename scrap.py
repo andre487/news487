@@ -5,6 +5,7 @@ import util
 def main():
     scrappers = util.get_scrappers()
     args = util.get_cli_args(scrappers)
+    util.setup(args)
 
     if args.action == 'list':
         util.send_data(args, scrappers['all'])
