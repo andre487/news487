@@ -31,10 +31,8 @@ class Spider(scrapy.Spider):
             'description': description,
             'picture': picture,
             'published': self.get_date(published),
-            'source': {
-                'name': 'Yandex News',
-                'link': self.start_urls[0],
-            },
+            'source_name': 'Yandex News',
+            'source_link': self.start_urls[0],
             'comments': [{
                 'author': author,
                 'text': comment,

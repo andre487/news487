@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 import os
 import re
@@ -9,6 +8,7 @@ from multiprocessing.pool import ThreadPool
 from os import path
 from rss import parse_feed_by_name
 from spiders import run_spider_by_name
+from util.write import write_data
 
 file_name_getter = re.compile(r'(.+?)\.py')
 
@@ -29,6 +29,11 @@ def get_cli_args(scrappers=None):
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--log-level', default=logging.INFO)
 
+    arg_parser.add_argument('--mongo', type=parse_host_arg, help='Write to MongoDB, param format: host(:port)?')
+    arg_parser.add_argument('--mongo-db', default='news_documents', help='Database name')
+    arg_parser.add_argument('--mongo-user')
+    arg_parser.add_argument('--mongo-password')
+
     action_parsers = arg_parser.add_subparsers(dest='action', help='Actions')
 
     run_parser = action_parsers.add_parser('run', help='Run scrappers')
@@ -38,6 +43,17 @@ def get_cli_args(scrappers=None):
 
     args = arg_parser.parse_args()
     return args
+
+
+def parse_host_arg(value):
+    matches = re.match(r'^(\w+)(?::(\d+))?$', value)
+    if not matches:
+        raise argparse.ArgumentTypeError('Wrong host value: %s' % value)
+
+    return {
+        'host': matches.group(1),
+        'port': int(matches.group(2) or 0),
+    }
 
 
 def setup(args):
@@ -59,10 +75,6 @@ def get_scrappers():
 
     scrappers['all'] = ['all'] + scrappers['rss'] + scrappers['spiders']
     return scrappers
-
-
-def write_data(args, data):
-    print json.dumps(data, indent=2)
 
 
 def get_scrapper_files(files):
@@ -119,9 +131,9 @@ def run_scrappers(args, scrappers):
     data.sort(key=lambda item: item['published'], reverse=True)
     log.info('End sorting data')
 
-    log.info('Start send data to user')
+    log.info('Start write data')
     write_data(args, data)
-    log.info('End send data to user')
+    log.info('End write data')
 
 
 def _run_rss_handler(feed):

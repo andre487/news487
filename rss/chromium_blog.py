@@ -19,10 +19,8 @@ def parse():
             'picture': entry['gd_image']['src'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
-            'source': {
-                'name': feed['feed']['title'],
-                'link': feed['feed']['link'],
-            },
+            'source_name': feed['feed']['title'],
+            'source_link': feed['feed']['link'],
         })
 
     return data
