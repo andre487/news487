@@ -8,7 +8,7 @@ class Spider(scrapy.Spider):
     name = 'Yandex news spider'
     start_urls = ['https://news.yandex.ru/']
 
-    time_pattern = re.compile(r'(\d+):(\d+)')
+    time_pattern = re.compile(r'(.+?)(\d+):(\d+)')
 
     def parse(self, response):
         for title in response.css('.story__title'):
@@ -28,6 +28,7 @@ class Spider(scrapy.Spider):
 
         yield {
             'title': title,
+            'link': response.url,
             'description': description,
             'picture': picture,
             'published': self.get_date(published),
@@ -44,17 +45,20 @@ class Spider(scrapy.Spider):
         data = cls.time_pattern.match(published)
         hour = 0
         minute = 0
+        yesterday = False
 
         if data:
             try:
-                hour = int(data.group(1))
-                minute = int(data.group(2))
+                yesterday = bool(data.group(1))
+                hour = int(data.group(2))
+                minute = int(data.group(3))
             except ValueError:
                 hour = 0
                 minute = 0
 
         now = datetime.now()
-        date = datetime(year=now.year, month=now.month, day=now.day, hour=hour, minute=minute)
+        day = now.day if not yesterday else now.day - 1
+        date = datetime(year=now.year, month=now.month, day=day, hour=hour, minute=minute)
 
         return date.strftime('%Y-%m-%dT%H:%M:00')
 
