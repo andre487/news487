@@ -5,6 +5,7 @@ import os
 import re
 import sys
 
+from multiprocessing.pool import ThreadPool
 from os import path
 from rss import parse_feed_by_name
 from spiders import run_spider_by_name
@@ -88,10 +89,24 @@ def run_scrappers(args, scrappers):
         rss_handlers = set(scrappers['rss']).intersection(names_set)
         spider_handlers = set(scrappers['spiders']).intersection(names_set)
 
-    for feed in rss_handlers:
-        log.info('Start feed handling: %s', feed)
-        data += parse_feed_by_name(feed)
-        log.info('End feed handling: %s', feed)
+    def callback(res):
+        flat_res = []
+        for item in res:
+            flat_res += item
+
+        for item in flat_res:
+            data.append(item)
+
+    pool = ThreadPool()
+
+    pool.map_async(
+        _run_rss_handler,
+        rss_handlers,
+        callback=callback,
+    )
+
+    pool.close()
+    pool.join()
 
     for spider in spider_handlers:
         log.info('Start spider handling: %s', spider)
@@ -107,3 +122,14 @@ def run_scrappers(args, scrappers):
     log.info('Start send data to user')
     write_data(args, data)
     log.info('End send data to user')
+
+
+def _run_rss_handler(feed):
+    try:
+        log.info('Start feed handling: %s', feed)
+        res = parse_feed_by_name(feed)
+        log.info('End feed handling: %s', feed)
+        return res
+    except Exception as e:
+        log.error('Error in %s: %s', feed, e)
+        return []
