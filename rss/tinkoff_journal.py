@@ -18,7 +18,10 @@ def parse():
             'description': entry['summary'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
-            'source': feed['feed']['title'],
+            'source': {
+                'name': feed['feed']['title'],
+                'link': feed['feed']['link'],
+            },
         })
 
     return data

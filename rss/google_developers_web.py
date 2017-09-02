@@ -2,7 +2,7 @@ import feedparser
 
 from datetime import datetime
 
-feed_url = 'http://blog.chromium.org/atom.xml'
+feed_url = 'https://developers.google.com/web/updates/atom.xml'
 
 
 def parse():
@@ -16,11 +16,10 @@ def parse():
         data.append({
             'title': entry['title'],
             'description': entry['summary'],
-            'picture': entry['gd_image']['src'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
             'source': {
-                'name': feed['feed']['title'],
+                'name': 'Google Developers Web',
                 'link': feed['feed']['link'],
             },
         })
