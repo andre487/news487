@@ -46,7 +46,7 @@ def get_cli_args(scrappers=None):
 
 
 def parse_host_arg(value):
-    matches = re.match(r'^(\w+)(?::(\d+))?$', value)
+    matches = re.match(r'^((?:\w+)|(?:\d+\.\d+\.\d+\.\d+))(?::(\d+))?$', value)
     if not matches:
         raise argparse.ArgumentTypeError('Wrong host value: %s' % value)
 

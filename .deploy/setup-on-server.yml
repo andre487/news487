@@ -1,0 +1,23 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  tasks:
+    - name: Ensure MongoDB runs
+      service: |
+        name=mongod
+        state=started
+
+    - name: Get Docker network addr
+      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
+      register: docker_net_ip
+
+    - name: Run on server
+      shell: |
+        docker run \
+          -d \
+          --restart always \
+          --name scrapper487 \
+          andre487/scrapper487 \
+          /usr/local/bin/app/schedule --mongo {{ docker_net_ip.stdout }}:27017 run all
