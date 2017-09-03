@@ -41,11 +41,8 @@ def write_to_mongo(args, data):
     ], unique=True, expireAfterSeconds=31536000)
 
     collection.create_index([
-        ('title', pymongo.TEXT),
-    ])
-
-    collection.create_index([
         ('tags', pymongo.TEXT),
+        ('title', pymongo.TEXT),
     ])
 
     writen_documents = 0
