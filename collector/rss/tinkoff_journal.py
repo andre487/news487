@@ -1,9 +1,12 @@
 # coding=utf-8
 import feedparser
+import logging
 
 from datetime import datetime
 
 feed_url = 'https://journal.tinkoff.ru/feed/atom/'
+
+log = logging.getLogger('app')
 
 
 def parse():
@@ -23,6 +26,8 @@ def parse():
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
         })
+
+    log.info('%s: got %d documents', feed['feed']['title'], len(data))
 
     return data
 

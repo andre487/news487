@@ -57,5 +57,5 @@ def write_to_mongo(args, data):
 
     client.close()
 
-    log.info('Documents written: %d', writen_documents)
+    log.info('Documents have written: %d', writen_documents)
     log.info('Connection to MongoDB closed')

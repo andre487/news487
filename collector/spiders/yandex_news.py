@@ -65,6 +65,7 @@ class Spider(scrapy.Spider):
 
         return date.strftime('%Y-%m-%dT%H:%M:00')
 
+
 if __name__ == '__main__':
     from . import run_spider
 

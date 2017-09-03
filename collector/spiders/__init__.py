@@ -4,15 +4,19 @@ import scrapy.signals
 
 from scrapy.crawler import CrawlerProcess
 
+log = logging.getLogger('app')
+
 
 class CrawlerProcessWithData(CrawlerProcess):
     def __init__(self, *args, **kwargs):
         super(CrawlerProcessWithData, self).__init__(*args, **kwargs)
 
         self._data = []
+        self._name = ''
 
     def crawl(self, crawler_or_spidercls, *args, **kwargs):
         self._data = []
+        self._name = getattr(crawler_or_spidercls, 'name', __file__)
 
         crawler = self.create_crawler(crawler_or_spidercls)
         crawler.signals.connect(self._item_scrapped, scrapy.signals.item_scraped)
@@ -24,6 +28,8 @@ class CrawlerProcessWithData(CrawlerProcess):
 
     @property
     def data(self):
+        log.info('%s: got %d documents', self._name, len(self._data))
+
         return self._data
 
 

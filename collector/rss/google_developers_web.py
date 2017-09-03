@@ -1,8 +1,11 @@
 import feedparser
+import logging
 
 from datetime import datetime
 
 feed_url = 'https://developers.google.com/web/updates/atom.xml'
+
+log = logging.getLogger('app')
 
 
 def parse():
@@ -22,6 +25,8 @@ def parse():
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
         })
+
+    log.info('%s: got %d documents', feed['feed']['title'], len(data))
 
     return data
 
