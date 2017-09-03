@@ -6,9 +6,11 @@ import sys
 
 from multiprocessing.pool import ThreadPool
 from os import path
-from rss import parse_feed_by_name
+
 from spiders import run_spider_by_name
 from util.write import write_data
+
+from rss import parse_feed_by_name
 
 file_name_getter = re.compile(r'(.+?)\.py')
 

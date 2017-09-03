@@ -2,9 +2,9 @@
 
 Web pages scrapper
 
-[Docker image](https://hub.docker.com/r/andre487/scrapper487/)
+[Collector Docker image](https://hub.docker.com/r/andre487/scrapper487/)
 
-Usage:
+Collector usage:
 
 ```
 usage: scrap.py [-h] [--log-level LOG_LEVEL] [--mongo MONGO]
