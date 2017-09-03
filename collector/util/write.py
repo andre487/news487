@@ -38,12 +38,14 @@ def write_to_mongo(args, data):
         ('title', pymongo.ASCENDING),
         ('link', pymongo.ASCENDING),
         ('source_name', pymongo.ASCENDING),
+        ('author_name', pymongo.ASCENDING),
     ], unique=True, expireAfterSeconds=31536000)
 
     collection.create_index([
         ('tags', pymongo.TEXT),
         ('title', pymongo.TEXT),
         ('description', pymongo.TEXT),
+        ('author_name', pymongo.TEXT),
     ], default_language='russian')
 
     writen_documents = 0

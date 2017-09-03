@@ -24,6 +24,7 @@ def parse():
             'tags': 'tech,web,' + ','.join(tag['label'].lower() for tag in entry['tags']),
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
+            'author_name': entry['author'],
         })
 
     log.info('%s: got %d documents', feed['feed']['title'], len(data))

@@ -22,6 +22,8 @@ class Spider(scrapy.Spider):
         picture = response.css('.story-media .image::attr(src)').extract_first()
 
         published = response.css('.doc_for_story .doc__time::text').extract_first()
+        author_name = response.css('.doc_for_story .doc__agency::text').extract_first()
+        author_link = response.css('.doc_for_story a.doc__info::attr(href)').extract_first()
 
         comment = ''.join(response.css('.citation .citation__content::text').extract())
         author = ''.join(response.css('.citation .citation__author::text').extract())
@@ -37,6 +39,8 @@ class Spider(scrapy.Spider):
             'published': self.get_date(published),
             'source_name': 'Yandex News',
             'source_link': self.start_urls[0],
+            'author_name': author_name,
+            'author_link': author_link,
             'comments': [{
                 'author': author,
                 'text': comment,
