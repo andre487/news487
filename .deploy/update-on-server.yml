@@ -1,0 +1,16 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  tasks:
+    - name: Ensure MongoDB runs
+      service: |
+        name=mongod
+        state=started
+
+    - name: Update image
+      shell: docker pull andre487/scrapper487
+
+    - name: Restart container
+      shell: docker restart scrapper487
