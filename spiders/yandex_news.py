@@ -31,7 +31,7 @@ class Spider(scrapy.Spider):
         yield {
             'title': title,
             'link': response.url,
-            'tags': tag.lower(),
+            'tags': 'world,russia,news,' + tag.lower(),
             'description': description,
             'picture': picture,
             'published': self.get_date(published),

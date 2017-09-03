@@ -18,7 +18,7 @@ def parse():
             'description': entry['summary'],
             'picture': entry['gd_image']['src'],
             'link': entry['link'],
-            'tags': 'chromium',
+            'tags': 'tech,web,browsers,chromium',
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],

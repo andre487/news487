@@ -19,7 +19,7 @@ def parse():
             'description': entry['summary'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
-            'tags': 'финансы',
+            'tags': 'finances',
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
         })
