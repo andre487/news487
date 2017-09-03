@@ -18,6 +18,7 @@ def parse():
             'description': entry['summary'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
+            'tags': ','.join(tag['label'].lower() for tag in entry['tags']),
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
         })

@@ -44,6 +44,10 @@ def write_to_mongo(args, data):
         ('title', pymongo.TEXT),
     ])
 
+    collection.create_index([
+        ('tags', pymongo.TEXT),
+    ])
+
     writen_documents = 0
 
     for item in data:

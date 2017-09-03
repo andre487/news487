@@ -26,9 +26,12 @@ class Spider(scrapy.Spider):
         comment = ''.join(response.css('.citation .citation__content::text').extract())
         author = ''.join(response.css('.citation .citation__author::text').extract())
 
+        tag = response.css('.rubric-label::text').extract_first()
+
         yield {
             'title': title,
             'link': response.url,
+            'tags': tag.lower(),
             'description': description,
             'picture': picture,
             'published': self.get_date(published),

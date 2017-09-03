@@ -1,3 +1,4 @@
+# coding=utf-8
 import feedparser
 
 from datetime import datetime
@@ -18,6 +19,7 @@ def parse():
             'description': entry['summary'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
+            'tags': 'финансы',
             'source_name': feed['feed']['title'],
             'source_link': feed['feed']['link'],
         })
