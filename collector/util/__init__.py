@@ -1,4 +1,5 @@
 import argparse
+import codecs
 import logging
 import os
 import re
@@ -6,13 +7,14 @@ import sys
 
 from multiprocessing.pool import ThreadPool
 from os import path
-
+from rss import parse_feed_by_name
 from spiders import run_spider_by_name
 from util.write import write_data
 
-from rss import parse_feed_by_name
-
 file_name_getter = re.compile(r'(.+?)\.py')
+
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
 
 log = logging.getLogger('app')
 _log_handler = logging.StreamHandler(stream=sys.stderr)

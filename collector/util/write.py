@@ -10,7 +10,7 @@ def write_data(args, data):
     if args.mongo:
         write_to_mongo(args, data)
     else:
-        print json.dumps(data, indent=2)
+        print json.dumps(data, ensure_ascii=False, indent=2)
 
 
 def write_to_mongo(args, data):
