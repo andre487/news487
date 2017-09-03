@@ -38,7 +38,7 @@ def parse():
             'author_link': author_link,
         })
 
-    log.info('%s: got %d documents', feed['feed']['title'], len(data))
+    log.info('Chromium Blog: got %d documents', len(data))
 
     return data
 

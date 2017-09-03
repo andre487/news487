@@ -38,7 +38,7 @@ def parse():
             'author_name': author_name,
         })
 
-    log.info('%s: got %d documents', feed['feed']['title'], len(data))
+    log.info('Tinkoff Journal: got %d documents', len(data))
 
     return data
 

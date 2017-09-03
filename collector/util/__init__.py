@@ -32,6 +32,7 @@ def get_cli_args(scrappers=None):
 
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('--log-level', default=logging.INFO)
+    arg_parser.add_argument('--unicode-json', action='store_true')
 
     arg_parser.add_argument('--mongo', type=parse_host_arg, help='Write to MongoDB, param format: host(:port)?')
     arg_parser.add_argument('--mongo-db', default='news_documents', help='Database name')

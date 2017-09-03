@@ -10,7 +10,8 @@ def write_data(args, data):
     if args.mongo:
         write_to_mongo(args, data)
     else:
-        print json.dumps(data, ensure_ascii=False, indent=2)
+        need_ascii = not args.unicode_json
+        print json.dumps(data, ensure_ascii=need_ascii, indent=2)
 
 
 def write_to_mongo(args, data):

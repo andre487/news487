@@ -27,7 +27,7 @@ def parse():
             'author_name': entry['author'],
         })
 
-    log.info('%s: got %d documents', feed['feed']['title'], len(data))
+    log.info('Google Developers Web: got %d documents', len(data))
 
     return data
 
