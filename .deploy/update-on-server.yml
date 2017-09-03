@@ -12,5 +12,17 @@
     - name: Update image
       shell: docker pull andre487/scrapper487
 
+    - name: Get Docker network addr
+      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
+      register: docker_net_ip
+
     - name: Restart container
-      shell: docker restart scrapper487
+      shell: |
+        docker stop scrapper487 && \
+        docker rm scrapper487 && \
+        docker run \
+          -d \
+          --restart always \
+          --name scrapper487 \
+          andre487/scrapper487 \
+          /usr/local/bin/app/schedule --mongo {{ docker_net_ip.stdout }}:27017 run all
