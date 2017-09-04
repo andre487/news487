@@ -1,0 +1,30 @@
+{
+  "name": "news-bot487",
+  "version": "1.0.0",
+  "description": "Bot for news stored by scrapper487 Edit",
+  "main": "cli/run.js",
+  "scripts": {
+    "start": "./cli/run.js",
+    "start-dev": "nodemon cli/run.js",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andre487/news-bot487.git"
+  },
+  "author": "andre487",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andre487/news-bot487/issues"
+  },
+  "homepage": "https://github.com/andre487/news-bot487#readme",
+  "dependencies": {
+    "telebot": "^1.2.3"
+  },
+  "devDependencies": {
+    "eslint": "^4.6.1",
+    "git-hooks": "^1.1.8",
+    "nodemon": "^1.11.0"
+  }
+}
