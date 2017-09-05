@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/andre487/news-bot487#readme",
   "dependencies": {
+    "mongodb": "^2.2.31",
     "node-fetch": "^1.7.2",
     "striptags": "^3.1.0",
     "telebot": "^1.2.3"
