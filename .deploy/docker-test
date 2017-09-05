@@ -1,0 +1,13 @@
+#!/usr/bin/env bash -e
+
+CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${CUR_DIR}/_common"
+
+token="$(cat ~/.private/NEWS_487_TOKEN)"
+api_url="$(cat ~/.private/SCRAPPER_487_API_URL)"
+
+docker run --rm -ti \
+    -e "API_URL=$api_url" \
+    -e "MONGO_HOST=172.17.0.1" \
+    -e "TELEGRAM_TOKEN=$token" \
+    "$REPO_NAME"

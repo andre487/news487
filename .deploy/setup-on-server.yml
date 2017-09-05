@@ -1,0 +1,26 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  tasks:
+    - name: Ensure MongoDB runs
+      service: |
+        name=mongod
+        state=started
+
+    - name: Get Docker network addr
+      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
+      register: docker_net_ip
+
+    - name: Run on server
+      shell: |
+        docker run \
+          -d \
+          --restart always \
+          --link scrapper487-api \
+          --name news-bot487 \
+          -e 'TELEGRAM_TOKEN={{ lookup('file', '~/.private/NEWS_487_TOKEN') }}' \
+          -e 'MONGO_HOST={{ docker_net_ip.stdout }}' \
+          -e 'API_URL=http://scrapper487-api:5000' \
+          andre487/news-bot487
