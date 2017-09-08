@@ -5,7 +5,7 @@
   "main": "cli/run.js",
   "scripts": {
     "start": "./cli/run.js",
-    "start-dev": "nodemon cli/run.js",
+    "start-dev": "TELEGRAM_TOKEN=$(cat ~/.private/NEWS_487_DEV_TOKEN) nodemon cli/run.js",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
