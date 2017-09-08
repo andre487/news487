@@ -36,10 +36,8 @@ def write_to_mongo(args, data):
 
     collection.create_index([
         ('published', pymongo.DESCENDING),
-        ('title', pymongo.ASCENDING),
         ('link', pymongo.ASCENDING),
         ('source_name', pymongo.ASCENDING),
-        ('author_name', pymongo.ASCENDING),
     ], unique=True, expireAfterSeconds=31536000)
 
     collection.create_index([
