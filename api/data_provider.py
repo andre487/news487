@@ -25,9 +25,17 @@ def get_documents(**kwargs):
     op = 'and'
 
     if 'order' in kwargs:
-        order = int(kwargs['order'][-1])
+        try:
+            order = int(kwargs['order'][-1])
+        except ValueError:
+            raise ParamsError('Invalid order value')
+
     if 'limit' in kwargs:
-        limit = int(kwargs['limit'][-1])
+        try:
+            limit = int(kwargs['limit'][-1])
+        except ValueError:
+            raise ParamsError('Invalid limit value')
+
     if 'op' in kwargs and kwargs['op'] and kwargs['op'][0] == 'or':
         op = 'or'
 
