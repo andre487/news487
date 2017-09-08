@@ -5,7 +5,7 @@
 
   tasks:
     - name: Update image
-      shell: docker pull andre487/scrapper487
+      shell: docker pull andre487/scrapper487-api
 
     - name: Restart container
       shell: |
