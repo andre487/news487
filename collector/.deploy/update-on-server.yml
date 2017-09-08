@@ -4,17 +4,8 @@
   become_method: sudo
 
   tasks:
-    - name: Ensure MongoDB runs
-      service: |
-        name=mongod
-        state=started
-
     - name: Update image
       shell: docker pull andre487/scrapper487
-
-    - name: Get Docker network addr
-      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
-      register: docker_net_ip
 
     - name: Restart container
       shell: |
@@ -23,6 +14,7 @@
         docker run \
           -d \
           --restart always \
+          --link common-mongo \
           --name scrapper487 \
           andre487/scrapper487 \
-          /usr/local/bin/app/schedule --mongo {{ docker_net_ip.stdout }}:27017 run all
+          /usr/local/bin/app/schedule --mongo common-mongo run all
