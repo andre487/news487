@@ -3,7 +3,7 @@ import feedparser
 import logging
 import re
 
-from util import date
+from util import date, tags
 
 feed_url = 'https://news.yandex.ru/index.rss'
 
@@ -39,7 +39,7 @@ def parse():
             'author_name': author_name,
             'author_link': author_link,
 
-            'tags': 'world,no_tech',
+            'tags': tags.string_format('world', 'no_tech'),
         })
 
     log.info('Chromium Blog: got %d documents', len(data))

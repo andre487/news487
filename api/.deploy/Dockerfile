@@ -7,6 +7,7 @@ COPY . /usr/local/bin/app
 
 RUN set -x && \
     apt-get update && \
+    apt-get dist-upgrade -y && \
     apt-get install -y python-pip && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \
@@ -22,7 +23,9 @@ RUN set -x && \
         python-pip-whl python-pkg-resources \
         python-setuptools python-wheel \
         python2.7-dev && \
-    apt-get clean && \
+    apt-get clean -y && \
+    apt-get autoclean -y && \
+    rm -f /var/cache/apt/*.bin && \
     find /tmp -type f -exec rm {} \; && \
     find /var/tmp -type f -exec rm {} \;
 

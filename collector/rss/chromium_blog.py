@@ -1,7 +1,7 @@
 import feedparser
 import logging
 
-from util import date
+from util import date, tags
 
 
 feed_url = 'http://blog.chromium.org/atom.xml'
@@ -37,7 +37,7 @@ def parse():
             'author_name': author_name,
             'author_link': author_link,
 
-            'tags': 'tech,web,browsers,chromium',
+            'tags': tags.string_format('tech', 'web', 'browsers', 'chromium'),
         })
 
     log.info('Chromium Blog: got %d documents', len(data))

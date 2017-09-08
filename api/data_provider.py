@@ -51,7 +51,9 @@ def add_find_by_tags(query, tags):
     if not _tags_validator.match(tags):
         raise ParamsError('Invalid tags format. Need tag1,tag2,tag3')
 
-    query.update({'tags': {'$regex': tags}})
+    pattern = '|'.join('(?:.*(?:^|,)' + tag + '(?:,|$).*)' for tag in tags.split(','))
+
+    query.update({'tags': {'$regex': pattern}})
 
 
 def add_find_by_source(query, source):

@@ -3,7 +3,7 @@ import feedparser
 import logging
 import re
 
-from util import date
+from util import date, tags
 
 feed_url = 'https://journal.tinkoff.ru/feed/atom/'
 
@@ -35,7 +35,7 @@ def parse():
             'source_link': feed['feed']['link'],
 
             'author_name': author_name,
-            'tags': 'finances',
+            'tags': tags.string_format('finances'),
         })
 
     log.info('Tinkoff Journal: got %d documents', len(data))

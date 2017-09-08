@@ -1,7 +1,7 @@
 import feedparser
 import logging
 
-from util import date
+from util import date, tags
 
 feed_url = 'https://developers.google.com/web/updates/atom.xml'
 
@@ -24,7 +24,7 @@ def parse():
             'source_link': feed['feed']['link'],
             'author_name': entry['author'],
 
-            'tags': 'tech,web,' + ','.join(tag['label'].lower() for tag in entry['tags']),
+            'tags': tags.string_format('tech', 'web', *(tag['label'].lower() for tag in entry['tags'])),
         })
 
     log.info('Google Developers Web: got %d documents', len(data))
