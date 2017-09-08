@@ -9,9 +9,21 @@
         name=mongod
         state=started
 
-    - name: Get Docker network addr
-      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
-      register: docker_net_ip
+    - name: Setup NGINX host config
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/scrapper487-api.conf
+
+    - name: Enable NGINX host
+      file:
+        src: /etc/nginx/sites-available/scrapper487-api.conf
+        dest: /etc/nginx/sites-enabled/scrapper487-api.conf
+        state: link
+
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
 
     - name: Run on server
       shell: |

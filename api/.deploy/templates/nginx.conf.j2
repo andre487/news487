@@ -1,0 +1,11 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ scrapper_487_api_host }};
+
+    location / {
+        proxy_pass http://127.0.0.1:10100;
+        include proxy_params;
+    }
+}
