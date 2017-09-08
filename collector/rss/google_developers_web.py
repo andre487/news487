@@ -1,7 +1,7 @@
 import feedparser
 import logging
 
-from datetime import datetime
+from util import date
 
 feed_url = 'https://developers.google.com/web/updates/atom.xml'
 
@@ -13,18 +13,20 @@ def parse():
     data = []
 
     for entry in feed['entries']:
-        pb = entry['published_parsed']
-        pb_date = datetime(year=pb.tm_year, month=pb.tm_mon, day=pb.tm_mday, hour=pb.tm_hour, minute=pb.tm_min)
+        pb_date = date.parse(entry['published'])
 
         data.append({
             'title': entry['title'],
             'description': entry['summary'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
-            'tags': 'tech,web,' + ','.join(tag['label'].lower() for tag in entry['tags']),
-            'source_name': feed['feed']['title'],
+
+            'source_name': 'GoogleDevelopersWeb',
+            'source_title': feed['feed']['title'],
             'source_link': feed['feed']['link'],
             'author_name': entry['author'],
+
+            'tags': 'tech,web,' + ','.join(tag['label'].lower() for tag in entry['tags']),
         })
 
     log.info('Google Developers Web: got %d documents', len(data))

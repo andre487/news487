@@ -1,12 +1,15 @@
+# coding=utf-8
 import feedparser
 import logging
+import re
 
 from util import date
 
-
-feed_url = 'http://blog.chromium.org/atom.xml'
+feed_url = 'https://news.yandex.ru/index.rss'
 
 log = logging.getLogger('app')
+
+author_name_parser = re.compile(r'.+yandsearch\?cl4url=.*?([\w.-]+).+', re.UNICODE)
 
 
 def parse():
@@ -19,27 +22,26 @@ def parse():
         author_name = ''
         author_link = ''
 
-        if 'authors' in entry and len(entry['authors']):
-            author = entry['authors'][0]
-
-            author_name = author['name']
-            author_link = author['href']
+        matches = author_name_parser.match(entry['link'])
+        if matches:
+            author_link = author_name = matches.group(1)
+            if not author_link.startswith('http'):
+                author_link = 'http://' + author_link
 
         data.append({
             'title': entry['title'],
-            'description': entry['summary'],
-            'picture': entry['gd_image']['src'],
+            'description': entry['description'],
             'link': entry['link'],
             'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
 
-            'source_name': 'ChromiumBlog',
+            'source_name': 'YandexNews',
             'source_title': feed['feed']['title'],
             'source_link': feed['feed']['link'],
 
             'author_name': author_name,
             'author_link': author_link,
 
-            'tags': 'tech,web,browsers,chromium',
+            'tags': 'world,no_tech',
         })
 
     log.info('Chromium Blog: got %d documents', len(data))

@@ -23,5 +23,7 @@ RUN set -x && \
         python-setuptools python-wheel \
         python2.7-dev && \
     apt-get clean && \
+    apt-get autoclean && \
+    rm -f /var/cache/apt/*.bin && \
     find /tmp -type f -exec rm {} \; && \
     find /var/tmp -type f -exec rm {} \;
