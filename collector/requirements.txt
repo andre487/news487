@@ -1,2 +1,6 @@
+dateutils==0.6.6
 feedparser==5.2.1
 pymongo==3.5.1
+python-dateutil==2.6.1
+pytz==2017.2
+six==1.10.0
