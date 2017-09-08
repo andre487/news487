@@ -14,8 +14,6 @@ def parse():
     data = []
 
     for entry in feed['entries']:
-        pb_date = date.parse(entry['published'])
-
         author_name = ''
         author_link = ''
 
@@ -30,7 +28,7 @@ def parse():
             'description': entry['summary'],
             'picture': entry['gd_image']['src'],
             'link': entry['link'],
-            'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
+            'published': date.utc_format(entry['published']),
 
             'source_name': 'ChromiumBlog',
             'source_title': feed['feed']['title'],

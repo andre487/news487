@@ -17,8 +17,6 @@ def parse():
     data = []
 
     for entry in feed['entries']:
-        pb_date = date.parse(entry['published'])
-
         author_name = ''
         author_link = ''
 
@@ -32,7 +30,7 @@ def parse():
             'title': entry['title'],
             'description': entry['description'],
             'link': entry['link'],
-            'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
+            'published': date.utc_format(entry['published']),
 
             'source_name': 'YandexNews',
             'source_title': feed['feed']['title'],

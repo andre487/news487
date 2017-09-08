@@ -13,13 +13,11 @@ def parse():
     data = []
 
     for entry in feed['entries']:
-        pb_date = date.parse(entry['published'])
-
         data.append({
             'title': entry['title'],
             'description': entry['summary'],
             'link': entry['link'],
-            'published': pb_date.strftime('%Y-%m-%dT%H:%M:00'),
+            'published': date.utc_format(entry['published']),
 
             'source_name': 'GoogleDevelopersWeb',
             'source_title': feed['feed']['title'],
