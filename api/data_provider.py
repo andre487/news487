@@ -68,7 +68,7 @@ def add_find_by_tags(query, tags, op):
 
     tags_list = sorted(tags.split(','))
     joiner = '' if op == 'and' else '|'
-    pattern = joiner.join('(?:.*(?:^|,|)' + tag + '(?:,|$).*)' for tag in tags_list)
+    pattern = joiner.join('(?:.*(?:^|,|\W)' + tag + '(?:,|$).*)' for tag in tags_list)
 
     query.update({'tags': {'$regex': pattern}})
 
