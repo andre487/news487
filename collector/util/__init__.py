@@ -8,7 +8,6 @@ import sys
 from multiprocessing.pool import ThreadPool
 from os import path
 from rss import parse_feed_by_name
-from spiders import run_spider_by_name
 from util.write import write_data
 
 file_name_getter = re.compile(r'(.+?)\.py')
@@ -68,17 +67,13 @@ def setup(args):
 def get_scrappers():
     scrappers = {
         'rss': [],
-        'spiders': [],
     }
     base_dir = path.join(path.dirname(__file__), '..')
 
     for root, dirs, files in os.walk(path.join(base_dir, 'rss')):
         scrappers['rss'] = get_scrapper_files(files)
 
-    for root, dirs, files in os.walk(path.join(base_dir, 'spiders')):
-        scrappers['spiders'] = get_scrapper_files(files)
-
-    scrappers['all'] = ['all'] + scrappers['rss'] + scrappers['spiders']
+    scrappers['all'] = ['all'] + scrappers['rss']
     return scrappers
 
 
@@ -101,10 +96,8 @@ def run_scrappers(args, scrappers):
 
     if 'all' in names_set:
         rss_handlers = scrappers['rss']
-        spider_handlers = scrappers['spiders']
     else:
         rss_handlers = set(scrappers['rss']).intersection(names_set)
-        spider_handlers = set(scrappers['spiders']).intersection(names_set)
 
     def callback(res):
         flat_res = []
@@ -124,11 +117,6 @@ def run_scrappers(args, scrappers):
 
     pool.close()
     pool.join()
-
-    for spider in spider_handlers:
-        log.info('Start spider handling: %s', spider)
-        data += run_spider_by_name(spider)
-        log.info('End spider handling: %s', spider)
 
     log.info('End scrappers run')
 
