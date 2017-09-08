@@ -4,7 +4,7 @@ import os
 import re
 
 log = logging.getLogger('app')
-_mongo_client = None
+_mongo_db = None
 
 _tags_validator = re.compile('^[\w,]+$', re.UNICODE)
 
@@ -14,12 +14,18 @@ class ParamsError(Exception):
 
 
 def get_documents(**kwargs):
-    log.info('Start search. Params: %s', kwargs.keys())
+    log.info('Start search documents. Params: %s', kwargs.keys())
 
-    client = _get_mongo_client()
-    db_name = os.environ.get('MONGO_DB', 'news_documents')
-    db = client[db_name]
+    db = _get_mongo_db()
 
+    query, order, limit = create_query(**kwargs)
+    res = make_query(db, query, order, limit)
+
+    log.info('End search documents')
+    return res
+
+
+def create_query(**kwargs):
     order = -1
     limit = 0
     op = 'and'
@@ -53,10 +59,7 @@ def get_documents(**kwargs):
     if 'text' in kwargs:
         add_find_by_text(query, ' '.join(kwargs['text']))
 
-    res = make_query(db, query, order, limit)
-
-    log.info('End search')
-    return res
+    return query, order, limit
 
 
 def add_find_by_tags(query, tags, op):
@@ -82,20 +85,23 @@ def add_find_by_text(query, text):
     query.update({'$text': {'$search': text}})
 
 
-def _get_mongo_client():
-    global _mongo_client
+def _get_mongo_db():
+    global _mongo_db
 
-    if _mongo_client:
-        return _mongo_client
+    if _mongo_db:
+        return _mongo_db
 
     host = os.environ.get('MONGO_HOST', 'localhost')
     port = int(os.environ.get('MONGO_PORT', 27017))
 
     log.info('Create new MongoDB client. Host %s, port %s', host, port)
 
-    _mongo_client = pymongo.MongoClient(host, port)
+    mongo_client = pymongo.MongoClient(host, port)
 
-    return _mongo_client
+    db_name = os.environ.get('MONGO_DB', 'news_documents')
+    _mongo_db = mongo_client[db_name]
+
+    return _mongo_db
 
 
 def make_query(db, query, order, limit):
@@ -108,4 +114,25 @@ def make_query(db, query, order, limit):
         del doc['_id']
         data.append(doc)
 
+    return data
+
+
+def get_digest(**kwargs):
+    log.info('Start creating digest. Params: %s', kwargs.keys())
+
+    db = _get_mongo_db()
+
+    query, order, limit = create_query(**kwargs)
+
+    source_names = db.items.distinct('source_name', query)
+
+    data = []
+    for source_name in source_names:
+        source_query = query.copy()
+        source_query['source_name'] = source_name
+        data += make_query(db, source_query, order, limit)
+
+    data.sort(key=lambda x: x.get('published'), reverse=True)
+
+    log.info('End creating digest')
     return data

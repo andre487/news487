@@ -27,9 +27,18 @@ def index():
 
 
 @app.route('/get-documents')
-def get_data():
+def get_documents():
     try:
         data = data_provider.get_documents(**flask.request.args)
+        return create_api_response(data)
+    except data_provider.ParamsError as e:
+        return create_api_response([{'error': e.message}], 400)
+
+
+@app.route('/get-digest')
+def get_digest():
+    try:
+        data = data_provider.get_digest(**flask.request.args)
         return create_api_response(data)
     except data_provider.ParamsError as e:
         return create_api_response([{'error': e.message}], 400)
