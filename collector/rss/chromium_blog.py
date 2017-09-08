@@ -4,13 +4,14 @@ import logging
 from util import date, tags
 
 
-feed_url = 'http://blog.chromium.org/atom.xml'
+SOURCE_NAME = 'ChromiumBlog'
+FEED_URL = 'http://blog.chromium.org/atom.xml'
 
 log = logging.getLogger('app')
 
 
 def parse():
-    feed = feedparser.parse(feed_url)
+    feed = feedparser.parse(FEED_URL)
     data = []
 
     for entry in feed['entries']:
@@ -40,7 +41,7 @@ def parse():
             'tags': tags.string_format('tech', 'web', 'browsers', 'chromium'),
         })
 
-    log.info('Chromium Blog: got %d documents', len(data))
+    log.info('%s: got %d documents', SOURCE_NAME, len(data))
 
     return data
 

@@ -5,7 +5,8 @@ import re
 
 from util import date, tags
 
-feed_url = 'https://news.yandex.ru/index.rss'
+SOURCE_NAME = 'YandexNews'
+FEED_URL = 'https://news.yandex.ru/index.rss'
 
 log = logging.getLogger('app')
 
@@ -13,7 +14,7 @@ author_name_parser = re.compile(r'.+yandsearch\?cl4url=.*?([\w.-]+).+', re.UNICO
 
 
 def parse():
-    feed = feedparser.parse(feed_url)
+    feed = feedparser.parse(FEED_URL)
     data = []
 
     for entry in feed['entries']:
@@ -32,7 +33,7 @@ def parse():
             'link': entry['link'],
             'published': date.utc_format(entry['published']),
 
-            'source_name': 'YandexNews',
+            'source_name': SOURCE_NAME,
             'source_title': feed['feed']['title'],
             'source_link': feed['feed']['link'],
 
@@ -42,7 +43,7 @@ def parse():
             'tags': tags.string_format('world', 'no_tech'),
         })
 
-    log.info('Chromium Blog: got %d documents', len(data))
+    log.info('%s: got %d documents', SOURCE_NAME, len(data))
 
     return data
 

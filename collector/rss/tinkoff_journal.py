@@ -5,7 +5,8 @@ import re
 
 from util import date, tags
 
-feed_url = 'https://journal.tinkoff.ru/feed/atom/'
+SOURCE_NAME = 'TinkoffJournal'
+FEED_URL = 'https://journal.tinkoff.ru/feed/atom/'
 
 log = logging.getLogger('app')
 
@@ -13,7 +14,7 @@ title_parser = re.compile(r'^([\w\s]+): .+', re.UNICODE)
 
 
 def parse():
-    feed = feedparser.parse(feed_url)
+    feed = feedparser.parse(FEED_URL)
     data = []
 
     for entry in feed['entries']:
@@ -30,7 +31,7 @@ def parse():
             'link': entry['link'],
             'published': date.utc_format(entry['published']),
 
-            'source_name': 'TinkoffJournal',
+            'source_name': SOURCE_NAME,
             'source_title': feed['feed']['title'],
             'source_link': feed['feed']['link'],
 
@@ -38,7 +39,7 @@ def parse():
             'tags': tags.string_format('finances'),
         })
 
-    log.info('Tinkoff Journal: got %d documents', len(data))
+    log.info('%s: got %d documents', SOURCE_NAME, len(data))
 
     return data
 
