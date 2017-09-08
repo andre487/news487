@@ -22,15 +22,19 @@ def get_documents(**kwargs):
 
     order = -1
     limit = 0
+    op = 'and'
+
     if 'order' in kwargs:
         order = int(kwargs['order'][-1])
     if 'limit' in kwargs:
         limit = int(kwargs['limit'][-1])
+    if 'op' in kwargs and kwargs['op'] and kwargs['op'][0] == 'or':
+        op = 'or'
 
     query = {}
 
     if 'tags' in kwargs:
-        add_find_by_tags(query, ','.join(kwargs['tags']))
+        add_find_by_tags(query, ','.join(kwargs['tags']), op)
 
     if 'source_name' in kwargs:
         add_find_by_source(query, kwargs['source_name'][-1])
@@ -47,11 +51,13 @@ def get_documents(**kwargs):
     return res
 
 
-def add_find_by_tags(query, tags):
+def add_find_by_tags(query, tags, op):
     if not _tags_validator.match(tags):
         raise ParamsError('Invalid tags format. Need tag1,tag2,tag3')
 
-    pattern = '|'.join('(?:.*(?:^|,)' + tag + '(?:,|$).*)' for tag in tags.split(','))
+    tags_list = sorted(tags.split(','))
+    joiner = '' if op == 'and' else '|'
+    pattern = joiner.join('(?:.*(?:^|,|)' + tag + '(?:,|$).*)' for tag in tags_list)
 
     query.update({'tags': {'$regex': pattern}})
 
