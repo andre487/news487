@@ -4,8 +4,8 @@ import logging
 from util import date, tags
 
 
-SOURCE_NAME = 'ChromiumBlog'
-FEED_URL = 'http://blog.chromium.org/atom.xml'
+SOURCE_NAME = 'V8Blog'
+FEED_URL = 'https://v8project.blogspot.com/feeds/posts/default'
 
 log = logging.getLogger('app')
 
@@ -40,7 +40,7 @@ def parse():
             'author_name': author_name,
             'author_link': author_link,
 
-            'tags': tags.string_format('tech', 'web', 'browsers', 'chromium'),
+            'tags': tags.string_format('tech', 'web', 'browsers', 'js', 'chromium'),
         })
 
     log.info('%s: got %d documents', SOURCE_NAME, len(data))
