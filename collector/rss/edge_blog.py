@@ -17,12 +17,16 @@ def parse():
     for entry in feed['entries']:
         author_name = ''
         text = ''
+        additional_tags = []
 
         if 'authors' in entry and entry['authors']:
             author_name = entry['authors'][0]['name']
 
         if 'content' in entry and entry['content']:
             text = entry['content'][0]['value']
+
+        if 'tags' in entry and entry['tags']:
+            additional_tags = [tag['term'] for tag in entry['tags']]
 
         data.append({
             'title': entry['title'],
@@ -39,7 +43,7 @@ def parse():
             'author_name': author_name,
 
             'comments_count': int(entry.get('slash_comments', 0)),
-            'tags': tags.string_format('tech', 'web', 'browsers', 'microsoft', 'edge'),
+            'tags': tags.string_format('tech', 'web', 'browsers', 'edge', *additional_tags),
         })
 
     log.info('%s: got %d documents', SOURCE_NAME, len(data))

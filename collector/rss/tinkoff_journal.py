@@ -36,7 +36,7 @@ def parse():
             'source_link': feed['feed']['link'],
 
             'author_name': author_name,
-            'tags': tags.string_format('finances'),
+            'tags': tags.string_format('finances', 'no_tech'),
         })
 
     log.info('%s: got %d documents', SOURCE_NAME, len(data))
