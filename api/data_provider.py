@@ -13,6 +13,10 @@ CATEGORIES = {
         'tags': 'finances,no_tech',
         'no-tags': 'tech',
     },
+    'js': {
+        'tags': 'tech,js',
+        'no-tags': 'no_tech',
+    },
     'perf': {
         'tags': 'tech,perf',
         'no-tags': 'no_tech',
@@ -20,14 +24,15 @@ CATEGORIES = {
     'search': {
         'tags': 'tech,search',
         'no-tags': 'no_tech',
+        'digest': False,
     },
     'services': {
         'tags': 'tech,services',
-        'no-tags': 'no_tech',
+        'no-tags': 'no_tech,search',
     },
     'tech': {
         'tags': 'tech',
-        'no-tags': 'no_tech',
+        'no-tags': 'no_tech,search',
     },
     'web': {
         'tags': 'tech,web',
@@ -36,6 +41,7 @@ CATEGORIES = {
     'world-news': {
         'tags': 'no_tech,world',
         'no-tags': 'tech',
+        'digest': False,
     },
 }
 
@@ -101,19 +107,37 @@ def get_documents_by_category(**kwargs):
 def get_digest(**kwargs):
     log.info('Start creating digest. Params: %s', kwargs.keys())
 
+    if 'tags' in kwargs:
+        raise ParamsError('Tags query is not supported with digest')
+
+    if 'no-tags' in kwargs:
+        raise ParamsError('No tags query is not supported with digest')
+
+    if 'op' in kwargs:
+        raise ParamsError('Operator is not supported with digest')
+
     db = _get_mongo_db()
 
-    query, order, limit = create_query(**kwargs)
+    order = -1
+    limit = 10
 
-    source_names = db.items.distinct('source_name', query)
+    big_query = {'$or': []}
+    or_part = big_query['$or']
 
-    data = []
-    for source_name in source_names:
-        source_query = query.copy()
-        source_query['source_name'] = source_name
-        data += make_query(db, source_query, order, limit)
+    for cat_name, cat_data in CATEGORIES.iteritems():
+        if not cat_data.get('digest', True):
+            continue
 
-    data.sort(key=lambda x: x.get('published'), reverse=True)
+        args = kwargs.copy()
+
+        args['tags'] = [cat_data['tags']]
+        args['no-tags'] = [cat_data['no-tags']]
+        args['op'] = ['and']
+
+        query, order, limit = create_query(**args)
+        or_part.append(query)
+
+    data = make_query(db, big_query, order, limit)
 
     log.info('End creating digest')
     return data
