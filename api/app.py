@@ -28,20 +28,17 @@ def index():
 
 @app.route('/get-documents')
 def get_documents():
-    try:
-        data = data_provider.get_documents(**flask.request.args)
-        return create_api_response(data)
-    except data_provider.ParamsError as e:
-        return create_api_response([{'error': e.message}], 400)
+    return get_documents_general(data_provider.get_documents)
+
+
+@app.route('/get-documents-by-category')
+def get_documents_by_category():
+    return get_documents_general(data_provider.get_documents_by_category)
 
 
 @app.route('/get-digest')
 def get_digest():
-    try:
-        data = data_provider.get_digest(**flask.request.args)
-        return create_api_response(data)
-    except data_provider.ParamsError as e:
-        return create_api_response([{'error': e.message}], 400)
+    return get_documents_general(data_provider.get_digest)
 
 
 @app.errorhandler(404)
@@ -49,7 +46,24 @@ def error_404(*args):
     return create_api_response([{'error': 'Invalid API method'}], status=404)
 
 
+def get_documents_general(getter):
+    try:
+        data = getter(**flask.request.args)
+        return create_api_response(data)
+    except data_provider.ParamsError as e:
+        return create_api_response([{'error': e.message}], 400)
+
+
 def create_api_response(data, status=200):
+    data = map(serialize_items, data)
+
     resp = flask.make_response(json.dumps(data, ensure_ascii=False), status)
     resp.headers['Content-Type'] = 'application/json; charset=utf-8'
+
     return resp
+
+
+def serialize_items(item):
+    if 'published' in item:
+        item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
+    return item
