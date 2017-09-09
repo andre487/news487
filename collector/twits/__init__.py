@@ -1,10 +1,9 @@
+import logging
 import os
 import re
 import twitter
 
 from util import date, tags
-
-_tags_matcher = re.compile('(?:.|\n)*tags:\s*([^\n]+)')
 
 SOURCE_NAME = 'Twitter'
 
@@ -12,6 +11,10 @@ ADDITIONAL_LISTS = [{
     'id': 228258082,
     'tags': ['tech', 'perf'],
 }]
+
+log = logging.getLogger('app')
+
+_tags_matcher = re.compile('(?:.|\n)*tags:\s*([^\n]+)')
 
 
 def parse():
@@ -47,31 +50,33 @@ def parse():
     data = []
     for list_info in lists_to_scrap:
         list_timeline = api.GetListTimeline(list_info['id'])
-        for twit in list_timeline:
-            author_link = 'https://twitter.com/%s' % twit.user.screen_name
-            doc_link = '%s/status/%s' % (author_link, twit.id_str)
+        for status in list_timeline:
+            author_link = 'https://twitter.com/%s' % status.user.screen_name
+            doc_link = '%s/status/%s' % (author_link, status.id_str)
 
             # noinspection PyArgumentList
             data.append({
-                'title': twit.text,
+                'title': status.text,
                 'description': '',
                 'link': doc_link,
 
-                'published': date.utc_format(twit.created_at),
+                'published': date.utc_format(status.created_at),
 
                 'source_name': SOURCE_NAME,
                 'source_type': 'twitter',
                 'source_title': 'Twitter',
                 'source_link': 'https://twitter.com',
 
-                'author_name': twit.user.name,
+                'author_name': status.user.name,
                 'author_link': author_link,
 
                 'tags': tags.string_format('twitter', *list_info['tags']),
 
-                'share_count': twit.retweet_count,
-                'favorite_count': twit.favorite_count,
+                'share_count': status.retweet_count,
+                'favorite_count': status.favorite_count,
             })
+
+    log.info('Twitter: got %d documents', len(data))
 
     return data
 
