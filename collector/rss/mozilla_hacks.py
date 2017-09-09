@@ -33,6 +33,7 @@ def parse():
             'published': date.utc_format(entry['published']),
 
             'source_name': SOURCE_NAME,
+            'source_type': 'rss',
             'source_title': feed['feed']['title'],
             'source_link': feed['feed']['link'],
 
