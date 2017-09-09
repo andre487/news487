@@ -4,8 +4,8 @@ import logging
 from util import date, tags
 
 
-SOURCE_NAME = 'ChromiumBlog'
-FEED_URL = 'http://blog.chromium.org/atom.xml'
+SOURCE_NAME = 'FacebookCode'
+FEED_URL = 'https://code.facebook.com/posts/rss'
 
 log = logging.getLogger('app')
 
@@ -16,18 +16,14 @@ def parse():
 
     for entry in feed['entries']:
         author_name = ''
-        author_link = ''
 
         if 'authors' in entry and len(entry['authors']):
             author = entry['authors'][0]
-
             author_name = author['name']
-            author_link = author['href']
 
         data.append({
             'title': entry['title'],
-            'description': entry['summary'],
-            'picture': entry['gd_image']['src'],
+            'description': entry['description'],
             'link': entry['link'],
             'published': date.utc_format(entry['published']),
 
@@ -36,9 +32,8 @@ def parse():
             'source_link': feed['feed']['link'],
 
             'author_name': author_name,
-            'author_link': author_link,
 
-            'tags': tags.string_format('tech', 'web', 'browsers', 'chromium'),
+            'tags': tags.string_format('tech', 'services', 'facebook'),
         })
 
     log.info('%s: got %d documents', SOURCE_NAME, len(data))
