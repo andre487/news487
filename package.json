@@ -5,7 +5,7 @@
   "main": "cli/run.js",
   "scripts": {
     "start": "./cli/run.js",
-    "start-dev": "TELEGRAM_TOKEN=$(cat ~/.private/NEWS_487_DEV_TOKEN) API_URL=$(cat ~/.private/SCRAPPER_487_API_URL) nodemon cli/run.js",
+    "start-dev": ".scripts/start-dev",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/andre487/news-bot487#readme",
   "dependencies": {
+    "goo.gl": "^0.1.4",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "mongodb": "^2.2.31",
