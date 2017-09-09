@@ -10,9 +10,10 @@
           -d \
           --restart always \
           --link scrapper487-api \
+          --link common-mongo \
           --name news-bot487 \
           -e 'TELEGRAM_TOKEN={{ lookup('file', '~/.private/NEWS_487_TOKEN') }}' \
           -e 'GOO_GL_KEY={{ lookup('file', '~/.private/GOO_GL_KEY') }}' \
-          -e 'MONGO_HOST={{ docker_net_ip.stdout }}' \
+          -e 'MONGO_HOST=common-mongo' \
           -e 'API_URL=http://scrapper487-api:5000' \
           andre487/news-bot487
