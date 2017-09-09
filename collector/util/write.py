@@ -1,3 +1,4 @@
+import dateutil.parser
 import json
 import logging
 import pymongo
@@ -58,6 +59,9 @@ def write_to_mongo(args, data):
             'source_name': item['source_name'],
             'source_type': item['source_type'],
         }
+
+        item['published'] = dateutil.parser.parse(item['published'])
+
         status = collection.update(spec, item, upsert=True)
 
         if status['updatedExisting']:
