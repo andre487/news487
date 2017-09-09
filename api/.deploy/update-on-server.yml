@@ -17,9 +17,5 @@
           --link common-mongo \
           --name scrapper487-api \
           -e 'MONGO_HOST=common-mongo' \
-          -e 'TWITTER_CONSUMER_KEY={{ lookup('file', '~/.private/TWITTER_CONSUMER_KEY') }}' \
-          -e 'TWITTER_CONSUMER_SECRET={{ lookup('file', '~/.private/TWITTER_CONSUMER_SECRET') }}' \
-          -e 'TWITTER_ACCESS_TOKEN_KEY={{ lookup('file', '~/.private/TWITTER_ACCESS_TOKEN_KEY') }}' \
-          -e 'TWITTER_ACCESS_TOKEN_SECRET={{ lookup('file', '~/.private/TWITTER_ACCESS_TOKEN_SECRET') }}' \
           -p 127.0.0.1:10100:5000 \
           andre487/scrapper487-api
