@@ -3,7 +3,7 @@ import logging
 
 from util import date, tags
 
-SOURCE_NAME = 'Google Developers Web'
+SOURCE_NAME = 'GoogleDevelopersWeb'
 FEED_URL = 'https://developers.google.com/web/updates/atom.xml'
 
 log = logging.getLogger('app')
