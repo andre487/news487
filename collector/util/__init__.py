@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import sys
+import twits
 
 from multiprocessing.pool import ThreadPool
 from os import path
@@ -71,7 +72,7 @@ def get_scrappers():
     for root, dirs, files in os.walk(path.join(base_dir, 'rss')):
         scrappers['rss'] = get_scrapper_files(files)
 
-    scrappers['all'] = ['all'] + scrappers['rss']
+    scrappers['all'] = ['all', 'twitter'] + scrappers['rss']
     return scrappers
 
 
@@ -113,6 +114,9 @@ def run_scrappers(args, scrappers):
         callback=callback,
     )
 
+    if 'twitter' in names_set or 'all' in names_set:
+        pool.apply_async(_run_twitter_handler, callback=callback)
+
     pool.close()
     pool.join()
 
@@ -135,4 +139,15 @@ def _run_rss_handler(feed):
         return res
     except Exception as e:
         log.error('Error in %s: %s', feed, e)
+        return []
+
+
+def _run_twitter_handler():
+    try:
+        log.info('Start twitter handling')
+        res = twits.parse()
+        log.info('End twitter handling')
+        return [res]
+    except Exception as e:
+        log.error('Error in twitter: %s', e)
         return []
