@@ -13,6 +13,14 @@ CATEGORIES = {
         'tags': 'finances,no_tech',
         'no-tags': 'tech',
     },
+    'perf': {
+        'tags': 'tech,perf',
+        'no-tags': 'no_tech',
+    },
+    'search': {
+        'tags': 'tech,search',
+        'no-tags': 'no_tech',
+    },
     'services': {
         'tags': 'tech,services',
         'no-tags': 'no_tech',
