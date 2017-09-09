@@ -4,11 +4,6 @@
   become_method: sudo
 
   tasks:
-    - name: Ensure MongoDB runs
-      service: |
-        name=mongod
-        state=started
-
     - name: Setup NGINX host config
       template:
         src: templates/nginx.conf.j2
@@ -31,6 +26,7 @@
           -d \
           --restart always \
           --name scrapper487-api \
-          -e 'MONGO_HOST={{ docker_net_ip.stdout }}' \
+          --link common-mongo \
+          -e 'MONGO_HOST=common-mongo' \
           -p 127.0.0.1:10100:5000 \
           andre487/scrapper487-api
