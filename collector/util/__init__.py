@@ -35,8 +35,6 @@ def get_cli_args(scrappers=None):
 
     arg_parser.add_argument('--mongo', type=parse_host_arg, help='Write to MongoDB, param format: host(:port)?')
     arg_parser.add_argument('--mongo-db', default='news_documents', help='Database name')
-    arg_parser.add_argument('--mongo-user')
-    arg_parser.add_argument('--mongo-password')
 
     action_parsers = arg_parser.add_subparsers(dest='action', help='Actions')
 

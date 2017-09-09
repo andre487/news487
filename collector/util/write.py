@@ -22,41 +22,51 @@ def write_to_mongo(args, data):
 
     log.info('Connect to MongoDB: %s:%s', host, port)
 
-    if args.mongo_user or args.mongo_password:
-        client = pymongo.MongoClient(
-            host, port,
-            username=args.mongo_user,
-            password=args.mongo_password,
-        )
-    else:
-        client = pymongo.MongoClient(host, port)
-
-    db = client[args.mongo_db]
+    db = pymongo.MongoClient(host, port)[args.mongo_db]
     collection = db['items']
 
     collection.create_index([
-        ('published', pymongo.DESCENDING),
         ('link', pymongo.ASCENDING),
+        ('title', pymongo.ASCENDING),
         ('source_name', pymongo.ASCENDING),
-    ], unique=True, expireAfterSeconds=31536000)
+        ('source_type', pymongo.ASCENDING),
+    ], unique=True, expireAfterSeconds=15552000)
+
+    collection.create_index([
+        ('published', pymongo.DESCENDING),
+    ])
+
+    collection.create_index([
+        ('tags', pymongo.ASCENDING),
+    ])
 
     collection.create_index([
         ('tags', pymongo.TEXT),
         ('title', pymongo.TEXT),
         ('description', pymongo.TEXT),
+        ('text', pymongo.TEXT),
         ('author_name', pymongo.TEXT),
     ], default_language='russian')
 
-    writen_documents = 0
+    inserted_documents = 0
+    updated_documents = 0
 
     for item in data:
-        try:
-            collection.insert(item)
-            writen_documents += 1
-        except pymongo.errors.DuplicateKeyError as e:
-            log.debug(unicode(e).encode('ascii', errors='ignore'))
+        spec = {
+            'link': item['link'],
+            'title': item['title'],
+            'source_name': item['source_name'],
+            'source_type': item['source_type'],
+        }
+        status = collection.update(spec, item, upsert=True)
 
-    client.close()
+        if status['updatedExisting']:
+            updated_documents += 1
+        else:
+            inserted_documents += 1
 
-    log.info('Documents have writen: %d', writen_documents)
+    pymongo.MongoClient(host, port).close()
+
+    log.info('Documents have inserted: %d', inserted_documents)
+    log.info('Documents have updated: %d', updated_documents)
     log.info('Connection to MongoDB closed')
