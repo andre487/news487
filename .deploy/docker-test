@@ -3,7 +3,7 @@
 CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "${CUR_DIR}/_common"
 
-token="$(cat ~/.private/NEWS_487_TOKEN)"
+token="$(cat ~/.private/NEWS_487_DEV_TOKEN)"
 api_url="$(cat ~/.private/SCRAPPER_487_API_URL)"
 
 docker run --rm -ti \

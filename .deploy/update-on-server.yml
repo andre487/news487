@@ -10,11 +10,7 @@
         state=started
 
     - name: Update image
-      shell: docker pull andre487/scrapper487
-
-    - name: Get Docker network addr
-      shell: ifconfig docker0 | grep 'inet addr' | awk '{print $2}' | sed 's/addr://'
-      register: docker_net_ip
+      shell: docker pull andre487/news-bot487
 
     - name: Restart container
       shell: |
@@ -24,8 +20,9 @@
           -d \
           --restart always \
           --link scrapper487-api \
+          --link common-mongo \
           --name news-bot487 \
           -e 'TELEGRAM_TOKEN={{ lookup('file', '~/.private/NEWS_487_TOKEN') }}' \
-          -e 'MONGO_HOST={{ docker_net_ip.stdout }}' \
+          -e 'MONGO_HOST=common-mongo' \
           -e 'API_URL=http://scrapper487-api:5000' \
           andre487/news-bot487
