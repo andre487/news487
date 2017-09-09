@@ -36,6 +36,11 @@ def get_documents_by_category():
     return get_documents_general(data_provider.get_documents_by_category)
 
 
+@app.route('/get-categories')
+def get_categories():
+    return get_documents_general(data_provider.get_category_names)
+
+
 @app.route('/get-digest')
 def get_digest():
     return get_documents_general(data_provider.get_digest)

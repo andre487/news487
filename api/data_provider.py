@@ -31,6 +31,8 @@ CATEGORIES = {
     },
 }
 
+CATEGORY_NAMES = CATEGORIES.keys()
+
 log = logging.getLogger('app')
 _mongo_db = None
 
@@ -70,7 +72,7 @@ def get_documents_by_category(**kwargs):
 
     cat_data = CATEGORIES.get(kwargs['name'][-1])
     if not cat_data:
-        raise ParamsError('Category is invalid. Need one of %s' % CATEGORIES.keys())
+        raise ParamsError('Category is invalid. Need one of %s' % CATEGORY_NAMES)
 
     db = _get_mongo_db()
     args = kwargs.copy()
@@ -107,6 +109,10 @@ def get_digest(**kwargs):
 
     log.info('End creating digest')
     return data
+
+
+def get_category_names(*args, **kwargs):
+    return [{'name': name} for name in CATEGORY_NAMES]
 
 
 def create_query(**kwargs):
