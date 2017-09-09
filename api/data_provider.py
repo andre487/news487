@@ -7,6 +7,7 @@ log = logging.getLogger('app')
 _mongo_db = None
 
 _tags_validator = re.compile('^[\w,]+$', re.UNICODE)
+_date_validator = re.compile('^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$')
 
 
 class ParamsError(Exception):
@@ -29,6 +30,7 @@ def create_query(**kwargs):
     order = -1
     limit = 0
     op = 'and'
+    from_date = None
 
     if 'order' in kwargs:
         try:
@@ -42,10 +44,19 @@ def create_query(**kwargs):
         except ValueError:
             raise ParamsError('Invalid limit value')
 
-    if 'op' in kwargs and kwargs['op'] and kwargs['op'][0] == 'or':
+    if 'op' in kwargs and kwargs['op'][-1] == 'or':
         op = 'or'
 
+    if 'from-date' in kwargs:
+        _from_date = kwargs['from-date'][-1]
+        if not _date_validator.match(_from_date):
+            raise ParamsError('Invalid from-date value')
+        from_date = _from_date
+
     query = {}
+
+    if from_date:
+        query.update({'published': {'$gt': from_date}})
 
     if 'tags' in kwargs:
         add_find_by_tags(query, ','.join(kwargs['tags']), op)
