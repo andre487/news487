@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -ex
+
+dir="$(cd "$(dirname "$0")" && pwd)"
+
+"$dir/docker-build"
+"$dir/docker-push"
+
+ansible-playbook -i ~/.private/home-server-inventory "$dir/update-on-server.yml"
