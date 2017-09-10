@@ -10,8 +10,7 @@ Collector usage:
 
 ```
 usage: scrap.py [-h] [--log-level LOG_LEVEL] [--unicode-json] [--mongo MONGO]
-                [--mongo-db MONGO_DB] [--mongo-user MONGO_USER]
-                [--mongo-password MONGO_PASSWORD]
+                [--mongo-db MONGO_DB]
                 {run,list} ...
 
 positional arguments:
@@ -25,17 +24,25 @@ optional arguments:
   --unicode-json
   --mongo MONGO         Write to MongoDB, param format: host(:port)?
   --mongo-db MONGO_DB   Database name
-  --mongo-user MONGO_USER
-  --mongo-password MONGO_PASSWORD
 ```
 
-API works through `get-document` endpoint. Params:
+For using Twitter scrapping ypu should provide API keys via environment variables:
+  * `TWITTER_CONSUMER_KEY`
+  * `TWITTER_CONSUMER_SECRET`
+  * `TWITTER_ACCESS_TOKEN_KEY`
+  * `TWITTER_ACCESS_TOKEN_SECRET`
+
+See [manual](https://python-twitter.readthedocs.io/en/latest/getting_started.html)
+
+
+API works through `get-documents`, `get-digest`, `get-documents-by-categoru` endpoint. Params:
   * order – order to sort documents by publish date
   * limit – limit of documents
   * tags – filter by tags
-  * source_name – filter by source name
-  * author_name – filter by author name
+  * source-name – filter by source name
+  * author-name – filter by author name
   * text – fulltext search by tags, title, description and author name
+  * name – name of category
  
 API MongoDB setup makes via environment variables:
   * MONGO_HOST – `localhost` by default
