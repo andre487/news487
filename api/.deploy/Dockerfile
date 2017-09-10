@@ -8,10 +8,10 @@ COPY . /usr/local/bin/app
 RUN set -x && \
     apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y python-pip && \
+    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \
-        python-pip binutils build-essential cpp cpp-6 dpkg-dev \
+        python-pip binutils build-essential cpp cpp-6 dpkg-dev libcurl4-openssl-dev libssl-dev \
         g++ g++-6 gcc gcc-6 libalgorithm-diff-perl \
         libalgorithm-diff-xs-perl libalgorithm-merge-perl \
         libc-dev-bin libc6-dev  libdpkg-perl libfakeroot \

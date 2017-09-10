@@ -1,0 +1,234 @@
+---
+- config:
+    - testset: Scrapper487 API
+    - timeout: 1
+
+- test:
+    - name: Service is available
+    - url: /
+    - validators:
+        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+
+- test:
+    - name: Error 404 returns error message
+    - url: /404
+    - expected_status: 404
+    - validators:
+        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+        - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+        - compare: {jsonpath_mini: '0.error', expected: 'Invalid API method' }
+
+- test:
+    - name: Endpoint get-documents – Documents have required fields
+    - url: /get-documents
+    - validators:
+        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+        - extract_test: {jsonpath_mini: '0.title', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.published', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.link', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.description', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.tags', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.source_name', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.source_type', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents – Limit for get-documents works
+    - url: /get-documents?limit=3
+    - validators:
+        - extract_test: {jsonpath_mini: '0', test: 'exists'}
+        - extract_test: {jsonpath_mini: '3', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Invalid limit causes error 400
+    - url: /get-documents?limit=3p
+    - expected_status: 400
+    - validators:
+        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+        - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents – Tags search works
+    - url: /get-documents?tags=tech,web&limit=1
+    - validators:
+        - extract_test: {jsonpath_mini: '0.title', test: 'exists'}
+        - compare: {jsonpath_mini: '0.tags', comparator: 'contains', expected: 'tech'}
+        - compare: {jsonpath_mini: '0.tags', comparator: 'contains', expected: 'web'}
+
+- test:
+    - name: Endpoint get-documents – Invalid tags cause error 400
+    - url: /get-documents?tags=tech|web&limit=1
+    - expected_status: 400
+    - validators:
+        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+        - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents – Tags search uses operator and by default
+    - url: /get-documents?tags=not_exists,web&limit=1
+    - validators:
+        - extract_test: {jsonpath_mini: '0', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Tags search with operator "or" works
+    - url: /get-documents?tags=not_exists,web&op=or&limit=1
+    - validators:
+        - extract_test: {jsonpath_mini: '0', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents – Tags search with no-tags works
+    - url: /get-documents?tags=tech&no-tags=web&limit=1
+    - validators:
+        - compare: {jsonpath_mini: '0.tags', comparator: 'contains', expected: 'tech'}
+        - compare: {jsonpath_mini: '0.tags', comparator: 'regex', expected: '(?!web)'}
+
+- test:
+    - name: Endpoint get-documents – Tags search returns zero array with conflicting tags and no-tasg
+    - url: /get-documents?tags=tech&no-tags=tech&limit=1
+    - validators:
+        - extract_test: {jsonpath_mini: '0', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Limit with order works
+    - url: /get-documents?limit=1&order=1
+    - validators:
+        - compare: {jsonpath_mini: '0.published', expected: '2014-12-15T08:00:00'}
+        - extract_test: {jsonpath_mini: '1', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Limit with order works
+    - url: /get-documents?limit=1&order=-1
+    - validators:
+        - compare: {jsonpath_mini: '0.published', expected: '2017-09-10T20:03:00'}
+        - extract_test: {jsonpath_mini: '1', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Date restriction works
+    - url: /get-documents?from-date=2017-09-10T20:00:00
+    - validators:
+        - compare: {jsonpath_mini: '0.published', expected: '2017-09-10T20:03:00'}
+        - extract_test: {jsonpath_mini: '1', test: 'not_exists'}
+
+- test:
+    - name: Endpoint get-documents – Search by source name works
+    - url: /get-documents?source-name=ChromiumBlog&limit=1
+    - validators:
+        - compare: {jsonpath_mini: '0.source_name', expected: 'ChromiumBlog'}
+
+- test:
+    - name: Endpoint get-documents – Search by author name works
+    - url: /get-documents?author-name=Chrome+Blog&limit=1
+    - validators:
+        - compare: {jsonpath_mini: '0.author_name', expected: 'Chrome Blog'}
+
+- test:
+    - name: Endpoint get-documents – Text search works
+    - url: /get-documents?text=Chrome&limit=1
+    - validators:
+        - compare: {jsonpath_mini: '0.title', comparator: 'contains', expected: 'Chrome'}
+
+- test:
+    - name: Endpoint get-categories – Categories have required fields
+    - url: /get-categories
+    - validators:
+        - extract_test: {jsonpath_mini: '0.name', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Documents have required fields and tags
+    - url: /get-documents-by-category?name=web
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+
+      - extract_test: {jsonpath_mini: '0.title', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.published', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.link', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.description', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.tags', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.source_name', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.source_type', test: 'exists'}
+
+      - compare: {jsonpath_mini: '0.tags', comparator: 'contains', expected: 'web'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Returns error 400 without name param
+    - url: /get-documents-by-category
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Returns error 400 for not existing category
+    - url: /get-documents-by-category?name=not_exists
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Returns error 400 with tags param
+    - url: /get-documents-by-category?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Returns error 400 with no-tags param
+    - url: /get-documents-by-category?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-documents-by-category – Returns error 400 with op param
+    - url: /get-documents-by-category?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-digest – Documents have required fields and tags
+    - url: /get-digest
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.title', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.published', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.link', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.description', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.tags', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.source_name', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.source_type', test: 'exists'}
+
+- test:
+    - name: Endpoint get-digest – Returns error 400 with tags param
+    - url: /get-digest?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-digest – Returns error 400 with no-tags param
+    - url: /get-digest?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-digest – Returns error 400 with op param
+    - url: /get-digest?name=web&tags=web
+    - expected_status: 400
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
+
+- test:
+    - name: Endpoint get-stats – Returns statistics
+    - url: /get-stats
+    - validators:
+      - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
+      - extract_test: {jsonpath_mini: '0.source_name', test: 'exists'}
+      - extract_test: {jsonpath_mini: '0.docs', test: 'exists'}

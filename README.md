@@ -6,6 +6,7 @@ Web pages scrapper
 
 [API Docker image](https://hub.docker.com/r/andre487/scrapper487-api/)
 
+## Collector
 Collector usage:
 
 ```
@@ -35,7 +36,9 @@ For using Twitter scrapping ypu should provide API keys via environment variable
 See [manual](https://python-twitter.readthedocs.io/en/latest/getting_started.html)
 
 
-API works through `get-documents`, `get-digest`, `get-documents-by-categoru` endpoint. Params:
+## API
+
+API works through `get-documents`, `get-digest`, `get-documents-by-category` endpoint. Params:
   * order – order to sort documents by publish date
   * limit – limit of documents
   * tags – filter by tags
@@ -43,8 +46,12 @@ API works through `get-documents`, `get-digest`, `get-documents-by-categoru` end
   * author-name – filter by author name
   * text – fulltext search by tags, title, description and author name
   * name – name of category
- 
+
+Detailed endpoint specs see in file `endpoint-specs.yml`
+
 API MongoDB setup makes via environment variables:
   * MONGO_HOST – `localhost` by default
   * MONGO_PORT – `27017` by default
   * MONGO_DB – `news_documents` by default
+
+For API testing run script `run-test`

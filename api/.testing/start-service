@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -ex
+
+CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$CUR_DIR"
+
+source ./environment
+
+docker-compose up -d --build --remove-orphans
+
+sleep 5
+
+./load-fixture.py

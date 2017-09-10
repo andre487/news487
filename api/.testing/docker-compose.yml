@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    container_name: scrapper_api_testing_web
+    build:
+      context: ..
+      dockerfile: .testing/Dockerfile
+    ports:
+      - 127.0.0.1:${WEB_PORT}:5000
+    environment:
+      - MONGO_HOST=mongo
+    volumes:
+      - ..:/usr/local/bin/app
+    command: ['./start']
+  mongo:
+    container_name: scrapper_api_testing_mongo
+    image: mongo:latest
+    ports:
+      - 127.0.0.1:${MONGO_PORT}:27017
