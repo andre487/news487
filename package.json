@@ -21,6 +21,7 @@
   "homepage": "https://github.com/andre487/news-bot487#readme",
   "dependencies": {
     "goo.gl": "^0.1.4",
+    "link-cleaner": "^1.0.0",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "mongodb": "^2.2.31",
