@@ -64,7 +64,7 @@ CATEGORY_NAMES = CATEGORIES.keys()
 log = logging.getLogger('app')
 _mongo_db = None
 
-_tags_validator = re.compile('^[\w,]+$', re.UNICODE)
+_tags_validator = re.compile('^[\w\s,]+$', re.UNICODE)
 
 
 class ParamsError(Exception):
