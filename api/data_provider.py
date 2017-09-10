@@ -18,7 +18,7 @@ CATEGORIES = {
         'tags': 'computer science',
         'no-tags': '',
     },
-    'finances': {
+    'fin': {
         'tags': 'finances,no_tech',
         'no-tags': 'tech,twitter',
     },
@@ -52,7 +52,7 @@ CATEGORIES = {
         'tags': 'tech,web',
         'no-tags': 'no_tech,services,twitter',
     },
-    'world-news': {
+    'news': {
         'tags': 'no_tech,world',
         'no-tags': 'tech,twitter',
         'digest': False,
