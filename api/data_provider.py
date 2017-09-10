@@ -16,7 +16,7 @@ CATEGORIES = {
     },
     'cs': {
         'tags': 'computer science',
-        'no-tags': '',
+        'digest': False,
     },
     'fin': {
         'tags': 'finances,no_tech',
@@ -105,8 +105,15 @@ def get_documents_by_category(**kwargs):
     db = _get_mongo_db()
     args = kwargs.copy()
 
-    args['tags'] = [cat_data.get('tags')]
-    args['no-tags'] = [cat_data.get('no-tags')]
+    tags = cat_data.get('tags')
+    no_tags = cat_data.get('no-tags')
+
+    if tags:
+        args['tags'] = [tags]
+
+    if no_tags:
+        args['no-tags'] = [no_tags]
+
     args['op'] = ['and']
     del args['name']
 
@@ -144,8 +151,15 @@ def get_digest(**kwargs):
 
         args = kwargs.copy()
 
-        args['tags'] = [cat_data['tags']]
-        args['no-tags'] = [cat_data['no-tags']]
+        tags = cat_data.get('tags')
+        no_tags = cat_data.get('no-tags')
+
+        if tags:
+            args['tags'] = [tags]
+
+        if no_tags:
+            args['no-tags'] = [no_tags]
+
         args['op'] = ['and']
 
         query, order, limit = create_query(**args)
