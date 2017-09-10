@@ -7,7 +7,7 @@ import re
 CATEGORIES = {
     'browsers': {
         'tags': 'browsers,tech,web',
-        'no-tags': 'no_tech,services',
+        'no-tags': 'no_tech,services,twitter',
     },
     'buzzinga': {
         'tags': 'buzzinga',
@@ -20,41 +20,41 @@ CATEGORIES = {
     },
     'finances': {
         'tags': 'finances,no_tech',
-        'no-tags': 'tech',
+        'no-tags': 'tech,twitter',
     },
     'js': {
         'tags': 'tech,js',
-        'no-tags': 'no_tech',
+        'no-tags': 'no_tech,twitter',
     },
     'perf': {
         'tags': 'tech,perf',
-        'no-tags': 'no_tech',
+        'no-tags': 'no_tech,twitter',
     },
     'search': {
         'tags': 'tech,search',
-        'no-tags': 'no_tech',
+        'no-tags': 'no_tech,twitter',
         'digest': False,
     },
     'services': {
         'tags': 'tech,services',
-        'no-tags': 'no_tech,search',
+        'no-tags': 'no_tech,search,twitter',
     },
     'tech': {
         'tags': 'tech',
-        'no-tags': 'no_tech,search',
+        'no-tags': 'no_tech,search,twitter',
     },
-    'twits': {
+    'tw': {
         'tags': 'twitter',
         'no-tags': 'buzzinga',
         'digest': False,
     },
     'web': {
         'tags': 'tech,web',
-        'no-tags': 'no_tech,services',
+        'no-tags': 'no_tech,services,twitter',
     },
     'world-news': {
         'tags': 'no_tech,world',
-        'no-tags': 'tech',
+        'no-tags': 'tech,twitter',
         'digest': False,
     },
 }
