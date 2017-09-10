@@ -161,6 +161,21 @@ def get_category_names(*args, **kwargs):
     return [{'name': name} for name in CATEGORY_NAMES]
 
 
+def get_stats(**kwargs):
+    db = _get_mongo_db()
+
+    cursor = db.items.aggregate([
+        {'$group': {'_id': '$source_name', 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+    ])
+
+    data = []
+    for item in cursor:
+        data.append({'source_name': item['_id'], 'docs': item['count']})
+
+    return data
+
+
 def create_query(**kwargs):
     order = -1
     limit = 0

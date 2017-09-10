@@ -46,6 +46,11 @@ def get_digest():
     return get_documents_general(data_provider.get_digest)
 
 
+@app.route('/get-stats')
+def get_stats():
+    return get_documents_general(data_provider.get_stats)
+
+
 @app.errorhandler(404)
 def error_404(*args):
     return create_api_response([{'error': 'Invalid API method'}], status=404)
