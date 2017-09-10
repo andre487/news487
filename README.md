@@ -27,7 +27,7 @@ optional arguments:
   --mongo-db MONGO_DB   Database name
 ```
 
-For using Twitter scrapping ypu should provide API keys via environment variables:
+For using Twitter scrapping API keys should be provided via environment variables:
   * `TWITTER_CONSUMER_KEY`
   * `TWITTER_CONSUMER_SECRET`
   * `TWITTER_ACCESS_TOKEN_KEY`
