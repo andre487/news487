@@ -9,6 +9,15 @@ CATEGORIES = {
         'tags': 'browsers,tech,web',
         'no-tags': 'no_tech,services',
     },
+    'buzzinga': {
+        'tags': 'buzzinga',
+        'no-tags': '',
+        'digest': False,
+    },
+    'cs': {
+        'tags': 'computer science',
+        'no-tags': '',
+    },
     'finances': {
         'tags': 'finances,no_tech',
         'no-tags': 'tech',
@@ -33,6 +42,11 @@ CATEGORIES = {
     'tech': {
         'tags': 'tech',
         'no-tags': 'no_tech,search',
+    },
+    'twits': {
+        'tags': 'twitter',
+        'no-tags': 'buzzinga',
+        'digest': False,
     },
     'web': {
         'tags': 'tech,web',
