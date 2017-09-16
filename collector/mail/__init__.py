@@ -1,14 +1,18 @@
 # coding=utf-8
 import email
 import imapclient
+import logging
 import os
 import re
-import util.date as ud
 
 from email import header as eh
+from util import date, tags
 
+
+log = logging.getLogger('app')
 
 _email_parser = re.compile(r'(?:"?(?P<name>[^<"]+)"?\s+<)?(?P<email>[^>]+)>?')
+_tags_parser = re.compile(r'tags:\W*(.+)', re.UNICODE)
 
 
 def parse():
@@ -17,7 +21,8 @@ def parse():
     mail_server = os.environ.get('MAIL_SERVER')
     mail_login = os.environ.get('MAIL_LOGIN')
     mail_password = os.environ.get('MAIL_PASSWORD')
-    mark_seen = os.environ.get('MAIL_MARK_SEEN', '1')
+
+    readonly = os.environ.get('MAIL_READONLY') == '1'
 
     if not mail_server or not mail_login or not mail_password:
         raise Exception('You should provide MAIL_SERVER, MAIL_LOGIN and MAIL_PASSWORD')
@@ -25,17 +30,28 @@ def parse():
     server = imapclient.IMAPClient(mail_server, ssl=True)
     server.login(mail_login, mail_password)
 
-    server.select_folder('INBOX')
+    data = []
+    for folder_meta, folder_delim, folder_name in server.list_folders():
+        if folder_name == 'INBOX' or folder_name.startswith('tags:'):
+            data += handle_mailbox_folder(server, folder_name, readonly)
+
+    log.info('Mail: got %d documents', len(data))
+
+    server.logout()
+    return data
+
+
+def handle_mailbox_folder(server, folder_name, readonly=True):
+    server.select_folder(folder_name, readonly=readonly)
 
     responses = (server.fetch(message_id, ['RFC822']) for message_id in server.search('UNSEEN'))
     data = []
-    handled_ids = []
 
     for res in responses:
         for msg_id, resp_item in res.items():
             message = email.message_from_string(resp_item['RFC822'])
 
-            date = ud.utc_format(message['date'])
+            published = date.utc_format(message['date'])
 
             from_name, from_email, full_from = parse_email_field(message['from'])
             to_name, to_email, full_to = parse_email_field(message['to'])
@@ -43,16 +59,18 @@ def parse():
             subj = parse_header(message['subject'])
             content_type, body = parse_message_body(message)
 
+            tags_list = parse_tags(folder_name)
+
             data.append({
                 'title': subj,
                 'description': subj,
                 'link': 'EmailID(%s,%s)' % (to_email, msg_id),
-                'published': date,
+                'published': published,
 
                 'text': body,
                 'text_content_type': content_type,
 
-                'source_name': full_from,
+                'source_name': 'Mail: ' + full_from,
                 'source_title': from_name,
                 'source_link': 'mailto:' + from_email,
                 'source_type': 'email',
@@ -60,15 +78,8 @@ def parse():
 
                 'author_name': from_name,
 
-                'tags': 'TODO',
+                'tags': tags.string_format(*tags_list),
             })
-
-            handled_ids.append(msg_id)
-
-    seen_flag = 'Seen' if mark_seen == '1' else 'Unseen'
-    server.set_flags(handled_ids, [seen_flag])
-
-    server.logout()
 
     return data
 
@@ -110,6 +121,17 @@ def parse_message_body(message):
         body = message.get_payload(decode=True)
 
     return content_type, unicode(body, 'utf-8', errors='ignore')
+
+
+def parse_tags(folder_name):
+    matches = _tags_parser.match(folder_name)
+    tags_list = ['from_mail', 'composite']
+
+    if matches:
+        tags_string = matches.group(1)
+        tags_list += [tag.strip() for tag in tags_string.split(',')]
+
+    return tags_list
 
 
 if __name__ == '__main__':
