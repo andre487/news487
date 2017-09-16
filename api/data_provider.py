@@ -84,13 +84,13 @@ def is_custom_content_provider(func):
 
 def cache_params(**kwargs):
     def wrapper(func):
-        func.cached_data = kwargs
+        func.cached_params = kwargs
         return func
     return wrapper
 
 
 def get_cache_params(func):
-    return getattr(func, 'cached_data', {})
+    return getattr(func, 'cached_params', {})
 
 
 @cache_params(no_cache=True)
