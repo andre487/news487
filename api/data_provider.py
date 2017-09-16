@@ -82,6 +82,18 @@ def is_custom_content_provider(func):
     return getattr(func, 'custom_content_provider', False)
 
 
+def cache_params(**kwargs):
+    def wrapper(func):
+        func.cached_data = kwargs
+        return func
+    return wrapper
+
+
+def get_cache_params(func):
+    return getattr(func, 'cached_data', {})
+
+
+@cache_params(no_cache=True)
 def get_documents(**kwargs):
     log.info('Start search documents. Params: %s', kwargs.keys())
 
@@ -95,6 +107,7 @@ def get_documents(**kwargs):
 
 
 @custom_content_provider
+@cache_params(eternal=True)
 def get_document(**kwargs):
     log.info('Start search document. Params: %s', kwargs.keys())
 
@@ -119,6 +132,7 @@ def get_document(**kwargs):
     return content_type, content
 
 
+@cache_params(no_cache=True)
 def get_documents_by_category(**kwargs):
     log.info('Start search documents by category. Params: %s', kwargs.keys())
 
@@ -161,6 +175,7 @@ def get_documents_by_category(**kwargs):
     return res
 
 
+@cache_params(no_cache=True)
 def get_digest(**kwargs):
     log.info('Start creating digest. Params: %s', kwargs.keys())
 
@@ -207,10 +222,12 @@ def get_digest(**kwargs):
     return data
 
 
+@cache_params(no_cache=True)
 def get_category_names(*args, **kwargs):
     return [{'name': name} for name in CATEGORY_NAMES]
 
 
+@cache_params(no_cache=True)
 def get_stats(**kwargs):
     db = _get_mongo_db()
 
@@ -342,11 +359,4 @@ def make_query(db, query, order, limit):
     cursor = db.items.find(query).sort([('published', order)])
     if limit:
         cursor = cursor.limit(limit)
-
-    data = []
-    for doc in cursor:
-        doc['id'] = str(doc['_id'])
-        del doc['_id']
-        data.append(doc)
-
-    return data
+    return list(cursor)

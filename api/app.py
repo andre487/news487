@@ -3,6 +3,7 @@ import data_provider
 import json
 import flask
 import logging
+import os
 import sys
 
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
@@ -19,6 +20,8 @@ log.addHandler(_log_handler)
 log.setLevel(logging.INFO)
 
 app = flask.Flask(__name__)
+
+scrapper_api_host = os.environ.get('SCRAPPER_API_HOST', 'http://localhost:5000')
 
 
 @app.route('/')
@@ -64,7 +67,6 @@ def error_404(*args):
 def get_documents_general(getter):
     try:
         data = getter(**flask.request.args)
-
         if data_provider.is_custom_content_provider(getter):
             return create_custom_response(data)
         else:
@@ -97,6 +99,15 @@ def create_custom_response(data, status=200):
 
 
 def serialize_items(item):
+    if '_id' in item:
+        item['id'] = str(item['_id'])
+        del item['_id']
+
+    if 'link' in item and item['link'].startswith('EmailID('):
+        link_path = flask.url_for('get_document', id=item['id'])
+        item['link'] = scrapper_api_host + link_path
+
     if 'published' in item:
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
+
     return item
