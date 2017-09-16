@@ -23,7 +23,7 @@ log.setLevel(logging.INFO)
 
 app = flask.Flask(__name__)
 
-scrapper_api_host = os.environ.get('SCRAPPER_API_HOST', 'http://localhost:5000')
+scrapper_api_url = os.environ.get('SCRAPPER_API_URL', 'http://localhost:5000')
 
 
 @app.route('/')
@@ -125,7 +125,7 @@ def serialize_items(item):
 
     if 'link' in item and item['link'].startswith('EmailID('):
         link_path = flask.url_for('get_document', id=item['id'])
-        item['link'] = scrapper_api_host + link_path
+        item['link'] = scrapper_api_url + link_path
 
     if 'published' in item:
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
