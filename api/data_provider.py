@@ -7,17 +7,9 @@ import re
 from bson import objectid
 
 CATEGORIES = {
-    'browsers': {
-        'tags': 'browsers,tech,web',
-        'no-tags': 'no_tech,services,twitter',
-    },
     'buzzinga': {
         'tags': 'buzzinga',
         'no-tags': '',
-        'digest': False,
-    },
-    'cs': {
-        'tags': 'computer science',
         'digest': False,
     },
     'fin': {
@@ -28,18 +20,17 @@ CATEGORIES = {
         'tags': 'tech,js',
         'no-tags': 'no_tech,twitter',
     },
+    'node': {
+        'tags': 'tech,node',
+        'no-tags': 'no_tech,twitter',
+    },
     'perf': {
         'tags': 'tech,perf',
         'no-tags': 'no_tech,twitter',
     },
-    'search': {
-        'tags': 'tech,search',
-        'no-tags': 'no_tech,twitter',
-        'digest': False,
-    },
     'services': {
         'tags': 'tech,services',
-        'no-tags': 'no_tech,search,twitter',
+        'no-tags': 'no_tech,twitter',
     },
     'tech': {
         'tags': 'tech',
