@@ -1,6 +1,7 @@
 import argparse
 import codecs
 import logging
+import mail
 import os
 import re
 import sys
@@ -72,7 +73,7 @@ def get_scrappers():
     for root, dirs, files in os.walk(path.join(base_dir, 'rss')):
         scrappers['rss'] = get_scrapper_files(files)
 
-    scrappers['all'] = ['all', 'twitter'] + scrappers['rss']
+    scrappers['all'] = ['all', 'twitter', 'mail'] + scrappers['rss']
     return scrappers
 
 
@@ -117,6 +118,9 @@ def run_scrappers(args, scrappers):
     if 'twitter' in names_set or 'all' in names_set:
         pool.apply_async(_run_twitter_handler, callback=callback)
 
+    if 'mail' in names_set or 'all' in names_set:
+        pool.apply_async(_run_mail_handler, callback=callback)
+
     pool.close()
     pool.join()
 
@@ -150,4 +154,15 @@ def _run_twitter_handler():
         return [res]
     except Exception as e:
         log.error('Error in twitter: %s', e)
+        return []
+
+
+def _run_mail_handler():
+    try:
+        log.info('Start mail handling')
+        res = mail.parse()
+        log.info('End mail handling')
+        return [res]
+    except Exception as e:
+        log.error('Error in mail: %s', e)
         return []
