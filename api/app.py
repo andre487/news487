@@ -31,6 +31,11 @@ def index():
     return create_json_response([{'welcome': 'Welcome to Scrapper 487 API'}])
 
 
+@app.route('/robots.txt')
+def robots_txt():
+    return 'User-agent: *\nDisallow: /'
+
+
 @app.route('/get-documents')
 def get_documents():
     return get_data_provider_response(data_provider.get_documents)

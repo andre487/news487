@@ -19,6 +19,10 @@
         - compare: {jsonpath_mini: '0.error', expected: 'Invalid API method' }
 
 - test:
+    - name: Enpoint robots.txt – Should work
+    - url: /robots.txt
+
+- test:
     - name: Endpoint get-documents – Documents have required fields
     - url: /get-documents
     - validators:
