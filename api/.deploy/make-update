@@ -4,6 +4,7 @@ set -ex
 
 dir="$(cd "$(dirname "$0")" && pwd)"
 
+"$dir/../run-test"
 "$dir/docker-build"
 "$dir/docker-push"
 
