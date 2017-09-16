@@ -3,6 +3,10 @@
 set -ex
 
 CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+cd "$CUR_DIR/.."
+pytest
+
 cd "$CUR_DIR"
 
 if [[ -z "$(docker ps | grep scrapper_api_testing_web)" ]]; then

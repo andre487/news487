@@ -97,7 +97,7 @@ def get_data_provider_response(getter):
             'cache-control': 'no-cache, no-store',
             'expires': create_header_date(days=-365),
         })
-    elif cache_params.get('eternal'):
+    elif cache_params.get('eternal') and not app.debug:
         cache_headers.update({
             'cache-control': 'public, max-age=31536000',
             'expires': create_header_date(days=365),
@@ -122,9 +122,13 @@ def create_custom_response(data, status=200):
     if data is None:
         return create_json_response([{'error': 'Document not found'}], 404)
 
-    content_type, content = data
+    content_type = data['content_type']
+    resp_content = data['content']
 
-    resp = flask.make_response(content, status)
+    if content_type.startswith('text/'):
+        resp_content = flask.render_template('wrapper.html', **data)
+
+    resp = flask.make_response(resp_content, status)
     resp.headers['content-type'] = content_type
 
     return resp

@@ -3,6 +3,7 @@ import logging
 import pymongo
 import os
 import re
+import text_utils
 
 from bson import objectid
 
@@ -119,8 +120,17 @@ def get_document(**kwargs):
     content_type = doc.get('text_content_type', 'text/html; charset=utf-8')
     content = doc.get('text', doc.get('description', ''))
 
+    metadata = text_utils.get_metadata(content)
+
     log.info('End search document')
-    return content_type, content
+
+    return {
+        'title': doc['title'],
+        'description': metadata['description'],
+        'picture': metadata['picture'],
+        'content_type': content_type,
+        'content': content,
+    }
 
 
 @cache_params(no_cache=True)

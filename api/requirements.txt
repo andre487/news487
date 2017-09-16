@@ -4,9 +4,11 @@ Flask==0.12.2
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
+py==1.4.34
 pycurl==7.43.0
 pymongo==3.5.1
 pyresttest==1.7.1
+pytest==3.2.2
 python-dateutil==2.6.1
 pytz==2017.2
 PyYAML==3.12
