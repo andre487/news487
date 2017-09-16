@@ -5,10 +5,14 @@
         <title>{{ title }}</title>
 
         <meta property="og:title" content="{{ title }}">
+        {% if description %}
         <meta property="og:description" content="{{ description }}" />
+        {% endif %}
+        {% if picture %}
         <meta property="og:image" content="{{ picture }}" />
+        {% endif %}
     </head>
     <body>
-        {{ content | safe }}
+        {% if is_text %}<pre>{% endif %}{{ content | safe }}{% if is_text %}</pre>{% endif %}
     </body>
 </html>

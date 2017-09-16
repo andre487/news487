@@ -127,6 +127,7 @@ def create_custom_response(data, status=200):
 
     if content_type.startswith('text/'):
         resp_content = flask.render_template('wrapper.html', **data)
+        content_type = content_type.replace('text/plain', 'text/html')
 
     resp = flask.make_response(resp_content, status)
     resp.headers['content-type'] = content_type

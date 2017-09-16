@@ -129,6 +129,7 @@ def get_document(**kwargs):
         'description': metadata['description'],
         'picture': metadata['picture'],
         'content_type': content_type,
+        'is_text': content_type.startswith('text/plain'),
         'content': content,
     }
 
