@@ -4,6 +4,8 @@ import pymongo
 import os
 import re
 
+from bson import objectid
+
 CATEGORIES = {
     'browsers': {
         'tags': 'browsers,tech,web',
@@ -71,6 +73,15 @@ class ParamsError(Exception):
     pass
 
 
+def custom_content_provider(func):
+    func.custom_content_provider = True
+    return func
+
+
+def is_custom_content_provider(func):
+    return getattr(func, 'custom_content_provider', False)
+
+
 def get_documents(**kwargs):
     log.info('Start search documents. Params: %s', kwargs.keys())
 
@@ -81,6 +92,31 @@ def get_documents(**kwargs):
 
     log.info('End search documents')
     return res
+
+
+@custom_content_provider
+def get_document(**kwargs):
+    log.info('Start search document. Params: %s', kwargs.keys())
+
+    if 'id' not in kwargs or not kwargs['id']:
+        raise ParamsError('ID is required')
+
+    try:
+        doc_id = objectid.ObjectId(kwargs['id'][-1])
+    except objectid.InvalidId:
+        return None
+
+    db = _get_mongo_db()
+    doc = db.items.find_one({'_id': doc_id})
+
+    if not doc:
+        return None
+
+    content_type = doc.get('text_content_type', 'text/html; charset=utf-8')
+    content = doc.get('text', doc.get('description', ''))
+
+    log.info('End search document')
+    return content_type, content
 
 
 def get_documents_by_category(**kwargs):
@@ -309,6 +345,7 @@ def make_query(db, query, order, limit):
 
     data = []
     for doc in cursor:
+        doc['id'] = str(doc['_id'])
         del doc['_id']
         data.append(doc)
 

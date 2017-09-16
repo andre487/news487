@@ -9,6 +9,6 @@ source ./environment
 
 docker-compose up -d --build --remove-orphans
 
-sleep 5
+sleep 2
 
 ./load-fixture.py

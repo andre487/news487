@@ -31,6 +31,11 @@ def get_documents():
     return get_documents_general(data_provider.get_documents)
 
 
+@app.route('/get-document')
+def get_document():
+    return get_documents_general(data_provider.get_document)
+
+
 @app.route('/get-documents-by-category')
 def get_documents_by_category():
     return get_documents_general(data_provider.get_documents_by_category)
@@ -59,7 +64,11 @@ def error_404(*args):
 def get_documents_general(getter):
     try:
         data = getter(**flask.request.args)
-        return create_api_response(data)
+
+        if data_provider.is_custom_content_provider(getter):
+            return create_custom_response(data)
+        else:
+            return create_api_response(data)
     except data_provider.ParamsError as e:
         return create_api_response([{'error': e.message}], 400)
 
@@ -69,6 +78,20 @@ def create_api_response(data, status=200):
 
     resp = flask.make_response(json.dumps(data, ensure_ascii=False), status)
     resp.headers['Content-Type'] = 'application/json; charset=utf-8'
+
+    return resp
+
+
+def create_custom_response(data, status=200):
+    if data is None:
+        resp = flask.make_response('Document not found', 404)
+        resp.headers['Content-Type'] = 'text/plain; charset=utf-8'
+        return resp
+
+    content_type, content = data
+
+    resp = flask.make_response(content, status)
+    resp.headers['Content-Type'] = content_type
 
     return resp
 

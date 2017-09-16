@@ -11,7 +11,9 @@ fi
 
 source .testing/environment
 
+set +e
 pyresttest "http://127.0.0.1:$WEB_PORT" endpoint-specs.yml
+set -e
 
 if [[ $1 != '--no-stop-service' ]]; then
     .testing/stop-service
