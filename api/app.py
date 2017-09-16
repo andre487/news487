@@ -8,20 +8,27 @@ import sys
 
 from datetime import datetime, timedelta
 
+app = flask.Flask(__name__)
+
+LOG_FORMAT = '%(asctime)s %(levelname)s\t%(message)s\t%(pathname)s:%(lineno)d %(funcName)s %(process)d %(threadName)s'
+
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
 
-log = logging.getLogger('app')
-_log_handler = logging.StreamHandler(stream=sys.stderr)
-_log_handler.setFormatter(
-    logging.Formatter(
-        '%(asctime)s %(levelname)s\t%(message)s\t%(pathname)s:%(lineno)d %(funcName)s %(process)d %(threadName)s'
-    )
-)
-log.addHandler(_log_handler)
-log.setLevel(logging.INFO)
+app_log = logging.getLogger('app')
+access_log = logging.getLogger('werkzeug')
 
-app = flask.Flask(__name__)
+_log_handler = logging.StreamHandler(stream=sys.stderr)
+_log_handler.setFormatter(logging.Formatter(LOG_FORMAT))
+
+app_log.addHandler(_log_handler)
+app_log.setLevel(logging.INFO)
+
+app.logger.addHandler(_log_handler)
+app.logger.setLevel(logging.WARN)
+
+access_log.addHandler(_log_handler)
+access_log.setLevel(logging.INFO)
 
 scrapper_api_url = os.environ.get('SCRAPPER_API_URL', 'http://localhost:5000')
 
