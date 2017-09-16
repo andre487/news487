@@ -4,12 +4,17 @@
         <meta charset="UTF-8">
         <title>{{ title }}</title>
 
+        <meta property="og:type" content="article">
+        <meta property="og:locale" content="ru_RU">
+        <meta property="og:url" content="{{ doc_url }}">
+        <meta property="og:site_name" content="{{ doc_site_name }}">
+
         <meta property="og:title" content="{{ title }}">
-        {% if description %}
-        <meta property="og:description" content="{{ description }}" />
+        {% if doc_description %}
+        <meta property="og:description" content="{{ doc_description }}" />
         {% endif %}
-        {% if picture %}
-        <meta property="og:image" content="{{ picture }}" />
+        {% if doc_picture %}
+        <meta property="og:image" content="{{ doc_picture }}" />
         {% endif %}
     </head>
     <body>

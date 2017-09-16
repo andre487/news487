@@ -3,7 +3,6 @@ import data_provider
 import json
 import flask
 import logging
-import os
 import sys
 
 from datetime import datetime, timedelta
@@ -29,8 +28,6 @@ app.logger.setLevel(logging.WARN)
 
 access_log.addHandler(_log_handler)
 access_log.setLevel(logging.INFO)
-
-scrapper_api_url = os.environ.get('SCRAPPER_API_URL', 'http://localhost:5000')
 
 
 @app.route('/')
@@ -110,8 +107,6 @@ def get_data_provider_response(getter):
 
 
 def create_json_response(data, status=200):
-    data = map(serialize_items, data)
-
     resp = flask.make_response(json.dumps(data, ensure_ascii=False), status)
     resp.headers['content-type'] = 'application/json; charset=utf-8'
 
@@ -133,21 +128,6 @@ def create_custom_response(data, status=200):
     resp.headers['content-type'] = content_type
 
     return resp
-
-
-def serialize_items(item):
-    if '_id' in item:
-        item['id'] = str(item['_id'])
-        del item['_id']
-
-    if 'link' in item and item['link'].startswith('EmailID('):
-        link_path = flask.url_for('get_document', id=item['id'])
-        item['link'] = scrapper_api_url + link_path
-
-    if 'published' in item:
-        item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
-
-    return item
 
 
 def create_header_date(**kwargs):

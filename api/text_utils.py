@@ -1,8 +1,12 @@
 # coding=utf-8
+import flask
+import os
 import re
 
 from collections import defaultdict
 from HTMLParser import HTMLParser
+
+scrapper_api_url = os.environ.get('SCRAPPER_API_URL', 'http://localhost:5000')
 
 
 class TagsStripper(HTMLParser):
@@ -152,11 +156,25 @@ def strip_tags(html):
     return parser.get_data()
 
 
-def get_metadata(content):
+def get_metadata(doc, content):
     parser = MeaningExtractor()
     parser.feed(content)
 
     return {
-        'description': parser.get_short_description(),
-        'picture': parser.get_picture(),
+        'doc_description': parser.get_short_description(),
+        'doc_picture': parser.get_picture(),
+        'doc_url': get_document_link(doc),
+        'doc_site_name': doc.get('source_name', 'Scrapper 487'),
     }
+
+
+def get_document_link(doc):
+    link = doc.get('link')
+    if link is None:
+        return None
+
+    if link.startswith('EmailID('):
+        link_path = flask.url_for('get_document', id=doc['id'])
+        link = scrapper_api_url + link_path
+
+    return link

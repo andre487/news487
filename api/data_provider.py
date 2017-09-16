@@ -56,8 +56,8 @@ CATEGORIES = {
 CATEGORY_NAMES = CATEGORIES.keys()
 
 log = logging.getLogger('app')
-_mongo_db = None
 
+_mongo_db = None
 _tags_validator = re.compile('^[\w\s,]+$', re.UNICODE)
 
 
@@ -117,21 +117,23 @@ def get_document(**kwargs):
     if not doc:
         return None
 
+    doc = dress_item(doc)
+
     content_type = doc.get('text_content_type', 'text/html; charset=utf-8')
     content = doc.get('text', doc.get('description', ''))
 
-    metadata = text_utils.get_metadata(content)
-
-    log.info('End search document')
-
-    return {
+    doc_data = {
         'title': doc['title'],
-        'description': metadata['description'],
-        'picture': metadata['picture'],
         'content_type': content_type,
         'is_text': content_type.startswith('text/plain'),
         'content': content,
     }
+
+    doc_data.update(text_utils.get_metadata(doc, content))
+
+    log.info('End search document')
+
+    return doc_data
 
 
 @cache_params(no_cache=True)
@@ -361,4 +363,19 @@ def make_query(db, query, order, limit):
     cursor = db.items.find(query).sort([('published', order)])
     if limit:
         cursor = cursor.limit(limit)
-    return list(cursor)
+
+    return [dress_item(doc) for doc in cursor]
+
+
+def dress_item(item):
+    if '_id' in item:
+        item['id'] = str(item['_id'])
+        del item['_id']
+
+    if 'link' in item:
+        item['link'] = text_utils.get_document_link(item)
+
+    if 'published' in item:
+        item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
+
+    return item
