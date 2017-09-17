@@ -140,7 +140,7 @@
     - url: /get-document?id=59bd4b1ee08a7fde9eb15d51
     - validators:
         - compare: {header: 'content-type', expected: 'text/html; charset=utf-8'}
-        - compare: {header: 'cache-control', expected: 'public, max-age=31536000'}
+        - compare: {header: 'cache-control', expected: 'public, immutable, max-age=31536000'}
         - compare: {header: 'vary', expected: 'accept-encoding'}
         - extract_test: {header: 'expires', test: 'exists'}
 
