@@ -15,13 +15,39 @@
         dest: /etc/nginx/sites-enabled/scrapper487-api.conf
         state: link
 
+    - name: Create web root
+      file:
+        dest: /var/www/{{ scrapper_487_api_host }}
+        state: directory
+        owner: www-data
+        group: www-data
+
+    - name: Install certificate
+      shell: |
+        certbot certonly \
+          --webroot \
+          -w /var/www/{{ scrapper_487_api_host }} \
+          -d {{ scrapper_487_api_host }} \
+          -n \
+          --agree-tos \
+          -m '{{ admin_email }}'
+
     - name: Restart NGINX
       service:
         name: nginx
         state: restarted
 
+    - name: Create cron.d certbot renew
+      template: src=templates/cron.conf.j2 dest=/etc/cron.d/scrapper-487-api.conf
+      register: cron_res
+
+    - name: Restart cron
+      service: name=cron state=restarted
+      when: cron_res.changed
+
     - name: Run on server
       shell: |
+        docker ps -a | grep scrapper487-api || \
         docker run \
           -d \
           --restart always \

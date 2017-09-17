@@ -1,11 +1,33 @@
 server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name {{ scrapper_487_api_host }};
+    root /var/www/{{ scrapper_487_api_host }};
+
+    ssl on;
+    ssl_certificate_key /etc/letsencrypt/live/{{ scrapper_487_api_host }}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/{{ scrapper_487_api_host }}/fullchain.pem;
+
+    add_header Strict-Transport-Security "max-age=86400";
+
+    location / {
+        try_files $uri @backend;
+    }
+
+    location @backend {
+        proxy_pass http://127.0.0.1:10100;
+        include proxy_params;
+    }
+}
+
+server {
     listen 80;
     listen [::]:80;
 
     server_name {{ scrapper_487_api_host }};
 
     location / {
-        proxy_pass http://127.0.0.1:10100;
-        include proxy_params;
+        rewrite ^(.*)$ https://{{ scrapper_487_api_host }}$1 permanent;
     }
 }

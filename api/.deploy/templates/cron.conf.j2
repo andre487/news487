@@ -1,0 +1,1 @@
+0 */12    * * *   root    certbot certonly --webroot -w /var/www/{{ scrapper_487_api_host }} -d {{ scrapper_487_api_host }} -n --post-hook="date > /tmp/certbot-scrapper487-api-run" --renew-hook="service nginx reload"
