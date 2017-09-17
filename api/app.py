@@ -96,7 +96,7 @@ def get_data_provider_response(getter):
         })
     elif cache_params.get('eternal') and not app.debug:
         cache_headers.update({
-            'cache-control': 'public, max-age=31536000',
+            'cache-control': 'public, immutable, max-age=31536000',
             'expires': create_header_date(days=365),
         })
 

@@ -126,7 +126,7 @@ def get_document(**kwargs):
         'title': doc['title'],
         'content_type': content_type,
         'is_text': content_type.startswith('text/plain'),
-        'content': content,
+        'content': text_utils.replace_email_settings_links(content),
     }
 
     doc_data.update(text_utils.get_metadata(doc, content))

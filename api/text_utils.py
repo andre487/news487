@@ -8,6 +8,20 @@ from HTMLParser import HTMLParser
 
 scrapper_api_url = os.environ.get('SCRAPPER_API_URL', 'http://localhost:5000')
 
+change_email_settings_tips = [
+    'list-manage',
+    'unsubscribe',
+    'edit_subscription',
+    'edit-subscription',
+    'confirm',
+    'click.e.mozilla.org',
+]
+
+_link_finder = re.compile(
+    r'(?:https?:)?//(?:[\w/.-]+)(?:\?(?:[\w&=.,;$-]+)?)?',
+    re.UNICODE | re.IGNORECASE
+)
+
 
 class TagsStripper(HTMLParser):
     remove_content_of = {'style', 'script', 'template'}
@@ -178,3 +192,14 @@ def get_document_link(doc):
         link = scrapper_api_url + link_path
 
     return link
+
+
+def _email_settings_replacer(match):
+    url = match.group(0)
+    if any([tip in url for tip in change_email_settings_tips]):
+        return 'http://natribu.org'
+    return url
+
+
+def replace_email_settings_links(html):
+    return _link_finder.sub(_email_settings_replacer, html)

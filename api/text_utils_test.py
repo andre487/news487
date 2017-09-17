@@ -32,6 +32,31 @@ heavy_html = """
 </body>
 """
 
+change_email_settings_links = [
+    'http://tinkoff.us10.list-manage.com/unsubscribe?u=hash&id=hash&c=hash',
+    'http://meduza.us10.list-manage1.com/unsubscribe?u=hash&id=hash&e=hash',
+    'https://webopsweekly.com/edit_subscription/hash',
+    'https://webopsweekly.com/unsubscribe/hash',
+    'https://webopsweekly.com/confirm/hash',
+    'https://nodeweekly.com/unsubscribe/hash',
+    'https://nodeweekly.com/edit_subscription/hash',
+    'https://nodeweekly.com/confirm/hash',
+    'http://javascriptweekly.us1.list-manage.com/unsubscribe?u=hash&e=hash',
+    'https://mobilewebweekly.com/edit_subscription/hash',
+    'https://mobilewebweekly.com/unsubscribe/hash',
+    'https://frontendfoc.us/unsubscribe/hash',
+    'https://frontendfoc.us/edit_subscription/hash',
+    'https://click.e.mozilla.org/?qs=hash',
+]
+
+email_settings_document = ''.join([
+    '<body>',
+    ''.join(
+        map(lambda c: '<p><a href="%s">%s</a></p>' % (c, c), change_email_settings_links)
+    ),
+    '</body>',
+])
+
 
 def test_strip_tags():
     res = text_utils.strip_tags(light_html)
@@ -135,3 +160,12 @@ def test_meaning_extractor_picture_no():
     parser.feed(light_html)
 
     assert parser.get_picture() is None
+
+
+def test_replace_email_settings_links():
+    res = text_utils.replace_email_settings_links(email_settings_document)
+
+    assert '<a href="http://natribu.org">http://natribu.org</a>' in res
+    assert 'unsubscribe' not in res
+
+    assert any(tip not in res for tip in text_utils.change_email_settings_tips)
