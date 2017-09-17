@@ -121,7 +121,6 @@ def get_document(**kwargs):
 
     content_type = doc.get('text_content_type', 'text/html; charset=utf-8')
     content = doc.get('text', doc.get('description', ''))
-    content = text_utils.replace_email_settings_links(content)
 
     is_text = content_type.startswith('text/plain')
     if is_text:
@@ -382,5 +381,9 @@ def dress_item(item):
 
     if 'published' in item:
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
+
+    for name in ('title', 'description', 'text'):
+        if name in item:
+            item[name] = text_utils.replace_email_settings_links(item[name])
 
     return item
