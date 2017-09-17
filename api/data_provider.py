@@ -121,12 +121,17 @@ def get_document(**kwargs):
 
     content_type = doc.get('text_content_type', 'text/html; charset=utf-8')
     content = doc.get('text', doc.get('description', ''))
+    content = text_utils.replace_email_settings_links(content)
+
+    is_text = content_type.startswith('text/plain')
+    if is_text:
+        content = text_utils.highlight_urls(content)
 
     doc_data = {
         'title': doc['title'],
         'content_type': content_type,
-        'is_text': content_type.startswith('text/plain'),
-        'content': text_utils.replace_email_settings_links(content),
+        'is_text': is_text,
+        'content': content,
     }
 
     doc_data.update(text_utils.get_metadata(doc, content))

@@ -17,8 +17,8 @@ change_email_settings_tips = [
     'click.e.mozilla.org',
 ]
 
-_link_finder = re.compile(
-    r'(?:https?:)?//(?:[\w/.-]+)(?:\?(?:[\w&=.,;$-]+)?)?',
+_url_finder = re.compile(
+    r'(?:https?:)?//(?:[\w/.-]+)(?:\?(?:[\w&=.!,;#$-]+)?)?',
     re.UNICODE | re.IGNORECASE
 )
 
@@ -194,12 +194,21 @@ def get_document_link(doc):
     return link
 
 
+def replace_email_settings_links(html):
+    return _url_finder.sub(_email_settings_replacer, html)
+
+
 def _email_settings_replacer(match):
     url = match.group(0)
-    if any([tip in url for tip in change_email_settings_tips]):
+    if any(tip in url for tip in change_email_settings_tips):
         return 'http://natribu.org'
     return url
 
 
-def replace_email_settings_links(html):
-    return _link_finder.sub(_email_settings_replacer, html)
+def highlight_urls(html):
+    return _url_finder.sub(_url_highlighter, html)
+
+
+def _url_highlighter(match):
+    url = match.group(0)
+    return '<a href="{url}">{url}</a>'.format(url=url)

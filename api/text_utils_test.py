@@ -169,3 +169,16 @@ def test_replace_email_settings_links():
     assert 'unsubscribe' not in res
 
     assert any(tip not in res for tip in text_utils.change_email_settings_tips)
+
+
+def test_highlight_urls():
+    urls = 'http://natribu.org https://yandex.ru/search/touch/?text=cats\n//example.com/res?q=.!.#header'
+    expected = (
+        '<a href="http://natribu.org">http://natribu.org</a> '
+        '<a href="https://yandex.ru/search/touch/?text=cats">https://yandex.ru/search/touch/?text=cats</a>\n'
+        '<a href="//example.com/res?q=.!.#header">//example.com/res?q=.!.#header</a>'
+    )
+
+    res = text_utils.highlight_urls(urls)
+
+    assert res == expected
