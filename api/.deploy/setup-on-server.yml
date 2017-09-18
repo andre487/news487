@@ -37,14 +37,6 @@
         name: nginx
         state: restarted
 
-    - name: Create cron.d certbot renew
-      template: src=templates/cron.conf.j2 dest=/etc/cron.d/scrapper-487-api.conf
-      register: cron_res
-
-    - name: Restart cron
-      service: name=cron state=restarted
-      when: cron_res.changed
-
     - name: Run on server
       shell: |
         docker ps -a | grep scrapper487-api || \
