@@ -3,7 +3,6 @@ server {
     listen [::]:443 ssl;
 
     server_name {{ scrapper_487_api_host }};
-    root /var/www/{{ scrapper_487_api_host }};
 
     ssl on;
     ssl_certificate_key /etc/letsencrypt/live/{{ scrapper_487_api_host }}/privkey.pem;
@@ -12,6 +11,12 @@ server {
     add_header Strict-Transport-Security "max-age=86400";
 
     location / {
+        root /var/www/{{ scrapper_487_api_host }};
+        try_files $uri @common;
+    }
+
+    location @common {
+        root /var/www/common;
         try_files $uri @backend;
     }
 
