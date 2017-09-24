@@ -24,4 +24,4 @@
           -e 'MAIL_LOGIN={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_LOGIN') }}' \
           -e 'MAIL_PASSWORD={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_PASSWORD') }}' \
           andre487/scrapper487 \
-          /usr/local/bin/app/schedule --mongo common-mongo run all
+          bash -c '/usr/local/bin/app/schedule --mongo common-mongo run all'
