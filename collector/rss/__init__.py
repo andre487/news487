@@ -68,6 +68,10 @@ def create_doc(source_name, feed, entry, additional_tags, default_author_name, d
 
     additional_tags += tuple(entry_tags)
 
+    comments_count = entry.get('slash_comments')
+    if comments_count is not None:
+        comments_count = int(comments_count)
+
     return {
         'link': link,
         'title': entry['title'],
@@ -84,6 +88,8 @@ def create_doc(source_name, feed, entry, additional_tags, default_author_name, d
         'source_type': 'rss',
         'source_title': feed['feed']['title'],
         'source_link': feed['feed']['link'],
+
+        'comments_count': comments_count,
 
         'tags': tags.string_format(*additional_tags),
     }
