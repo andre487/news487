@@ -1,15 +1,23 @@
 import feedparser
-import importlib
 import logging
 
+from rss.sources import FEEDS
 from util import date, dict_tool, tags
 
 log = logging.getLogger('app')
 
 
 def parse_feed_by_name(name):
-    feed_module = importlib.import_module('rss.' + name)
-    return feed_module.parse()
+    feed_params = FEEDS.get(name)
+    if not feed_params:
+        raise ValueError('There is no feed with name %s' % name)
+
+    return parse_feed_by_url(
+        feed_params['name'], feed_params['url'],
+        additional_tags=feed_params.get('tags', ()),
+        author_name=feed_params.get('author_name'),
+        author_link=feed_params.get('author_link'),
+    )
 
 
 def parse_feed_by_url(source_name, feed_url, additional_tags=(), author_name=None, author_link=None):

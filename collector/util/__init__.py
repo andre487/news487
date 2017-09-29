@@ -2,14 +2,12 @@ import argparse
 import codecs
 import logging
 import mail
-import os
 import re
 import sys
 import twits
 
 from multiprocessing.pool import ThreadPool
-from os import path
-from rss import parse_feed_by_name
+from rss import parse_feed_by_name, sources as rss_sources
 from util.write import write_data
 
 file_name_getter = re.compile(r'(.+?)\.py')
@@ -65,27 +63,10 @@ def setup(args):
 
 
 def get_scrappers():
-    scrappers = {
-        'rss': [],
-    }
-    base_dir = path.join(path.dirname(__file__), '..')
-
-    for root, dirs, files in os.walk(path.join(base_dir, 'rss')):
-        scrappers['rss'] = get_scrapper_files(files)
+    scrappers = {'rss': rss_sources.get_sources()}
 
     scrappers['all'] = ['all', 'twitter', 'mail'] + scrappers['rss']
     return scrappers
-
-
-def get_scrapper_files(files):
-    return [get_file_name(name) for name in files if not name.startswith('_') and name.endswith('.py')]
-
-
-def get_file_name(name):
-    matches = file_name_getter.match(name)
-    if not matches:
-        raise ValueError('Wrong scrapper file name: %s' % name)
-    return matches.group(1)
 
 
 def run_scrappers(args, scrappers):
