@@ -1,48 +1,31 @@
 # coding=utf-8
-import feedparser
-import logging
 import re
 
-from util import date, tags
+from rss import parse_feed_by_url
 
 SOURCE_NAME = 'TinkoffJournal'
 FEED_URL = 'https://journal.tinkoff.ru/feed/atom/'
-
-log = logging.getLogger('app')
 
 title_parser = re.compile(r'^([\w\s]+): .+', re.UNICODE)
 
 
 def parse():
-    feed = feedparser.parse(FEED_URL)
-    data = []
+    return parse_feed_by_url(
+        SOURCE_NAME, FEED_URL,
+        additional_tags=('finances', 'no_tech'),
+        author_name=parse_author_name,
+    )
 
-    for entry in feed['entries']:
-        title = entry['title']
-        author_name = entry['author']
 
-        title_matches = title_parser.match(title)
-        if title_matches:
-            author_name = title_matches.group(1)
+def parse_author_name(entry, author_name):
+    if author_name and author_name != 'journal@tinkoff.ru':
+        return author_name
 
-        data.append({
-            'title': title,
-            'description': entry['summary'],
-            'link': entry['link'],
-            'published': date.utc_format(entry['published']),
+    title_matches = title_parser.match(entry['title'])
+    if title_matches:
+        return title_matches.group(1)
 
-            'source_name': SOURCE_NAME,
-            'source_type': 'rss',
-            'source_title': feed['feed']['title'],
-            'source_link': feed['feed']['link'],
-
-            'author_name': author_name,
-            'tags': tags.string_format('finances', 'no_tech'),
-        })
-
-    log.info('%s: got %d documents', SOURCE_NAME, len(data))
-
-    return data
+    return author_name
 
 
 if __name__ == '__main__':
