@@ -92,6 +92,16 @@ FEEDS = {
         'url': 'https://calendar.perfplanet.com/feed/',
         'tags': ('tech', 'web', 'perf'),
     },
+    'radio_t_news': {
+        'name': 'RadioTNews',
+        'url': 'https://news.radio-t.com/rss',
+        'tags': ('tech', 'services'),
+    },
+    'reddit_perf': {
+        'name': 'Reddit',
+        'url': 'https://www.reddit.com/r/perfmatters/.rss',
+        'tags': ('tech', 'web', 'perf'),
+    },
     'search_engines': {
         'name': 'SearchEngines',
         'url': 'https://www.searchengines.ru/feed',
@@ -100,6 +110,11 @@ FEEDS = {
     'sessionstack_blog': {
         'name': 'SessionStackBlog',
         'url': 'https://blog.sessionstack.com/feed',
+        'tags': ('tech', 'web'),
+    },
+    'sitepoint': {
+        'name': 'SitePoint',
+        'url': 'https://www.sitepoint.com/feed/',
         'tags': ('tech', 'web'),
     },
     'tinkoff_journal': {
@@ -117,6 +132,11 @@ FEEDS = {
         'name': 'WebkitBlog',
         'url': 'https://webkit.org/feed/atom/',
         'tags': ('tech', 'web', 'browsers', 'safari', 'webkit'),
+    },
+    'web_standards': {
+        'name': 'WebStandards',
+        'url': 'https://web-standards.ru/category/news/feed/',
+        'tags': ('tech', 'web'),
     },
     'yandex_news': {
         'name': 'YandexNews',
