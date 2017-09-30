@@ -376,14 +376,15 @@ def dress_item(item):
         item['id'] = str(item['_id'])
         del item['_id']
 
-    if 'link' in item:
+    if 'link' in item and item['link']:
         item['link'] = text_utils.get_document_link(item)
 
-    if 'published' in item:
+    if 'published' in item and item['published']:
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
 
     for name in ('title', 'description', 'text'):
         if name in item:
-            item[name] = text_utils.replace_email_settings_links(item[name])
+            if item[name]:
+                item[name] = text_utils.replace_email_settings_links(item[name])
 
     return item
