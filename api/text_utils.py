@@ -18,7 +18,7 @@ change_email_settings_tips = [
 ]
 
 _url_finder = re.compile(
-    r'(?:https?:)?//(?:[\w/.-]+)(?:\?(?:[\w&=.!,;#$-]+)?)?',
+    r'(?:https?:)?//(?:[\w/#@~.-]+)(?:\?(?:[\w&=.!,;$#-]+)?)?',
     re.UNICODE | re.IGNORECASE
 )
 
