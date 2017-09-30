@@ -63,9 +63,9 @@ def setup(args):
 
 
 def get_scrappers():
-    scrappers = {'rss': rss_sources.get_sources()}
+    scrappers = {'rss': rss_sources.get_source_names()}
 
-    scrappers['all'] = ['all', 'twitter', 'mail'] + scrappers['rss']
+    scrappers['all'] = ['all'] + sorted(['twitter', 'mail'] + scrappers['rss'])
     return scrappers
 
 

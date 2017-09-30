@@ -96,6 +96,7 @@ FEEDS = {
         'name': 'RadioTNews',
         'url': 'https://news.radio-t.com/rss',
         'tags': ('tech', 'services'),
+        'disabled': True,
     },
     'reddit_perf': {
         'name': 'Reddit',
@@ -148,5 +149,16 @@ FEEDS = {
 }
 
 
+def get_source_names():
+    return [key for key, val in FEEDS.iteritems() if not val.get('disabled')]
+
+
+def get_source(name):
+    feed_params = FEEDS.get(name)
+
+    if feed_params and not feed_params.get('disabled'):
+        return feed_params
+
+
 def get_sources():
-    return FEEDS.keys()
+    return {k: v for k, v in FEEDS.iteritems() if not v.get('disabled')}
