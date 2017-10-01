@@ -13,6 +13,14 @@ CATEGORIES = {
         'no-tags': '',
         'digest': False,
     },
+    'browsers': {
+        'tags': 'tech,browsers',
+        'no-tags': 'no_tech,twitter',
+    },
+    'css': {
+        'tags': 'tech,css',
+        'no-tags': 'no_tech,twitter',
+    },
     'fin': {
         'tags': 'finances,no_tech',
         'no-tags': 'tech,twitter',
@@ -24,6 +32,7 @@ CATEGORIES = {
     'node': {
         'tags': 'tech,node',
         'no-tags': 'no_tech,twitter',
+        'disabled': True,
     },
     'perf': {
         'tags': 'tech,perf',
@@ -41,10 +50,12 @@ CATEGORIES = {
         'tags': 'twitter',
         'no-tags': 'buzzinga',
         'digest': False,
+        'disabled': True,
     },
     'web': {
         'tags': 'tech,web',
         'no-tags': 'no_tech,services,twitter',
+        'disabled': True,
     },
     'news': {
         'tags': 'no_tech,world',
@@ -52,8 +63,6 @@ CATEGORIES = {
         'digest': False,
     },
 }
-
-CATEGORY_NAMES = CATEGORIES.keys()
 
 log = logging.getLogger('app')
 
@@ -158,7 +167,7 @@ def get_documents_by_category(**kwargs):
 
     cat_data = CATEGORIES.get(kwargs['name'][-1])
     if not cat_data:
-        raise ParamsError('Category is invalid. Need one of %s' % CATEGORY_NAMES)
+        raise ParamsError('Category is invalid. Need one of %s' % CATEGORIES.keys())
 
     db = _get_mongo_db()
     args = kwargs.copy()
@@ -232,7 +241,7 @@ def get_digest(**kwargs):
 
 @cache_params(no_cache=True)
 def get_category_names(*args, **kwargs):
-    return [{'name': name} for name in CATEGORY_NAMES]
+    return [{'name': name} for name, params in CATEGORIES.iteritems() if not params.get('disabled')]
 
 
 @cache_params(no_cache=True)

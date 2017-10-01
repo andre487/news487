@@ -50,6 +50,11 @@ FEEDS = {
         'url': 'http://blog.chromium.org/atom.xml',
         'tags': ('tech', 'web', 'browsers', 'chromium'),
     },
+    'css_tricks': {
+        'name': 'CssTricks',
+        'url': 'http://feeds.feedburner.com/CssTricks',
+        'tags': ('tech', 'web', 'browsers', 'css'),
+    },
     'edge_blog': {
         'name': 'EdgeBlog',
         'url': 'https://blogs.windows.com/msedgedev/feed/',
