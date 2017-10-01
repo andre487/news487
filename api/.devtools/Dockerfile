@@ -29,6 +29,6 @@ RUN set -x && \
     find /tmp -type f -exec rm {} \; && \
     find /var/tmp -type f -exec rm {} \;
 
-ENTRYPOINT /usr/local/bin/app/start
+CMD bash .devtools/start
 
 EXPOSE 5000

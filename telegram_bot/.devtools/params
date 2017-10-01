@@ -1,0 +1,21 @@
+#@IgnoreInspection BashAddShebang
+DOCKER_REPO_NAME="andre487/news-bot487"
+DISABLE_DOCKER_TEST_VIA_UPDATE=1
+
+run_project_for_dev() {
+    npm run start-dev
+}
+
+run_project_for_docker_test() {
+    docker run --rm -ti \
+        -e "MONGO_HOST=172.17.0.1" \
+        -e "TELEGRAM_TOKEN=$(cat ~/.private/NEWS_487_DEV_TOKEN)" \
+        -e "API_URL=$(cat ~/.private/SCRAPPER_487_API_URL)" \
+        -e "GOO_GL_KEY=$(cat ~/.private/GOO_GL_KEY)" \
+        "$DOCKER_REPO_NAME"
+}
+
+run_project_tests() {
+    npm run lint
+    npm test
+}

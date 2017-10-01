@@ -1,0 +1,10 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Starting for development"
+
+cd "$PROJECT_DIR"
+
+run_method run_project_for_dev "$@"

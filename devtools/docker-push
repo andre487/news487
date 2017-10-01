@@ -1,0 +1,14 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Pushing image"
+
+cd "$PROJECT_DIR"
+
+docker_repo_name="$(get_env DOCKER_REPO_NAME)"
+
+docker push "$docker_repo_name"
+
+log_info "Success!"

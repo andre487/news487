@@ -1,0 +1,18 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Building image"
+
+cd "$PROJECT_DIR"
+
+docker_repo_name="$(get_env DOCKER_REPO_NAME)"
+
+docker build \
+    -t "$docker_repo_name:latest" \
+    --force-rm \
+    -f .devtools/Dockerfile \
+    .
+
+log_info "Success!"

@@ -1,0 +1,42 @@
+#@IgnoreInspection BashAddShebang
+DOCKER_REPO_NAME="andre487/scrapper487"
+DEV_VIRTUAL_ENV="$HOME/.venv/scrapper487"
+
+run_project_for_dev() {
+    "$DEV_VIRTUAL_ENV/bin/python" scrap.py $@
+}
+
+run_project_for_docker_test() {
+    log_file="/tmp/scrapper487-docker-test-out"
+
+    docker run \
+        --rm \
+        --link dev-mongo \
+        -ti \
+        -e TWITTER_CONSUMER_KEY="$(cat ~/.private/TWITTER_SCRAPPER_487_CONSUMER_KEY)" \
+        -e TWITTER_CONSUMER_SECRET="$(cat ~/.private/TWITTER_SCRAPPER_487_CONSUMER_SECRET)" \
+        -e TWITTER_ACCESS_TOKEN_KEY="$(cat ~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_KEY)" \
+        -e TWITTER_ACCESS_TOKEN_SECRET="$(cat ~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_SECRET)" \
+        -e MAIL_SERVER="$(cat ~/.private/SUBSCRIBE_MAIL_SERVER)" \
+        -e MAIL_LOGIN="$(cat ~/.private/SUBSCRIBE_MAIL_LOGIN)" \
+        -e MAIL_PASSWORD="$(cat ~/.private/SUBSCRIBE_MAIL_PASSWORD)" \
+        -e MAIL_READONLY=1 \
+        "$DOCKER_REPO_NAME" \
+        /usr/local/bin/app/scrap.py --mongo=dev-mongo run all \
+        | tee "$log_file"
+
+    set +e
+    errors="$(grep ERROR "$log_file")"
+    set -e
+
+    if [[ -n "$errors" ]]; then
+        log_error "There are errors via testing in Docker:\n$errors"
+        return 1
+    fi
+}
+
+run_project_tests() {
+    log_info "Running unit tests"
+
+    "$DEV_VIRTUAL_ENV/bin/pytest"
+}

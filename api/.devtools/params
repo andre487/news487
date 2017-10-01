@@ -1,0 +1,59 @@
+#@IgnoreInspection BashAddShebang
+DOCKER_REPO_NAME="andre487/scrapper487-api"
+DEV_VIRTUAL_ENV="$HOME/.venv/scrapper487-api"
+
+run_project_for_dev() {
+    export FLASK_DEBUG=1
+    export FLASK_APP=app.py
+    "$DEV_VIRTUAL_ENV/bin/flask" run --host=localhost
+}
+
+run_project_for_docker_test() {
+    container_id="$(docker run --rm -d -p127.0.0.1:5000:5000 -e 'MONGO_HOST=172.17.0.1' "$DOCKER_REPO_NAME")"
+    sleep 1
+
+    set +e
+    curl -v 127.0.0.1:5000 > /dev/null
+    result="$?"
+    set -e
+
+    docker stop "$container_id" > /dev/null
+
+    return "$result"
+}
+
+run_project_tests() {
+    log_info "Running unit tests"
+
+    export WEB_PORT=35000
+    export MONGO_PORT=37017
+
+    "$DEV_VIRTUAL_ENV/bin/pytest"
+
+    if [[ -z "$(docker ps | grep scrapper_api_testing_web)" ]]; then
+        log_info "Starting service for tests"
+        cd .testing
+        docker-compose up -d --build --remove-orphans
+
+        log_info "Loading Mongo fixture"
+        "$DEV_VIRTUAL_ENV/bin/python" load-fixture.py
+
+        cd ..
+    fi
+
+    log_info "Running e2e tests"
+    set +e
+    "$DEV_VIRTUAL_ENV/bin/pyresttest" "http://127.0.0.1:$WEB_PORT" endpoint-specs.yml
+    result=$?
+    set -e
+
+    if [[ "$NO_STOP_SERVICE" != 1 ]]; then
+        log_info "Stopping service for tests"
+        cd .testing
+        docker-compose down
+
+        cd ..
+    fi
+
+    return "$result"
+}

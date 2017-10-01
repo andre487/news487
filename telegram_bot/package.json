@@ -7,7 +7,7 @@
     "start": "./cli/run.js",
     "start-dev": ".scripts/start-dev",
     "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Info: no test specified\""
   },
   "repository": {
     "type": "git",

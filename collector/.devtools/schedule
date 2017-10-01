@@ -2,7 +2,7 @@
 
 set -e
 
-dir=$(cd "$(dirname $0)" && pwd)
+dir="$(cd "$(dirname $0)" && pwd)/.."
 
 interval=3600
 if [[ -n "$SCHEDULE_INTERVAL" ]]; then

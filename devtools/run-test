@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Running project tests"
+
+cd "$PROJECT_DIR"
+
+run_method run_project_tests
+
+log_info "Success!"

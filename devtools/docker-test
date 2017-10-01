@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Testing Docker image workability"
+
+cd "$PROJECT_DIR"
+
+run_method run_project_for_docker_test
+
+log_info "Success!"

@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-set -ex
-
-export WEB_PORT=35000
-export MONGO_PORT=37017
