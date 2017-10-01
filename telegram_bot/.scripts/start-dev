@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+script_dir="$(cd "$(dirname $0)" && pwd)"
+project_dir="$(npm root)"/..
+
+export TELEGRAM_TOKEN="$(cat ~/.private/NEWS_487_DEV_TOKEN)"
+export GOO_GL_KEY="$(cat ~/.private/GOO_GL_KEY)"
+export API_URL="$(cat ~/.private/SCRAPPER_487_API_URL)"
+export MONGO_HOST=localhost
+
+nodemon "$project_dir/cli/run.js"

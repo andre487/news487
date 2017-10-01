@@ -1,0 +1,15 @@
+#!/usr/bin/env bash -e
+
+CUR_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${CUR_DIR}/_common"
+
+token="$(cat ~/.private/NEWS_487_DEV_TOKEN)"
+api_url="$(cat ~/.private/SCRAPPER_487_API_URL)"
+goo_gl_key="$(cat ~/.private/GOO_GL_KEY)"
+
+docker run --rm -ti \
+    -e "API_URL=$api_url" \
+    -e "MONGO_HOST=172.17.0.1" \
+    -e "TELEGRAM_TOKEN=$token" \
+    -e "GOO_GL_KEY=$goo_gl_key" \
+    "$REPO_NAME"
