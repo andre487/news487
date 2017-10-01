@@ -2,9 +2,20 @@
 
 Web pages scrapper
 
-[Collector Docker image](https://hub.docker.com/r/andre487/scrapper487/)
+Docker images:
 
-[API Docker image](https://hub.docker.com/r/andre487/scrapper487-api/)
+  * [Collector](https://hub.docker.com/r/andre487/scrapper487/)
+  * [Documents API](https://hub.docker.com/r/andre487/scrapper487-api/)
+  * [Telegram bot](https://hub.docker.com/r/andre487/news-bot487/)
+
+## DevTools
+
+  * `devtools/start-dev project` – Start development version
+  * `devtools/run-test project` – Run tests for project
+  * `devtools/make-update project` – Update project on server
+  * `devtools/docker-build project` – Build Docker image
+  * `devtools/docker-test project` – Test local Docker image
+  * `devtools/docker-push project` – Push Docker image to registry
 
 ## Collector
 Collector usage:
@@ -55,3 +66,16 @@ API MongoDB setup makes via environment variables:
   * MONGO_DB – `news_documents` by default
 
 For API testing run script `run-test`
+
+
+## Telegram bot
+
+Configuration environment variables:
+  * `API_URL` – URL of scrapper487 API
+  * `TELEGRAM_TOKEN` – token of the Telegram API
+  * `MONGO_HOST` – `localhost` by default
+  * `MONGO_PORT` – `27017` by default
+  * `MONGO_DB` – `news_bot_487` by default
+  * `TZ` – `Europe/Moscow` by default
+  * `SHORTEN_LINKS` – need shorten links, causes issues with Telegram preview widgets
+  * `GOO_GL_KEY` – goo.gl key for shorten links if enabled
