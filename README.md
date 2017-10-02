@@ -1,6 +1,6 @@
-# scrapper487
+# news487
 
-Web pages scrapper
+News collector
 
 Docker images:
 
