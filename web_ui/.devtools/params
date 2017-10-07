@@ -1,0 +1,36 @@
+#@IgnoreInspection BashAddShebang
+
+DEV_PORT=8487
+
+WEB_UI_DIR="$(cd "$(dirname "$0")" && pwd)/../web_ui"
+STATIC_DIR="$WEB_UI_DIR/static"
+
+_http_server_pid=''
+
+_cleanup_dev() {
+    if [[ -n "$_http_server_pid" ]]; then
+        echo
+        log_info "Killing HTTP server with PID $_http_server_pid"
+        kill "$_http_server_pid"
+        _http_server_pid=''
+    fi
+}
+
+run_project_for_dev() {
+    trap _cleanup_dev SIGHUP SIGINT SIGKILL SIGTERM ERR EXIT
+
+    if [[ ! -d "$STATIC_DIR" ]]; then
+        log_info "Creating static dir"
+        mkdir "$STATIC_DIR"
+    fi
+
+    cd "$WEB_UI_DIR/static"
+
+    python "$WEB_UI_DIR/.devtools/http_server.py" "$DEV_PORT" &
+    _http_server_pid="$!"
+    log_info "HTTP server has been launched with PID $_http_server_pid"
+    log_info "HTTP server URL: http://localhost:$DEV_PORT"
+
+    cd "$WEB_UI_DIR"
+    ./node_modules/.bin/webpack --watch
+}
