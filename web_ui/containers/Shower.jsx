@@ -15,8 +15,9 @@ const styles = {
         textAlign: 'center'
     },
     paper: {
-        margin: '10px',
-        maxWidth: '800px'
+        margin: '15px',
+        maxWidth: '800px',
+        overflow: 'hidden'
     },
     cardText: {
         padding: '0 16px'
@@ -28,11 +29,21 @@ const styles = {
 
 class Shower extends Component {
     componentDidMount() {
-        this.props.actions.fetchDocs();
+        this._currentFilter = this.props.selectedFilter;
+        this._fetchDocuments();
+    }
+
+    componentWillUpdate(newProps) {
+        if (newProps.selectedFilter !== this._currentFilter) {
+            this._currentFilter = newProps.selectedFilter;
+            this._fetchDocuments();
+        }
     }
 
     render() {
-        return this.props.shower.docsRequestInProcess ?
+        const docsRequestInProcess = this.props.shower.docsRequestInProcess;
+
+        return docsRequestInProcess ?
             this._createProgress() :
             this._createDocsList();
     }
@@ -43,6 +54,10 @@ class Shower extends Component {
                 <CircularProgress size={80} thickness={7} />
             </div>
         );
+    }
+
+    _fetchDocuments() {
+        this.props.actions.fetchDocs(this._currentFilter);
     }
 
     _createDocsList() {

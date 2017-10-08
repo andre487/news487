@@ -5,10 +5,11 @@ export function toggleMenu() {
     return { type: types.TOGGLE_MENU };
 }
 
-export function selectFilter(selectedFilter) {
+export function selectFilter(selectedFilter, filterTitle) {
     return {
         type: types.SELECT_FILTER,
-        selectedFilter
+        selectedFilter,
+        filterTitle
     };
 }
 

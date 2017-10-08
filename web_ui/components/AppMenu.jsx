@@ -17,7 +17,15 @@ const styles = {
     }
 };
 
+const filtersCache = {
+    digest: 'Digest'
+};
+
 class AppMenu extends Component {
+    constructor(props, state) {
+        super(props, state);
+    }
+
     render() {
         if (!this.props.opened) {
             return (null);
@@ -71,12 +79,17 @@ class AppMenu extends Component {
                     style={styles.option} />
 
                 {categories.map((category, idx) => {
+                    const filterId = `category:${category.name}`;
+                    const filterTitle = `Category "${category.name}"`;
+
+                    filtersCache[filterId] = filterTitle;
+
                     return (
                         <RadioButton
                             key={idx}
                             disabled={categoriesRequestInProcess}
-                            value={`category:${category.name}`}
-                            label={`Category ${category.name}`}
+                            value={filterId}
+                            label={filterTitle}
                             style={styles.option} />
                     );
                 })}
@@ -85,7 +98,8 @@ class AppMenu extends Component {
     }
 
     _onSelectFilter(event, selectedFilter) {
-        this.props.onFilterSelected(selectedFilter);
+        const filterTitle = filtersCache[selectedFilter] || selectedFilter;
+        this.props.onFilterSelected(selectedFilter, filterTitle);
     }
 }
 

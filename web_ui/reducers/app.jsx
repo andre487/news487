@@ -4,7 +4,8 @@ const initialState = {
     menuOpened: null,
     categoriesRequestInProcess: null,
     categories: null,
-    selectedFilter: 'digest'
+    selectedFilter: 'digest',
+    filterTitle: 'Digest'
 };
 
 export default function app(state = initialState, action) {
@@ -22,7 +23,10 @@ export default function app(state = initialState, action) {
             });
 
         case ActionTypes.SELECT_FILTER:
-            return Object.assign({}, state, { selectedFilter: action.selectedFilter });
+            return Object.assign({}, state, {
+                selectedFilter: action.selectedFilter,
+                filterTitle: action.filterTitle
+            });
 
         default:
             return state;

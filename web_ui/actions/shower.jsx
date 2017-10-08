@@ -1,7 +1,7 @@
 import config from '../config';
 import * as types from '../constants/ActionTypes';
 
-export function fetchDocs() {
+export function fetchDocs(selectedFilter) {
     return (dispatch, getState) => {
         const state = getState();
 
@@ -10,7 +10,7 @@ export function fetchDocs() {
         }
 
         dispatch(requestDocs);
-        return fetch(`${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`)
+        return fetch(buildUrl(selectedFilter))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)));
     };
@@ -26,4 +26,15 @@ export function receiveDocs(docs) {
         type: types.RECEIVE_DOCS,
         docs
     };
+}
+
+function buildUrl(selectedFilter) {
+    if (selectedFilter.startsWith('category:')) {
+        const matches = /^category:(.*)$/.exec(selectedFilter);
+        const category = matches[1];
+
+        return `${config.apiUrl}/get-documents-by-category?name=${category}&limit=${config.defaultDocsLimit}`;
+    }
+
+    return `${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`;
 }

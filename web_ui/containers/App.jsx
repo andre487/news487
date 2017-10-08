@@ -22,13 +22,16 @@ class App extends Component {
             menuOpened,
             categories,
             selectedFilter,
+            filterTitle,
             categoriesRequestInProcess
         } = this.props.app;
 
         return (
             <MuiThemeProvider muiTheme={theme}>
                 <div>
-                    <Header onMenuButtonTap={actions.toggleMenu} />
+                    <Header
+                        onMenuButtonTap={actions.toggleMenu}
+                        filterTitle={filterTitle} />
                     <AppMenu
                         onMenuClose={actions.toggleMenu}
                         onFilterSelected={actions.selectFilter}
