@@ -88,22 +88,23 @@ def get_data_provider_response(getter):
 
     cache_params = data_provider.get_cache_params(getter)
 
-    cache_headers = {
+    api_headers = {
         'access-control-allow-origin': '*',
         'vary': 'accept-encoding',
     }
+
     if cache_params.get('no_cache'):
-        cache_headers.update({
+        api_headers.update({
             'cache-control': 'no-cache, no-store',
             'expires': create_header_date(days=-365),
         })
     elif cache_params.get('eternal') and not app.debug:
-        cache_headers.update({
+        api_headers.update({
             'cache-control': 'public, immutable, max-age=31536000',
             'expires': create_header_date(days=365),
         })
 
-    for name, val in cache_headers.iteritems():
+    for name, val in api_headers.iteritems():
         resp.headers[name] = val
 
     return resp
