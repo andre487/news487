@@ -88,7 +88,10 @@ def get_data_provider_response(getter):
 
     cache_params = data_provider.get_cache_params(getter)
 
-    cache_headers = {'vary': 'accept-encoding'}
+    cache_headers = {
+        'access-control-allow-origin': '*',
+        'vary': 'accept-encoding',
+    }
     if cache_params.get('no_cache'):
         cache_headers.update({
             'cache-control': 'no-cache, no-store',
