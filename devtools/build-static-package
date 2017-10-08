@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Building static package"
+
+cd "$PROJECT_DIR"
+
+run_method build_static_package
+
+log_info "Success!"
