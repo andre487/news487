@@ -35,7 +35,6 @@ export function requestCategories() {
 export function receiveCategories(categories) {
     return {
         type: types.RECEIVE_CATEGORIES,
-        categoriesRequestInProcess: false,
         categories
     };
 }

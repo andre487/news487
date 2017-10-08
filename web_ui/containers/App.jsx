@@ -6,6 +6,7 @@ import * as AppActions from '../actions/app';
 
 import Header from '../components/Header';
 import AppMenu from '../components/AppMenu';
+import Shower from './Shower';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import theme from '../src/material_ui_raw_theme_file';
@@ -35,6 +36,7 @@ class App extends Component {
                         categories={categories}
                         selectedFilter={selectedFilter}
                         categoriesRequestInProcess={categoriesRequestInProcess} />
+                    <Shower selectedFilter={selectedFilter} />
                 </div>
             </MuiThemeProvider>
         );
