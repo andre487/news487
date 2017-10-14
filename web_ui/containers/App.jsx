@@ -4,12 +4,13 @@ import {connect} from 'react-redux';
 
 import * as AppActions from '../actions/app';
 
+import Style from '../components/Style';
 import Header from '../components/Header';
 import AppMenu from '../components/AppMenu';
 import Shower from './Shower';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import theme from '../src/material_ui_raw_theme_file';
+import theme from '../config/theme';
 
 class App extends Component {
     componentDidMount() {
@@ -29,6 +30,7 @@ class App extends Component {
         return (
             <MuiThemeProvider muiTheme={theme}>
                 <div>
+                    <Style rules={theme.globalStyle} />
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
                         filterTitle={filterTitle} />
