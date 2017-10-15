@@ -40,6 +40,8 @@ class App extends Component {
             routeTitle
         } = this.props.app;
 
+        const { docsRequestInProcess } = this.props.shower;
+
         return (
             <MuiThemeProvider muiTheme={theme}>
                 <div>
@@ -54,7 +56,8 @@ class App extends Component {
                         opened={menuOpened}
                         routesMap={routesMap}
                         routePath={routePath}
-                        categoriesRequestInProcess={categoriesRequestInProcess} />
+                        categoriesRequestInProcess={categoriesRequestInProcess}
+                        docsRequestInProcess={docsRequestInProcess} />
                     <Shower
                         filterTitle={routeTitle}
                         routePath={routePath}
@@ -66,7 +69,10 @@ class App extends Component {
 }
 
 function mapStateToProps(state) {
-    return { app: state.app };
+    return {
+        app: state.app,
+        shower: state.shower
+    };
 }
 
 function mapDispatchToProps(dispatch) {

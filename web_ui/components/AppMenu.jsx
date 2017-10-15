@@ -53,8 +53,11 @@ class AppMenu extends Component {
         const {
             routesMap,
             routePath,
-            categoriesRequestInProcess
+            categoriesRequestInProcess,
+            docsRequestInProcess
         } = this.props;
+
+        const optionsAreDisabled = categoriesRequestInProcess || docsRequestInProcess;
 
         return [
             <RadioButtonGroup
@@ -67,7 +70,7 @@ class AppMenu extends Component {
                     return (
                         <RadioButton
                             key={idx}
-                            disabled={categoriesRequestInProcess}
+                            disabled={optionsAreDisabled}
                             value={pathName}
                             label={params.title}
                             style={styles.option} />
