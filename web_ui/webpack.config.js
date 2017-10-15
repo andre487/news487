@@ -18,6 +18,7 @@ module.exports = {
         loaders: [
             { test: /\.html$/, loader: 'file?name=[name].[ext]' },
             { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel-loader'] },
+            { include: /\.json$/, loaders: ['json-loader'] },
         ],
     },
     resolve: {

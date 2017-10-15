@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
+
+import config from '../config';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -48,7 +50,7 @@ class DocumentsList extends Component {
             <div>
                 {docs.map((doc, idx) => {
                     const tags = (doc.tags || '').split(',');
-                    const date = moment(doc.published).format('LL');
+                    const date = moment.tz(doc.published, 'UTC').tz(config.tz).format('LLL');
 
                     return (
                         <Paper key={idx} zDepth={1} style={styles.paper}>

@@ -67,7 +67,7 @@ function getRouteTitle(state, routePath) {
 
     const catMatches = /\/category\/([^\/]+)/.exec(routePath);
     if (catMatches) {
-        return `Category "${catMatches[1]}"`;
+        return `Category “${catMatches[1]}”`;
     }
 
     return 'Unknown';
