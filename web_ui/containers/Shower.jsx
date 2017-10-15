@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
 
 import * as ShowerActions from '../actions/shower';
 import * as ViewTypes from '../constants/ViewTypes';
@@ -71,6 +70,7 @@ class Shower extends Component {
     _showErrorWindow(error) {
         const actions = [
             <FlatButton
+                key="ok"
                 label="OK 😿"
                 primary={true}
                 onClick={this._handleCloseError.bind(this)} />

@@ -48,8 +48,9 @@ class AppMenu extends Component {
                 open={true}
                 width={300}
 
-                onRequestChange={this.props.onMenuClose}
-                children={childNodes} />
+                onRequestChange={this.props.onMenuClose}>
+                {childNodes}
+            </Drawer>
         );
     }
 
@@ -98,9 +99,9 @@ class AppMenu extends Component {
                 name="categories"
                 defaultSelected={defaultSelected}
                 style={styles.radioGroup}
-                onChange={this._onSelectFilter.bind(this)}
-
-                children={options} />
+                onChange={this._onSelectFilter.bind(this)}>
+                {options}
+            </RadioButtonGroup>
         ];
     }
 

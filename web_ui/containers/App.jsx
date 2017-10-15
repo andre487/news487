@@ -3,7 +3,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import * as AppActions from '../actions/app';
-import * as ViewTypes from '../constants/ViewTypes';
 
 import Style from '../components/Style';
 import Header from '../components/Header';

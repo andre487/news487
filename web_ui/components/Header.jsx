@@ -48,8 +48,9 @@ class Header extends Component {
         return (
             <AppBar
                 title={title}
-                onLeftIconButtonTouchTap={this.props.onMenuButtonTap}
-                children={searchForm} />
+                onLeftIconButtonTouchTap={this.props.onMenuButtonTap}>
+                {searchForm}
+            </AppBar>
         );
     }
 

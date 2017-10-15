@@ -39,4 +39,4 @@ export default function shower(state = initialState, action) {
         default:
             return state;
     }
-};
+}

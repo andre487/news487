@@ -104,7 +104,7 @@ export default function app(state = initialState, action) {
         default:
             return state;
     }
-};
+}
 
 function getRouteTitle(state, routePath, routeParams) {
     const routeData = state.routesMap[routePath];
@@ -123,7 +123,7 @@ function getRouteTitle(state, routePath, routeParams) {
         return `Tag “${routeParams.tag}”`;
     }
 
-    const catMatches = /\/category\/([^\/]+)/.exec(routePath);
+    const catMatches = /\/category\/([^/]+)/.exec(routePath);
     if (catMatches) {
         return `Category “${catMatches[1]}”`;
     }
