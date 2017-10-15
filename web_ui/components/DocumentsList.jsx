@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import moment from 'moment';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -19,7 +20,7 @@ const styles = {
         padding: '0 16px'
     },
     sourceTitle: {
-        marginRight: '10px'
+        marginRight: '8px'
     }
 };
 
@@ -47,23 +48,27 @@ class DocumentsList extends Component {
             <div>
                 {docs.map((doc, idx) => {
                     const tags = (doc.tags || '').split(',');
+                    const date = moment(doc.published).format('LL');
 
                     return (
                         <Paper key={idx} zDepth={1} style={styles.paper}>
-                            <Card>
+                            <Card initiallyExpanded={true}>
                                 <CardHeader
+                                    actAsExpander={true}
+                                    showExpandableButton={true}
                                     title={<a href={doc.link} target="_blank">{doc.title}</a>}
                                     subtitle={[
                                         <span key="source_title" style={styles.sourceTitle}>
                                             {doc.source_title}
                                         </span>,
                                         <span key="published">
-                                            {doc.published}
+                                            {date}
                                         </span>
                                     ]} />
                                 <CardText
-                                    dangerouslySetInnerHTML={{ __html: doc.description }}
-                                    style={styles.cardText} />
+                                    expandable={true}
+                                    style={styles.cardText}
+                                    dangerouslySetInnerHTML={{ __html: doc.description }} />
                                 <CardActions>
                                     {tags.map((tag, idx) => {
                                         return <FlatButton key={idx} label={tag} />
