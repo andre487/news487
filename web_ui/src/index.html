@@ -6,11 +6,86 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
     </head>
     <body>
-        <div id="root"></div>
+        <div id="root">
+            <style>
+                #page-loading-spinner-container
+                {
+                    margin-top: 40px;
+                    text-align: center;
+                }
+
+                #page-loading-spinner
+                {
+                    width: 80px;
+                    height: 80px;
+                    display: inline-block;
+                    transition: transform 10s linear 0ms;
+                }
+
+                #page-loading-spinner svg
+                {
+                    width: 80px;
+                    height: 80px;
+                    position: relative;
+                }
+
+                #page-loading-spinner circle
+                {
+                    stroke: rgb(0, 188, 212);
+                    stroke-linecap: round;
+                    transition: all 750ms ease-in-out 0ms;
+                    stroke-dasharray: 160.535, 229.336;
+                    stroke-dashoffset: -68.8009;
+                }
+            </style>
+            <div id="page-loading-spinner-container">
+                <div id="page-loading-spinner">
+                    <svg viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="36.5" fill="none" stroke-width="7" stroke-miterlimit="20"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function() {
+                'use strict';
+                var spinner = document.getElementById('page-loading-spinner');
+                var rotateDegree = 0;
+
+                window.stopPageLoadingRotation = function() {
+                    var spinnerContainer = document.getElementById('page-loading-spinner-container');
+                    spinnerContainer.parentNode.removeChild(spinnerContainer);
+
+                    spinner = null;
+                    rotateDegree = null;
+                };
+
+                function rotate() {
+                    if (!spinner) {
+                        return;
+                    }
+
+                    rotateDegree += 10;
+                    spinner.style.transform = 'rotate(' + rotateDegree + 'deg)';
+
+                    setTimeout(function() {
+                        requestAnimationFrame(rotate);
+                    }, 16);
+                }
+
+                rotate();
+            })();
+        </script>
+
+        <!--suppress HtmlUnknownTarget -->
         <script src="./bundle.js" async></script>
+
         <script>
             window.WebFontConfig = {
-                google: { families: ['Roboto:400,300,500:latin,cyrillic'] }
+                google: {
+                    families: ['Roboto:400,300,500:latin,cyrillic']
+                }
             };
         </script>
         <script src="//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js" async></script>
