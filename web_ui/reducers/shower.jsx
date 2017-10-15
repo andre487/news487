@@ -2,7 +2,8 @@ import * as ActionTypes from '../constants/ActionTypes';
 
 const initialState = {
     docsRequestInProcess: true,
-    docs: []
+    docs: [],
+    error: null
 };
 
 export default function shower(state = initialState, action) {
@@ -10,14 +11,29 @@ export default function shower(state = initialState, action) {
         case ActionTypes.REQUEST_DOCS:
             return {
                 ...state,
-                docsRequestInProcess: true
+                docsRequestInProcess: true,
+                error: null
             };
 
         case ActionTypes.RECEIVE_DOCS:
             return {
                 ...state,
                 docsRequestInProcess: false,
-                docs: action.docs
+                docs: action.docs,
+                error: null
+            };
+
+        case ActionTypes.RECEIVE_DOCS_ERROR:
+            return {
+                ...state,
+                docsRequestInProcess: false,
+                error: action.err.toString()
+            };
+
+        case ActionTypes.ERASE_ERROR:
+            return {
+                ...state,
+                error: null
             };
 
         default:

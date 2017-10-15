@@ -13,7 +13,8 @@ export function fetchDocs(viewType, routePath, routeParams) {
         dispatch(requestDocs());
         return fetch(buildUrl(viewType, routePath, routeParams))
             .then(response => response.json())
-            .then(docs => dispatch(receiveDocs(docs)));
+            .then(docs => dispatch(receiveDocs(docs)))
+            .catch(err => dispatch(receiveDocsError(err)));
     };
 }
 
@@ -26,6 +27,17 @@ export function receiveDocs(docs) {
         type: ActionTypes.RECEIVE_DOCS,
         docs
     };
+}
+
+export function receiveDocsError(err) {
+    return {
+        type: ActionTypes.RECEIVE_DOCS_ERROR,
+        err
+    };
+}
+
+export function eraseError() {
+    return { type: ActionTypes.ERASE_ERROR };
 }
 
 function buildUrl(viewType, routePath, routeParams) {

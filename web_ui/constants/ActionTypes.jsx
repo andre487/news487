@@ -8,6 +8,8 @@ export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES';
 
 export const REQUEST_DOCS = 'REQUEST_DOCS';
 export const RECEIVE_DOCS = 'RECEIVE_DOCS';
+export const RECEIVE_DOCS_ERROR = 'RECEIVE_DOCS_ERROR';
+export const ERASE_ERROR = 'ERASE_ERROR';
 
 export const TEXT_SEARCH = 'TEXT_SEARCH';
 export const TAG_SEARCH = 'TAG_SEARCH';

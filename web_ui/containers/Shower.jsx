@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+
 import * as ShowerActions from '../actions/shower';
 import * as ViewTypes from '../constants/ViewTypes';
 import DocumentsList from '../components/DocumentsList';
@@ -24,8 +28,13 @@ class Shower extends Component {
     render() {
         const {
             docsRequestInProcess,
-            docs
+            docs,
+            error
         } = this.props.shower;
+
+        if (error) {
+            return this._showErrorWindow(error);
+        }
 
         return (
             <DocumentsList
@@ -57,6 +66,31 @@ class Shower extends Component {
         this._routeParams = routeParams;
 
         this.props.actions.fetchDocs(viewType, routePath, routeParams);
+    }
+
+    _showErrorWindow(error) {
+        const actions = [
+            <FlatButton
+                label="OK 😿"
+                primary={true}
+                onClick={this._handleCloseError.bind(this)} />
+        ];
+
+        return (
+            <Dialog
+                title="Something went wrong 😿"
+                actions={actions}
+                modal={false}
+                open={true}
+                onRequestClose={this._handleCloseError.bind(this)}>
+
+                <pre>{error}</pre>
+            </Dialog>
+        );
+    }
+
+    _handleCloseError() {
+        this.props.actions.eraseError();
     }
 }
 
