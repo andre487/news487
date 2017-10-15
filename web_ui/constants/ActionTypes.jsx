@@ -10,3 +10,4 @@ export const REQUEST_DOCS = 'REQUEST_DOCS';
 export const RECEIVE_DOCS = 'RECEIVE_DOCS';
 
 export const TEXT_SEARCH = 'TEXT_SEARCH';
+export const TAG_SEARCH = 'TAG_SEARCH';

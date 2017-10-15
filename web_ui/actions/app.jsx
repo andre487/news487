@@ -1,10 +1,10 @@
 import {push, replace} from 'react-router-redux/actions';
 
 import config from '../config';
-import * as types from '../constants/ActionTypes';
+import * as ActionTypes from '../constants/ActionTypes';
 
 export function toggleMenu() {
-    return { type: types.TOGGLE_MENU };
+    return { type: ActionTypes.TOGGLE_MENU };
 }
 
 export function pushRoute(routePath, routeParams) {
@@ -18,7 +18,7 @@ export function replaceRoute(routePath, routeParams) {
 export function selectFilter(routePath) {
     return dispatch => {
         dispatch({
-            type: types.SELECT_FILTER,
+            type: ActionTypes.SELECT_FILTER,
             routePath
         });
         dispatch(pushRoute(routePath));
@@ -42,11 +42,11 @@ export function fetchCategories() {
 }
 
 export function requestCategories() {
-    return { type: types.REQUEST_CATEGORIES };
+    return { type: ActionTypes.REQUEST_CATEGORIES };
 }
 
 export function receiveCategories(categories) {
-    const routesMap = {
+    let routesMap = {
         '/digest': {
             name: 'digest',
             pathName: '/digest',
@@ -61,14 +61,22 @@ export function receiveCategories(categories) {
         routesMap[category.pathName] = category;
     }
 
-    routesMap['/search'] = {
-        name: 'textSearch',
-        pathName: '/search',
-        title: 'Text search'
+    routesMap = {
+        ...routesMap,
+        '/tag': {
+            name: 'tagSearch',
+            pathName: '/tag',
+            title: 'Tag search'
+        },
+        '/search': {
+            name: 'textSearch',
+            pathName: '/search',
+            title: 'Text search'
+        }
     };
 
     return {
-        type: types.RECEIVE_CATEGORIES,
+        type: ActionTypes.RECEIVE_CATEGORIES,
         routesMap,
         categories
     };
@@ -76,7 +84,7 @@ export function receiveCategories(categories) {
 
 export function syncRoutes(routePath, routeParams) {
     return {
-        type: types.SYNC_ROUTES,
+        type: ActionTypes.SYNC_ROUTES,
         routePath,
         routeParams
     };
@@ -93,8 +101,25 @@ export function searchByText(text) {
         dispatch(pushRoute(`/search/${encodeURIComponent(cleanText)}`));
 
         dispatch({
-            type: types.TEXT_SEARCH,
+            type: ActionTypes.TEXT_SEARCH,
             text: cleanText
+        });
+    };
+}
+
+export function searchByTag(tag) {
+    return dispatch => {
+        const cleanTag = tag.trim();
+
+        if (!cleanTag) {
+            throw new Error('Empty tag');
+        }
+
+        dispatch(pushRoute(`/tag/${encodeURIComponent(cleanTag)}`));
+
+        dispatch({
+            type: ActionTypes.TAG_SEARCH,
+            text: cleanTag
         });
     };
 }

@@ -3,6 +3,7 @@ import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 
 import theme from '../config/theme';
+import * as ViewTypes from '../constants/ViewTypes';
 
 const styles = {
     textSearch: {
@@ -25,7 +26,9 @@ class Header extends Component {
 
     render() {
         const title = this.props.filterTitle || 'News';
-        const hintText = this.props.searchText || 'Search text';
+        const viewType = this.props.viewType;
+
+        const hintText = viewType === ViewTypes.TEXT_SEARCH && this.props.searchText || 'Search text';
 
         // noinspection HtmlUnknownTarget
         const searchForm = (
@@ -55,7 +58,12 @@ class Header extends Component {
     }
 
     _onTextSearch(e) {
-        this.props.onTextSearch(this._searchText);
+        let text = this._searchText || '';
+        text = text.trim();
+
+        if (text) {
+            this.props.onTextSearch(text);
+        }
 
         e.preventDefault();
     }

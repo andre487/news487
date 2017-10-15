@@ -21,7 +21,6 @@ class App extends Component {
         const routeParams = match.params;
 
         actions.syncRoutes(routePath, routeParams);
-
         actions.fetchCategories();
     }
 
@@ -39,16 +38,11 @@ class App extends Component {
             routesMap,
             routePath,
             routeTitle,
-            viewType
+            viewType,
+            searchText
         } = this.props.app;
 
-        let { searchText } = this.props.app;
-
         const { docsRequestInProcess } = this.props.shower;
-
-        if (viewType !== ViewTypes.TEXT_SEARCH) {
-            searchText = '';
-        }
 
         return (
             <MuiThemeProvider muiTheme={theme}>
@@ -57,6 +51,7 @@ class App extends Component {
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
                         onTextSearch={this._onTextSearch.bind(this)}
+                        viewType={viewType}
                         searchText={searchText}
                         filterTitle={routeTitle} />
                     <AppMenu
@@ -70,6 +65,7 @@ class App extends Component {
                         categoriesRequestInProcess={categoriesRequestInProcess}
                         docsRequestInProcess={docsRequestInProcess} />
                     <Shower
+                        onTagSelected={this._onTagSelected.bind(this)}
                         viewType={viewType}
                         searchText={searchText}
                         filterTitle={routeTitle}
@@ -82,6 +78,10 @@ class App extends Component {
 
     _onTextSearch(text) {
         this.props.actions.searchByText(text);
+    }
+
+    _onTagSelected(tag) {
+        this.props.actions.searchByTag(tag);
     }
 }
 

@@ -41,6 +41,7 @@ ReactDOM.render(
                 <Route path="/digest" exact={true} component={App} />
                 <Route path="/category/:name" exact={true} component={App} />
                 <Route path="/search/:text" exact={true} component={App} />
+                <Route path="/tag/:tag" exact={true} component={App} />
             </div>
         </ConnectedRouter>
     </Provider>,

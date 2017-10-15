@@ -19,6 +19,11 @@ const initialState = {
             name: 'textSearch',
             pathName: '/search',
             title: 'Text search'
+        },
+        '/tag': {
+            name: 'tagSearch',
+            pathName: '/tag',
+            title: 'Tag search'
         }
     },
     routesSynced: false,
@@ -29,10 +34,18 @@ export default function app(state = initialState, action) {
     switch (action.type) {
         case ActionTypes.SYNC_ROUTES:
             const { routePath, routeParams } = action;
-            const isSearch = util.isTextSearchRoute(routePath, routeParams);
 
-            const searchText = isSearch ? routeParams.text : null;
-            const viewType = isSearch ? ViewTypes.TEXT_SEARCH : ViewTypes.CATEGORY;
+            const isTextSearch = util.isTextSearchRoute(routePath, routeParams);
+            const isTagSearch = util.isTagSearchRoute(routePath, routeParams);
+
+            const searchText = isTextSearch || isTagSearch ? routeParams.text : null;
+
+            let viewType = ViewTypes.CATEGORY;
+            if (isTextSearch) {
+                viewType = ViewTypes.TEXT_SEARCH;
+            } else if (isTagSearch) {
+                viewType = ViewTypes.TAG_SEARCH;
+            }
 
             return {
                 ...state,
@@ -75,8 +88,17 @@ export default function app(state = initialState, action) {
         case ActionTypes.TEXT_SEARCH:
             return {
                 ...state,
+                routeTitle: 'Text search',
                 searchText: action.text,
                 viewType: ViewTypes.TEXT_SEARCH
+            };
+
+        case ActionTypes.TAG_SEARCH:
+            return {
+                ...state,
+                routeTitle: `Tag “${action.text}”`,
+                searchText: action.text,
+                viewType: ViewTypes.TAG_SEARCH
             };
 
         default:
@@ -91,9 +113,14 @@ function getRouteTitle(state, routePath, routeParams) {
         return routeData.title;
     }
 
-    const isSearch = util.isTextSearchRoute(routePath, routeParams);
-    if (isSearch) {
+    const isTextSearch = util.isTextSearchRoute(routePath, routeParams);
+    if (isTextSearch) {
         return 'Text search';
+    }
+
+    const isTagSearch = util.isTagSearchRoute(routePath, routeParams);
+    if (isTagSearch) {
+        return `Tag “${routeParams.tag}”`;
     }
 
     const catMatches = /\/category\/([^\/]+)/.exec(routePath);

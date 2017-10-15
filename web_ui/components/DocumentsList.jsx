@@ -73,7 +73,12 @@ class DocumentsList extends Component {
                                     dangerouslySetInnerHTML={{ __html: doc.description }} />
                                 <CardActions>
                                     {tags.map((tag, idx) => {
-                                        return <FlatButton key={idx} label={tag} />
+                                        return (
+                                            <FlatButton
+                                                key={idx}
+                                                label={tag}
+                                                onClick={this._onSelectTag.bind(this, tag)} />
+                                        );
                                     })}
                                 </CardActions>
                             </Card>
@@ -82,6 +87,10 @@ class DocumentsList extends Component {
                 })}
             </div>
         );
+    }
+
+    _onSelectTag(tag) {
+        this.props.onTagSelected(tag);
     }
 }
 

@@ -30,12 +30,20 @@ export function receiveDocs(docs) {
 
 function buildUrl(viewType, routePath, routeParams) {
     if (viewType === ViewTypes.TEXT_SEARCH) {
-        return `${config.apiUrl}/get-documents?text=${encodeURIComponent(routeParams.text)}&limit=${config.defaultDocsLimit}`;
+        return `${config.apiUrl}/get-documents?text=${encodeURIComponent(routeParams.text)}`;
     }
 
-    if (routePath.startsWith('/category/')) {
-        return `${config.apiUrl}/get-documents-by-category?name=${routeParams.name}&limit=${config.defaultDocsLimit}`;
+    if (viewType === ViewTypes.TAG_SEARCH) {
+        return `${config.apiUrl}/get-documents?tags=${encodeURIComponent(routeParams.tag)}&limit=${config.defaultDocsLimit}`;
     }
 
-    return `${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`;
+    if (viewType === ViewTypes.CATEGORY) {
+        if (routePath.startsWith('/category/')) {
+            return `${config.apiUrl}/get-documents-by-category?name=${routeParams.name}&limit=${config.defaultDocsLimit}`;
+        } else {
+            return `${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`;
+        }
+    }
+
+    throw new Error(`Unknown viewType: ${viewType}`);
 }

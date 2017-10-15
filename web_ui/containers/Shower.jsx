@@ -29,6 +29,8 @@ class Shower extends Component {
 
         return (
             <DocumentsList
+                onTagSelected={this.props.onTagSelected}
+
                 requestInProgress={docsRequestInProcess}
                 items={docs} />
         );
@@ -42,6 +44,8 @@ class Shower extends Component {
         switch (viewType) {
             case ViewTypes.TEXT_SEARCH:
                 return this._routeParams.text !== routeParams.text;
+            case ViewTypes.TAG_SEARCH:
+                return this._routeParams.tag !== routeParams.tag;
             default:
                 return routePath !== this._routePath;
         }

@@ -71,10 +71,16 @@ class AppMenu extends Component {
         } = this.props;
 
         const optionsAreDisabled = categoriesRequestInProcess || docsRequestInProcess;
-        const defaultSelected = util.isTextSearchRoute(routePath, routeParams) ? '/search' : routePath;
+
+        let defaultSelected = routePath;
+        if (util.isTextSearchRoute(routePath, routeParams)) {
+            defaultSelected = '/search';
+        } else if (util.isTagSearchRoute(routePath, routeParams)) {
+            defaultSelected = '/tag';
+        }
 
         const options = Object.entries(routesMap).map(([pathName, params], idx) => {
-            const disabled = optionsAreDisabled || pathName === '/search';
+            const disabled = optionsAreDisabled || pathName === '/search' || pathName === '/tag';
 
             return (
                 <RadioButton
