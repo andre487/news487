@@ -1,3 +1,5 @@
+export const SYNC_ROUTES = 'SYNC_ROUTES';
+
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 export const SELECT_FILTER = 'SELECT_FILTER';
 

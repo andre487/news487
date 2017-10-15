@@ -1,3 +1,5 @@
+import {replace} from 'react-router-redux/actions';
+
 import config from '../config';
 import * as types from '../constants/ActionTypes';
 
@@ -5,11 +7,13 @@ export function toggleMenu() {
     return { type: types.TOGGLE_MENU };
 }
 
-export function selectFilter(selectedFilter, filterTitle) {
-    return {
-        type: types.SELECT_FILTER,
-        selectedFilter,
-        filterTitle
+export function selectFilter(routePath) {
+    return dispatch => {
+        dispatch({
+            type: types.SELECT_FILTER,
+            routePath
+        });
+        dispatch(replace(routePath));
     };
 }
 
@@ -34,8 +38,32 @@ export function requestCategories() {
 }
 
 export function receiveCategories(categories) {
+    const routesMap = {
+        '/digest': {
+            name: 'digest',
+            pathName: '/digest',
+            title: 'Digest'
+        }
+    };
+
+    for (let category of categories) {
+        category.pathName = `/category/${category.name}`;
+        category.title = `Category "${category.name}"`;
+
+        routesMap[category.pathName] = category;
+    }
+
     return {
         type: types.RECEIVE_CATEGORIES,
+        routesMap,
         categories
+    };
+}
+
+export function syncRoutes(routePath, routeName) {
+    return {
+        type: types.SYNC_ROUTES,
+        routePath,
+        routeName
     };
 }

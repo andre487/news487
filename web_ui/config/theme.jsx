@@ -40,7 +40,7 @@ const rawBaseTheme = {
         },
         hr: {
             border: 'none',
-            'border-top': `1px solid ${Colors.minBlack}`,
+            'border-top': `1px solid ${Colors.minBlack}`
         }
     }
 };

@@ -13,18 +13,31 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import theme from '../config/theme';
 
 class App extends Component {
-    componentDidMount() {
+    componentWillMount() {
+        const { actions, match } = this.props;
+
+        const routePath = match.url;
+        const routeParams = match.params;
+
+        actions.syncRoutes(routePath, routeParams);
+
         this.props.actions.fetchCategories();
     }
 
     render() {
-        const { actions } = this.props;
+        if (!this.props.app.routesSynced) {
+            return (null);
+        }
+
+        const { actions, match } = this.props;
+        const routeParams = match.params;
+
         const {
             menuOpened,
-            categories,
-            selectedFilter,
-            filterTitle,
-            categoriesRequestInProcess
+            categoriesRequestInProcess,
+            routesMap,
+            routePath,
+            routeTitle
         } = this.props.app;
 
         return (
@@ -33,15 +46,19 @@ class App extends Component {
                     <Style rules={theme.globalStyle} />
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
-                        filterTitle={filterTitle} />
+                        filterTitle={routeTitle} />
                     <AppMenu
                         onMenuClose={actions.toggleMenu}
                         onFilterSelected={actions.selectFilter}
+
                         opened={menuOpened}
-                        categories={categories}
-                        selectedFilter={selectedFilter}
+                        routesMap={routesMap}
+                        routePath={routePath}
                         categoriesRequestInProcess={categoriesRequestInProcess} />
-                    <Shower selectedFilter={selectedFilter} />
+                    <Shower
+                        filterTitle={routeTitle}
+                        routePath={routePath}
+                        routeParams={routeParams} />
                 </div>
             </MuiThemeProvider>
         );

@@ -11,7 +11,7 @@ _cleanup_dev() {
     if [[ -n "$_http_server_pid" ]]; then
         echo
         log_info "Killing HTTP server with PID $_http_server_pid"
-        kill "$_http_server_pid"
+        kill -SIGKILL "$_http_server_pid"
         _http_server_pid=''
     fi
 }

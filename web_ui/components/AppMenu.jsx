@@ -17,15 +17,7 @@ const styles = {
     }
 };
 
-const filtersCache = {
-    digest: 'Digest'
-};
-
 class AppMenu extends Component {
-    constructor(props, state) {
-        super(props, state);
-    }
-
     render() {
         if (!this.props.opened) {
             return (null);
@@ -38,7 +30,7 @@ class AppMenu extends Component {
                 iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                 onTitleTouchTap={this.props.onMenuClose}
                 onLeftIconButtonTouchTap={this.props.onMenuClose} />
-        ].concat(this._createCategoryNodesList());
+        ].concat(this._createFilterNodeList());
 
         if (this.props.categoriesRequestInProcess) {
             childNodes.push(this._createProgress());
@@ -57,10 +49,10 @@ class AppMenu extends Component {
         );
     }
 
-    _createCategoryNodesList() {
+    _createFilterNodeList() {
         const {
-            categories,
-            selectedFilter,
+            routesMap,
+            routePath,
             categoriesRequestInProcess
         } = this.props;
 
@@ -68,28 +60,16 @@ class AppMenu extends Component {
             <RadioButtonGroup
                 key="categories"
                 name="categories"
-                defaultSelected={selectedFilter}
+                defaultSelected={routePath}
                 onChange={this._onSelectFilter.bind(this)}>
 
-                <RadioButton
-                    key="digest"
-                    disabled={categoriesRequestInProcess}
-                    value="digest"
-                    label="Digest"
-                    style={styles.option} />
-
-                {categories.map((category, idx) => {
-                    const filterId = `category:${category.name}`;
-                    const filterTitle = `Category "${category.name}"`;
-
-                    filtersCache[filterId] = filterTitle;
-
+                {Object.entries(routesMap).map(([pathName, params], idx) => {
                     return (
                         <RadioButton
                             key={idx}
                             disabled={categoriesRequestInProcess}
-                            value={filterId}
-                            label={filterTitle}
+                            value={pathName}
+                            label={params.title}
                             style={styles.option} />
                     );
                 })}
@@ -97,9 +77,8 @@ class AppMenu extends Component {
         ];
     }
 
-    _onSelectFilter(event, selectedFilter) {
-        const filterTitle = filtersCache[selectedFilter] || selectedFilter;
-        this.props.onFilterSelected(selectedFilter, filterTitle);
+    _onSelectFilter(event, pathName) {
+        this.props.onFilterSelected(pathName);
     }
 }
 

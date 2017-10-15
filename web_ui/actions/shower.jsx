@@ -1,7 +1,7 @@
 import config from '../config';
 import * as types from '../constants/ActionTypes';
 
-export function fetchDocs(selectedFilter) {
+export function fetchDocs(routePath, routeParams) {
     return (dispatch, getState) => {
         const state = getState();
 
@@ -10,7 +10,7 @@ export function fetchDocs(selectedFilter) {
         }
 
         dispatch(requestDocs);
-        return fetch(buildUrl(selectedFilter))
+        return fetch(buildUrl(routePath, routeParams))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)));
     };
@@ -28,12 +28,9 @@ export function receiveDocs(docs) {
     };
 }
 
-function buildUrl(selectedFilter) {
-    if (selectedFilter.startsWith('category:')) {
-        const matches = /^category:(.*)$/.exec(selectedFilter);
-        const category = matches[1];
-
-        return `${config.apiUrl}/get-documents-by-category?name=${category}&limit=${config.defaultDocsLimit}`;
+function buildUrl(routePath, routeParams) {
+    if (routePath.startsWith('/category/')) {
+        return `${config.apiUrl}/get-documents-by-category?name=${routeParams.name}&limit=${config.defaultDocsLimit}`;
     }
 
     return `${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`;

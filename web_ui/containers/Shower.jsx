@@ -29,13 +29,17 @@ const styles = {
 
 class Shower extends Component {
     componentDidMount() {
-        this._currentFilter = this.props.selectedFilter;
+        this._routePath = this.props.routePath;
+        this._routeParams = this.props.routeParams;
+
         this._fetchDocuments();
     }
 
     componentWillUpdate(newProps) {
-        if (newProps.selectedFilter !== this._currentFilter) {
-            this._currentFilter = newProps.selectedFilter;
+        if (newProps.routePath !== this._routePath) {
+            this._routePath = newProps.routePath;
+            this._routeParams = newProps.routeParams;
+
             this._fetchDocuments();
         }
     }
@@ -57,7 +61,7 @@ class Shower extends Component {
     }
 
     _fetchDocuments() {
-        this.props.actions.fetchDocs(this._currentFilter);
+        this.props.actions.fetchDocs(this._routePath, this._routeParams);
     }
 
     _createDocsList() {
