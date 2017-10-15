@@ -12,8 +12,12 @@ const styles = {
         marginTop: 20,
         textAlign: 'center'
     },
+    radioGroup: {
+        marginTop: '15px'
+    },
     option: {
-        margin: '30px 10px'
+        padding: '10px',
+        boxSizing: 'border-box'
     }
 };
 
@@ -37,7 +41,13 @@ class AppMenu extends Component {
         }
 
         return (
-            <Drawer children={childNodes} />
+            <Drawer
+                docked={false}
+                open={true}
+                width={300}
+
+                onRequestChange={this.props.onMenuClose}
+                children={childNodes} />
         );
     }
 
@@ -64,6 +74,7 @@ class AppMenu extends Component {
                 key="categories"
                 name="categories"
                 defaultSelected={routePath}
+                style={styles.radioGroup}
                 onChange={this._onSelectFilter.bind(this)}>
 
                 {Object.entries(routesMap).map(([pathName, params], idx) => {
