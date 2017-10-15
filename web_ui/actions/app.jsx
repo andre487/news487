@@ -25,7 +25,7 @@ export function fetchCategories() {
             return;
         }
 
-        dispatch(requestCategories);
+        dispatch(requestCategories());
         return fetch(`${config.apiUrl}/get-categories`)
             .then(response => response.json())
             .then(categories => dispatch(receiveCategories(categories)));

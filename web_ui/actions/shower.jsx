@@ -9,7 +9,7 @@ export function fetchDocs(routePath, routeParams) {
             return;
         }
 
-        dispatch(requestDocs);
+        dispatch(requestDocs());
         return fetch(buildUrl(routePath, routeParams))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)));
