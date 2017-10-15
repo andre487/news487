@@ -9,11 +9,12 @@ import {createLogger} from 'redux-logger';
 
 import {ConnectedRouter, routerMiddleware, routerReducer} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import {Route} from 'react-router';
+import {Route, Switch} from 'react-router';
 
 import reducers from '../reducers';
 import Home from '../components/Home';
 import App from '../containers/App';
+import NotFound from '../components/NotFound';
 
 window.stopPageLoadingRotation();
 injectTapEventPlugin();
@@ -36,13 +37,14 @@ const store = createStore(
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
-            <div>
+            <Switch>
                 <Route path="/" exact={true} component={Home} />
                 <Route path="/digest" exact={true} component={App} />
                 <Route path="/category/:name" exact={true} component={App} />
                 <Route path="/search/:text" exact={true} component={App} />
                 <Route path="/tag/:tag" exact={true} component={App} />
-            </div>
+                <Route component={NotFound} />
+            </Switch>
         </ConnectedRouter>
     </Provider>,
     document.getElementById('root')
