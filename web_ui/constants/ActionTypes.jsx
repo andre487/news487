@@ -8,3 +8,5 @@ export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES';
 
 export const REQUEST_DOCS = 'REQUEST_DOCS';
 export const RECEIVE_DOCS = 'RECEIVE_DOCS';
+
+export const TEXT_SEARCH = 'TEXT_SEARCH';

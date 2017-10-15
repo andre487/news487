@@ -1,4 +1,4 @@
-import {replace} from 'react-router-redux/actions';
+import {push, replace} from 'react-router-redux/actions';
 
 import config from '../config';
 import * as types from '../constants/ActionTypes';
@@ -7,13 +7,21 @@ export function toggleMenu() {
     return { type: types.TOGGLE_MENU };
 }
 
+export function pushRoute(routePath, routeParams) {
+    return push(routePath, routeParams);
+}
+
+export function replaceRoute(routePath, routeParams) {
+    return replace(routePath, routeParams);
+}
+
 export function selectFilter(routePath) {
     return dispatch => {
         dispatch({
             type: types.SELECT_FILTER,
             routePath
         });
-        dispatch(replace(routePath));
+        dispatch(pushRoute(routePath));
     };
 }
 
@@ -53,6 +61,12 @@ export function receiveCategories(categories) {
         routesMap[category.pathName] = category;
     }
 
+    routesMap['/search'] = {
+        name: 'textSearch',
+        pathName: '/search',
+        title: 'Text search'
+    };
+
     return {
         type: types.RECEIVE_CATEGORIES,
         routesMap,
@@ -60,10 +74,27 @@ export function receiveCategories(categories) {
     };
 }
 
-export function syncRoutes(routePath, routeName) {
+export function syncRoutes(routePath, routeParams) {
     return {
         type: types.SYNC_ROUTES,
         routePath,
-        routeName
+        routeParams
+    };
+}
+
+export function searchByText(text) {
+    return dispatch => {
+        const cleanText = text.trim();
+
+        if (!cleanText) {
+            throw new Error('Empty text');
+        }
+
+        dispatch(pushRoute(`/search/${encodeURIComponent(cleanText)}`));
+
+        dispatch({
+            type: types.TEXT_SEARCH,
+            text: cleanText
+        });
     };
 }

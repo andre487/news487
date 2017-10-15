@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import * as AppActions from '../actions/app';
+import * as ViewTypes from '../constants/ViewTypes';
 
 import Style from '../components/Style';
 import Header from '../components/Header';
@@ -21,7 +22,7 @@ class App extends Component {
 
         actions.syncRoutes(routePath, routeParams);
 
-        this.props.actions.fetchCategories();
+        actions.fetchCategories();
     }
 
     render() {
@@ -37,10 +38,17 @@ class App extends Component {
             categoriesRequestInProcess,
             routesMap,
             routePath,
-            routeTitle
+            routeTitle,
+            viewType
         } = this.props.app;
 
+        let { searchText } = this.props.app;
+
         const { docsRequestInProcess } = this.props.shower;
+
+        if (viewType !== ViewTypes.TEXT_SEARCH) {
+            searchText = '';
+        }
 
         return (
             <MuiThemeProvider muiTheme={theme}>
@@ -48,6 +56,8 @@ class App extends Component {
                     <Style rules={theme.globalStyle} />
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
+                        onTextSearch={this._onTextSearch.bind(this)}
+                        searchText={searchText}
                         filterTitle={routeTitle} />
                     <AppMenu
                         onMenuClose={actions.toggleMenu}
@@ -56,15 +66,22 @@ class App extends Component {
                         opened={menuOpened}
                         routesMap={routesMap}
                         routePath={routePath}
+                        routeParams={routeParams}
                         categoriesRequestInProcess={categoriesRequestInProcess}
                         docsRequestInProcess={docsRequestInProcess} />
                     <Shower
+                        viewType={viewType}
+                        searchText={searchText}
                         filterTitle={routeTitle}
                         routePath={routePath}
                         routeParams={routeParams} />
                 </div>
             </MuiThemeProvider>
         );
+    }
+
+    _onTextSearch(text) {
+        this.props.actions.searchByText(text);
     }
 }
 

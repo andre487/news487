@@ -20,9 +20,14 @@ const rawBaseTheme = {
         borderColor: Colors.grey300,
         disabledColor: fade(Colors.darkBlack, 0.3)
     },
+    customStyle: {
+        lightHintColor: Colors.lightWhite,
+        lightInputColor: Colors.darkWhite
+    },
     globalStyle: {
         html: {
-            'font-family': fontFamily
+            'font-family': fontFamily,
+            'overflow-y': 'scroll'
         },
         body: {
             'font-size': '15px',

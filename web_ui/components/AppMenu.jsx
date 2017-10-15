@@ -7,6 +7,8 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
+import * as util from '../util';
+
 const styles = {
     progress: {
         marginTop: 20,
@@ -63,31 +65,36 @@ class AppMenu extends Component {
         const {
             routesMap,
             routePath,
+            routeParams,
             categoriesRequestInProcess,
             docsRequestInProcess
         } = this.props;
 
         const optionsAreDisabled = categoriesRequestInProcess || docsRequestInProcess;
+        const defaultSelected = util.isTextSearchRoute(routePath, routeParams) ? '/search' : routePath;
+
+        const options = Object.entries(routesMap).map(([pathName, params], idx) => {
+            const disabled = optionsAreDisabled || pathName === '/search';
+
+            return (
+                <RadioButton
+                    key={`route:${idx}`}
+                    disabled={disabled}
+                    value={pathName}
+                    label={params.title}
+                    style={styles.option} />
+            );
+        });
 
         return [
             <RadioButtonGroup
                 key="categories"
                 name="categories"
-                defaultSelected={routePath}
+                defaultSelected={defaultSelected}
                 style={styles.radioGroup}
-                onChange={this._onSelectFilter.bind(this)}>
+                onChange={this._onSelectFilter.bind(this)}
 
-                {Object.entries(routesMap).map(([pathName, params], idx) => {
-                    return (
-                        <RadioButton
-                            key={idx}
-                            disabled={optionsAreDisabled}
-                            value={pathName}
-                            label={params.title}
-                            style={styles.option} />
-                    );
-                })}
-            </RadioButtonGroup>
+                children={options} />
         ];
     }
 

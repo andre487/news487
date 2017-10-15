@@ -3,16 +3,21 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
 import * as ShowerActions from '../actions/shower';
+import * as ViewTypes from '../constants/ViewTypes';
 import DocumentsList from '../components/DocumentsList';
 
 class Shower extends Component {
     componentDidMount() {
-        this._fetchDocuments(this.props.routePath, this.props.routeParams);
+        const { viewType, routePath, routeParams } = this.props;
+
+        this._fetchDocuments(viewType, routePath, routeParams);
     }
 
     componentWillUpdate(newProps) {
-        if (newProps.routePath !== this._routePath) {
-            this._fetchDocuments(newProps.routePath, newProps.routeParams);
+        const { viewType, routePath, routeParams } = newProps;
+
+        if (this._shouldFetchDocuments(viewType, routePath, routeParams)) {
+            this._fetchDocuments(viewType, routePath, routeParams);
         }
     }
 
@@ -29,10 +34,25 @@ class Shower extends Component {
         );
     }
 
-    _fetchDocuments(routePath, routeParams) {
-        this._routePath = routePath;
+    _shouldFetchDocuments(viewType, routePath, routeParams) {
+        if (viewType !== this._viewType) {
+            return true;
+        }
 
-        this.props.actions.fetchDocs(this._routePath, routeParams);
+        switch (viewType) {
+            case ViewTypes.TEXT_SEARCH:
+                return this._routeParams.text !== routeParams.text;
+            default:
+                return routePath !== this._routePath;
+        }
+    }
+
+    _fetchDocuments(viewType, routePath, routeParams) {
+        this._viewType = viewType;
+        this._routePath = routePath;
+        this._routeParams = routeParams;
+
+        this.props.actions.fetchDocs(viewType, routePath, routeParams);
     }
 }
 

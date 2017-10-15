@@ -1,7 +1,8 @@
 import config from '../config';
-import * as types from '../constants/ActionTypes';
+import * as ActionTypes from '../constants/ActionTypes';
+import * as ViewTypes from '../constants/ViewTypes';
 
-export function fetchDocs(routePath, routeParams) {
+export function fetchDocs(viewType, routePath, routeParams) {
     return (dispatch, getState) => {
         const state = getState();
 
@@ -10,25 +11,28 @@ export function fetchDocs(routePath, routeParams) {
         }
 
         dispatch(requestDocs());
-        return fetch(buildUrl(routePath, routeParams))
+        return fetch(buildUrl(viewType, routePath, routeParams))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)));
     };
-
 }
 
 export function requestDocs() {
-    return { type: types.REQUEST_DOCS };
+    return { type: ActionTypes.REQUEST_DOCS };
 }
 
 export function receiveDocs(docs) {
     return {
-        type: types.RECEIVE_DOCS,
+        type: ActionTypes.RECEIVE_DOCS,
         docs
     };
 }
 
-function buildUrl(routePath, routeParams) {
+function buildUrl(viewType, routePath, routeParams) {
+    if (viewType === ViewTypes.TEXT_SEARCH) {
+        return `${config.apiUrl}/get-documents?text=${encodeURIComponent(routeParams.text)}&limit=${config.defaultDocsLimit}`;
+    }
+
     if (routePath.startsWith('/category/')) {
         return `${config.apiUrl}/get-documents-by-category?name=${routeParams.name}&limit=${config.defaultDocsLimit}`;
     }
