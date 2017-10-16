@@ -3,5 +3,5 @@ export default {
     defaultDocsLimit: 30,
 
     excludeTags: ['twitter'],
-    hideTags: ['from_mail', 'composite']
+    hideTags: ['from_mail', 'composite', 'no_tech']
 };
