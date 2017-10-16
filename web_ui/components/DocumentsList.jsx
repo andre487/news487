@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {DateTime} from 'luxon';
 
 import CircularProgress from 'material-ui/CircularProgress';
@@ -36,7 +36,7 @@ const styles = {
 
 const expandedThreshold = 3000;
 
-class DocumentsList extends Component {
+class DocumentsList extends PureComponent {
     render() {
         const requestInProcess = this.props.requestInProgress;
 

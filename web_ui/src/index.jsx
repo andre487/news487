@@ -15,7 +15,7 @@ import Home from '../components/Home';
 import App from '../containers/App';
 import NotFound from '../components/NotFound';
 
-import persist from './persist';
+import persist, {rememberRoute} from './persist';
 
 window.stopPageLoadingRotation();
 injectTapEventPlugin();
@@ -48,11 +48,13 @@ const store = createStore(
 
 persist(store);
 
+const lastRouteData = rememberRoute();
+
 ReactDOM.render(
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <Switch>
-                <Route path="/" exact={true} component={Home} />
+                <Route path="/" exact={true} lastRouteData={lastRouteData} component={Home} />
                 <Route path="/digest" exact={true} component={App} />
                 <Route path="/category/:name" exact={true} component={App} />
                 <Route path="/search/:text" exact={true} component={App} />

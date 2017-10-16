@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 
@@ -20,7 +20,7 @@ const styles = {
     }
 };
 
-class Header extends Component {
+class Header extends PureComponent {
     componentDidMount() {
         this._searchText = '';
     }

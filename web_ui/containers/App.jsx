@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -11,7 +11,7 @@ import Shower from './Shower';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import theme from '../config/theme';
 
-class App extends Component {
+class App extends PureComponent {
     componentWillMount() {
         const { actions, match } = this.props;
 

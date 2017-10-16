@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
@@ -9,7 +9,7 @@ import * as ShowerActions from '../actions/shower';
 import * as ViewTypes from '../constants/ViewTypes';
 import DocumentsList from '../components/DocumentsList';
 
-class Shower extends Component {
+class Shower extends PureComponent {
     componentDidMount() {
         const { viewType, routePath, routeParams } = this.props;
 

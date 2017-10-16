@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 
 import AppBar from 'material-ui/AppBar';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -23,7 +23,7 @@ const styles = {
     }
 };
 
-class AppMenu extends Component {
+class AppMenu extends PureComponent {
     render() {
         if (!this.props.opened) {
             return (null);

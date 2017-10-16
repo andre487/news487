@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
-import {rememberRoute} from '../src/persist';
+import React, {PureComponent} from 'react';
 
-class Home extends Component {
+class Home extends PureComponent {
     componentWillMount() {
-        const lastRouteData = rememberRoute();
+        const { lastRouteData} = this.props;
 
         let defaultRoute;
         if (lastRouteData && lastRouteData.routePath !== '/') {
