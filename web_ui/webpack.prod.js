@@ -7,7 +7,7 @@ const merge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
-// const BrotliPlugin = require('brotli-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 const ZopfliPlugin = require('zopfli-webpack-plugin');
 
 module.exports = merge(commonConfig, {
@@ -42,7 +42,11 @@ module.exports = merge(commonConfig, {
             hash: true
         }),
         new UglifyJSPlugin(),
-        new ZopfliPlugin(),
-        // new BrotliPlugin()
+        new ZopfliPlugin({
+            threshold: 10240
+        }),
+        new BrotliPlugin({
+            threshold: 10240
+        })
     ]
 });
