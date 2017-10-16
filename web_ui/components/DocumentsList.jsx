@@ -6,6 +6,8 @@ import FlatButton from 'material-ui/FlatButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 
+import config from '../config';
+
 const styles = {
     progress: {
         marginTop: 40,
@@ -18,9 +20,6 @@ const styles = {
     },
     cardText: {
         padding: '0 16px'
-    },
-    sourceTitle: {
-        marginRight: '8px'
     }
 };
 
@@ -46,47 +45,55 @@ class DocumentsList extends Component {
 
         return (
             <div>
-                {docs.map((doc, idx) => {
-                    const tags = (doc.tags || '').split(',');
-                    const date = DateTime.fromISO(doc.published, { zone: 'UTC' })
-                        .setZone()
-                        .toLocaleString(DateTime.DATETIME_MED);
-
-                    return (
-                        <Paper key={idx} zDepth={1} style={styles.paper}>
-                            <Card initiallyExpanded={true} className="document-card">
-                                <CardHeader
-                                    actAsExpander={true}
-                                    showExpandableButton={true}
-                                    title={<a href={doc.link} target="_blank">{doc.title}</a>}
-                                    subtitle={[
-                                        <span key="source_title" style={styles.sourceTitle}>
-                                            {doc.source_title}
-                                        </span>,
-                                        <span key="published">
-                                            {date.toString()}
-                                        </span>
-                                    ]} />
-                                <CardText
-                                    expandable={true}
-                                    style={styles.cardText}
-                                    dangerouslySetInnerHTML={{ __html: doc.description }} />
-                                <CardActions>
-                                    {tags.map((tag, idx) => {
-                                        return (
-                                            <FlatButton
-                                                key={idx}
-                                                label={tag}
-                                                onClick={this._onSelectTag.bind(this, tag)} />
-                                        );
-                                    })}
-                                </CardActions>
-                            </Card>
-                        </Paper>
-                    );
-                })}
+                {docs.map(this._renderDoc, this)}
             </div>
         );
+    }
+
+    _renderDoc(doc) {
+        return (
+            <Paper key={doc.id} zDepth={1} style={styles.paper}>
+                <Card initiallyExpanded={true} className="document-card">
+                    <CardHeader
+                        actAsExpander={true}
+                        showExpandableButton={true}
+                        title={
+                            <a href={doc.link}
+                               target="_blank"
+                               dangerouslySetInnerHTML={{ __html: doc.title }} />
+                        }
+                        subtitle={`${doc.source_title} – ${this._renderDate(doc)}`} />
+                    <CardText
+                        expandable={true}
+                        style={styles.cardText}
+                        dangerouslySetInnerHTML={{ __html: doc.description }} />
+                    <CardActions>
+                        {this._renderTagsLine(doc)}
+                    </CardActions>
+                </Card>
+            </Paper>
+        );
+    }
+
+    _renderDate(doc) {
+        return DateTime.fromISO(doc.published, { zone: 'UTC' })
+            .setZone()
+            .toLocaleString(DateTime.DATETIME_MED);
+    }
+
+    _renderTagsLine(doc) {
+        const tags = (doc.tags || '')
+            .split(',')
+            .filter(tag => !config.hideTags.includes(tag));
+
+        return tags.map((tag, idx) => {
+            return (
+                <FlatButton
+                    key={idx}
+                    label={tag}
+                    onClick={this._onSelectTag.bind(this, tag)} />
+            );
+        });
     }
 
     _onSelectTag(tag) {

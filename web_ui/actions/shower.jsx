@@ -41,20 +41,41 @@ export function eraseError() {
 }
 
 function buildUrl(viewType, routePath, routeParams) {
+    const noTags = config.excludeTags.join(',');
+
     if (viewType === ViewTypes.TEXT_SEARCH) {
-        return `${config.apiUrl}/get-documents?text=${encodeURIComponent(routeParams.text)}`;
+        return [
+            `${config.apiUrl}`,
+            `/get-documents`,
+            `?text=${encodeURIComponent(routeParams.text)}`,
+            `&no-tags=${noTags}`
+        ].join('');
     }
 
     if (viewType === ViewTypes.TAG_SEARCH) {
-        return `${config.apiUrl}/get-documents?tags=${encodeURIComponent(routeParams.tag)}&limit=${config.defaultDocsLimit}`;
+        return [
+            `${config.apiUrl}`,
+            `/get-documents`,
+            `?tags=${encodeURIComponent(routeParams.tag)}`,
+            `&no-tags=${noTags}`,
+            `&limit=${config.defaultDocsLimit}`
+        ].join('');
     }
 
     if (viewType === ViewTypes.CATEGORY) {
         if (routePath.startsWith('/category/')) {
-            return `${config.apiUrl}/get-documents-by-category?name=${routeParams.name}&limit=${config.defaultDocsLimit}`;
-        } else {
-            return `${config.apiUrl}/get-digest?limit=${config.defaultDocsLimit}`;
+            return [
+                `${config.apiUrl}`,
+                `/get-documents-by-category`,
+                `?name=${routeParams.name}`,
+                `&limit=${config.defaultDocsLimit}`
+            ].join('');
         }
+
+        return [
+            `${config.apiUrl}`,
+            `/get-digest?limit=${config.defaultDocsLimit}`
+        ].join('');
     }
 
     throw new Error(`Unknown viewType: ${viewType}`);
