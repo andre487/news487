@@ -1,5 +1,5 @@
 export default {
-    apiUrl: 'https://scrapper487-api.andre.life',
+    apiUrl: process.env.API_URL,
     defaultDocsLimit: 30,
 
     excludeTags: ['twitter'],

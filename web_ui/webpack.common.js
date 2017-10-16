@@ -1,5 +1,12 @@
 'use strict';
 
+const webpack = require('webpack');
+
+const apiHost = process.env.SCRAPPER_487_API_URL;
+if (!apiHost) {
+    throw new Error('You should provide SCRAPPER_487_API_URL env var');
+}
+
 module.exports = {
     context: __dirname,
     entry: './src/index.jsx',
@@ -17,6 +24,12 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx']
     },
-    plugins: [],
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'API_URL': `"${apiHost}"`
+            }
+        }),
+    ],
     devtool: 'cheap-module-source-map',
 };
