@@ -15,6 +15,8 @@ import Home from '../components/Home';
 import App from '../containers/App';
 import NotFound from '../components/NotFound';
 
+import persist from './persist';
+
 window.stopPageLoadingRotation();
 injectTapEventPlugin();
 
@@ -43,6 +45,8 @@ const store = createStore(
     }),
     middleware
 );
+
+persist(store);
 
 ReactDOM.render(
     <Provider store={store}>

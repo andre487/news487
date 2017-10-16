@@ -31,6 +31,13 @@ run_project_for_dev() {
 
     python "$WEB_UI_DIR/.devtools/http_server.py" "$DEV_PORT" &
     _http_server_pid="$!"
+    status="$?"
+
+    if [[ "$status" != 0 ]]; then
+        log_error "HTTP server exited with status $status"
+        exit 1
+    fi
+
     log_info "HTTP server has been launched with PID $_http_server_pid"
     log_info "HTTP server URL: http://localhost:$DEV_PORT"
 
