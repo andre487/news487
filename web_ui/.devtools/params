@@ -3,7 +3,9 @@
 DEV_PORT=8487
 
 WEB_UI_DIR="$(cd "$(dirname "$0")" && pwd)/../web_ui"
-STATIC_DIR="$WEB_UI_DIR/static"
+STATIC_DIR="$WEB_UI_DIR/build"
+
+DOCKER=0
 
 _http_server_pid=''
 
@@ -24,7 +26,7 @@ run_project_for_dev() {
         mkdir "$STATIC_DIR"
     fi
 
-    cd "$WEB_UI_DIR/static"
+    cd "$WEB_UI_DIR/build"
 
     python "$WEB_UI_DIR/.devtools/http_server.py" "$DEV_PORT" &
     _http_server_pid="$!"
@@ -32,10 +34,10 @@ run_project_for_dev() {
     log_info "HTTP server URL: http://localhost:$DEV_PORT"
 
     cd "$WEB_UI_DIR"
-    ./node_modules/.bin/webpack --watch
+    ./node_modules/.bin/webpack --watch --config webpack.dev.js
 }
 
 build_static_package() {
     cd "$WEB_UI_DIR"
-    ./node_modules/.bin/webpack --production
+    ./node_modules/.bin/webpack --config webpack.prod.js
 }

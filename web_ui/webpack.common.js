@@ -6,12 +6,11 @@ module.exports = {
     context: __dirname,
     entry: './src/index.jsx',
     output: {
-        path: __dirname + '/static',
+        path: __dirname + '/build',
         filename: 'bundle.js',
     },
     module: {
         rules: [
-            { enforce: 'pre', test: /\.jsx$/, exclude: /node_modules/, loader: 'eslint-loader' },
             { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel-loader'] },
             { include: /\.json$/, loaders: ['json-loader'] },
         ]

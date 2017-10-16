@@ -5,7 +5,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import {createLogger} from 'redux-logger';
 
 import {ConnectedRouter, routerMiddleware, routerReducer} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
@@ -19,19 +18,30 @@ import NotFound from '../components/NotFound';
 window.stopPageLoadingRotation();
 injectTapEventPlugin();
 
-const loggerMiddleware = createLogger();
 const history = createHistory();
+
+let middleware;
+if (process.env.NODE_ENV === 'production') {
+    middleware = applyMiddleware(
+        thunkMiddleware,
+        routerMiddleware(history)
+    );
+} else {
+    const createLogger = require('redux-logger').createLogger;
+
+    middleware = applyMiddleware(
+        thunkMiddleware,
+        createLogger(),
+        routerMiddleware(history)
+    );
+}
 
 const store = createStore(
     combineReducers({
         ...reducers,
         router: routerReducer
     }),
-    applyMiddleware(
-        thunkMiddleware,
-        loggerMiddleware,
-        routerMiddleware(history)
-    )
+    middleware
 );
 
 ReactDOM.render(
