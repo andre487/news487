@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
-import moment from 'moment-timezone';
-
-import config from '../config';
+import {DateTime} from 'luxon';
 
 import CircularProgress from 'material-ui/CircularProgress';
 import FlatButton from 'material-ui/FlatButton';
@@ -50,7 +48,9 @@ class DocumentsList extends Component {
             <div>
                 {docs.map((doc, idx) => {
                     const tags = (doc.tags || '').split(',');
-                    const date = moment.tz(doc.published, 'UTC').tz(config.tz).format('LLL');
+                    const date = DateTime.fromISO(doc.published, { zone: 'UTC' })
+                        .setZone()
+                        .toLocaleString(DateTime.DATETIME_MED);
 
                     return (
                         <Paper key={idx} zDepth={1} style={styles.paper}>
@@ -64,7 +64,7 @@ class DocumentsList extends Component {
                                             {doc.source_title}
                                         </span>,
                                         <span key="published">
-                                            {date}
+                                            {date.toString()}
                                         </span>
                                     ]} />
                                 <CardText
