@@ -46,6 +46,13 @@ const rawBaseTheme = {
         hr: {
             border: 'none',
             'border-top': `1px solid ${Colors.minBlack}`
+        },
+        '.document-card img': {
+            'max-width': '100%'
+        },
+        '.document-card pre, .document-card code': {
+            'max-width': '100%',
+            'overflow-x': 'auto'
         }
     }
 };

@@ -54,7 +54,7 @@ class DocumentsList extends Component {
 
                     return (
                         <Paper key={idx} zDepth={1} style={styles.paper}>
-                            <Card initiallyExpanded={true}>
+                            <Card initiallyExpanded={true} className="document-card">
                                 <CardHeader
                                     actAsExpander={true}
                                     showExpandableButton={true}
