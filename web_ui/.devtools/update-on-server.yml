@@ -1,0 +1,46 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  tasks:
+    - name: Setup NGINX host config
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/scrapper487-web-ui.conf
+
+    - name: Enable NGINX host
+      file:
+        src: /etc/nginx/sites-available/scrapper487-web-ui.conf
+        dest: /etc/nginx/sites-enabled/scrapper487-web-ui.conf
+        state: link
+
+    - name: Create web root
+      file:
+        dest: /var/www/{{ scrapper_487_web_ui_host }}
+        state: directory
+        owner: www-data
+        group: www-data
+
+    - name: Install certificate
+      shell: |
+        certbot certonly \
+          --webroot \
+          -w /var/www/common \
+          -d {{ scrapper_487_web_ui_host }} \
+          -n \
+          --agree-tos \
+          -m '{{ admin_email }}'
+      args:
+        creates: /etc/letsencrypt/live/{{ scrapper_487_web_ui_host }}
+
+    - name: Reload NGINX
+      service:
+        name: nginx
+        state: reloaded
+
+    - name: Copy build to server
+      synchronize:
+        src: ../build
+        dest: /var/www/{{ scrapper_487_web_ui_host }}
+        delete: True

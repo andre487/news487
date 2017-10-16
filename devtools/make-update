@@ -11,15 +11,21 @@ else
     log_info "Skip project tests because of SKIP_PROJECT_TESTS=1"
 fi
 
-"$tools_dir/docker-build" "$PROJECT_DIR"
+if [[ "$DOCKER_BUILD" != 0 ]]; then
+    "$tools_dir/docker-build" "$PROJECT_DIR"
 
-if [[ "$DISABLE_DOCKER_TEST_VIA_UPDATE" != 1 ]]; then
-    "$tools_dir/docker-test" "$PROJECT_DIR"
-else
-    log_info "Docker test via update disabled for this project"
+    if [[ "$DISABLE_DOCKER_TEST_VIA_UPDATE" != 1 ]]; then
+        "$tools_dir/docker-test" "$PROJECT_DIR"
+    else
+        log_info "Docker test via update disabled for this project"
+    fi
+
+    "$tools_dir/docker-push" "$PROJECT_DIR"
 fi
 
-"$tools_dir/docker-push" "$PROJECT_DIR"
+if [[ "$HAS_STATIC_PACKAGE" == 1 ]]; then
+    "$tools_dir/build-static-package" "$PROJECT_DIR"
+fi
 
 log_info "Making update on server"
 ansible-playbook -i ~/.private/home-server-inventory "$DEVTOOLS_PARAMS_DIR/update-on-server.yml"
