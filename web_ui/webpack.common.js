@@ -9,7 +9,7 @@ if (!apiHost) {
 
 module.exports = {
     context: __dirname,
-    entry: './src/index.jsx',
+    entry: ['babel-polyfill', './src/index.jsx'],
     output: {
         path: __dirname + '/build',
         filename: 'bundle.js',
@@ -18,7 +18,6 @@ module.exports = {
         rules: [
             { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel-loader'] },
             { test: /\.css?$/, loaders: ['style-loader', 'css-loader'] },
-            { include: /\.json$/, loaders: ['json-loader'] },
         ]
     },
     resolve: {
