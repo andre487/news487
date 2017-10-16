@@ -4,54 +4,62 @@
         <meta charset="utf-8">
         <title>News 487</title>
         <meta name="viewport" content="width=device-width,initial-scale=1">
+        <style>
+            #page-loading-spinner-container
+            {
+                margin-top: 40px;
+                text-align: center;
+            }
+
+            #page-loading-spinner
+            {
+                width: 80px;
+                height: 80px;
+                display: inline-block;
+                transition: transform 10s linear 0ms;
+            }
+
+            #page-loading-spinner svg
+            {
+                width: 80px;
+                height: 80px;
+                position: relative;
+            }
+
+            #page-loading-spinner circle
+            {
+                stroke: rgb(0, 188, 212);
+                stroke-linecap: round;
+                transition: all 750ms ease-in-out 0ms;
+                stroke-dasharray: 160.535, 229.336;
+                stroke-dashoffset: -68.8009;
+            }
+        </style>
     </head>
     <body>
-        <div id="root">
-            <style>
-                #page-loading-spinner-container
-                {
-                    margin-top: 40px;
-                    text-align: center;
-                }
+        <div id="root"></div>
 
-                #page-loading-spinner
-                {
-                    width: 80px;
-                    height: 80px;
-                    display: inline-block;
-                    transition: transform 10s linear 0ms;
-                }
-
-                #page-loading-spinner svg
-                {
-                    width: 80px;
-                    height: 80px;
-                    position: relative;
-                }
-
-                #page-loading-spinner circle
-                {
-                    stroke: rgb(0, 188, 212);
-                    stroke-linecap: round;
-                    transition: all 750ms ease-in-out 0ms;
-                    stroke-dasharray: 160.535, 229.336;
-                    stroke-dashoffset: -68.8009;
-                }
-            </style>
-            <div id="page-loading-spinner-container">
-                <div id="page-loading-spinner">
-                    <svg viewBox="0 0 80 80">
-                        <circle cx="40" cy="40" r="36.5" fill="none" stroke-width="7" stroke-miterlimit="20"></circle>
-                    </svg>
-                </div>
+        <div id="page-loading-spinner-container">
+            <div id="page-loading-spinner">
+                <svg viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="36.5" fill="none" stroke-width="7" stroke-miterlimit="20"></circle>
+                </svg>
             </div>
         </div>
+
+        <!--suppress HtmlUnknownTarget -->
+        <script src="/bundle.js" async></script>
 
         <script>
             (function() {
                 'use strict';
+                var fontCssUrl = '//fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic';
+
                 var spinner = document.getElementById('page-loading-spinner');
                 var rotateDegree = 0;
+
+                rotateSpinner();
+                loadFonts();
 
                 window.stopPageLoadingRotation = function() {
                     var spinnerContainer = document.getElementById('page-loading-spinner-container');
@@ -61,7 +69,7 @@
                     rotateDegree = null;
                 };
 
-                function rotate() {
+                function rotateSpinner() {
                     if (!spinner) {
                         return;
                     }
@@ -70,24 +78,32 @@
                     spinner.style.transform = 'rotate(' + rotateDegree + 'deg)';
 
                     setTimeout(function() {
-                        requestAnimationFrame(rotate);
+                        requestAnimationFrame(rotateSpinner);
                     }, 16);
                 }
 
-                rotate();
+                function loadFonts() {
+                    var loader = new XMLHttpRequest();
+                    loader.open('GET', fontCssUrl);
+                    loader.onreadystatechange = function() {
+                        if (loader.readyState !== 4) {
+                            return;
+                        }
+
+                        if (loader.status !== 200) {
+                            return;
+                        }
+
+                        var cssText = loader.responseText;
+                        cssText = cssText.replace(/}/g, 'font-display: swap;\n}');
+
+                        var style = document.createElement('style');
+                        style.textContent = cssText;
+                        document.body.appendChild(style);
+                    };
+                    loader.send();
+                }
             })();
         </script>
-
-        <!--suppress HtmlUnknownTarget -->
-        <script src="/bundle.js" async></script>
-
-        <script>
-            window.WebFontConfig = {
-                google: {
-                    families: ['Roboto:400,300,500:latin,cyrillic']
-                }
-            };
-        </script>
-        <script src="//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js" async></script>
     </body>
 </html>
