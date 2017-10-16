@@ -29,13 +29,13 @@ class App extends Component {
         }
 
         const { actions, match } = this.props;
+        const routePath = match.url;
         const routeParams = match.params;
 
         const {
             menuOpened,
             categoriesRequestInProcess,
             routesMap,
-            routePath,
             routeTitle,
             viewType,
             searchText

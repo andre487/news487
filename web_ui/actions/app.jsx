@@ -98,11 +98,13 @@ export function searchByText(text) {
             throw new Error('Empty text');
         }
 
-        dispatch(pushRoute(`/search/${encodeURIComponent(cleanText)}`));
+        const routePath = `/search/${encodeURIComponent(cleanText)}`;
 
+        dispatch(pushRoute(routePath));
         dispatch({
             type: ActionTypes.TEXT_SEARCH,
-            text: cleanText
+            text: cleanText,
+            routePath
         });
     };
 }
@@ -115,11 +117,13 @@ export function searchByTag(tag) {
             throw new Error('Empty tag');
         }
 
-        dispatch(pushRoute(`/tag/${encodeURIComponent(cleanTag)}`));
+        const routePath = `/tag/${encodeURIComponent(cleanTag)}`;
 
+        dispatch(pushRoute(routePath));
         dispatch({
             type: ActionTypes.TAG_SEARCH,
-            text: cleanTag
+            text: cleanTag,
+            routePath
         });
     };
 }

@@ -88,7 +88,8 @@ export default function app(state = initialState, action) {
         case ActionTypes.TEXT_SEARCH:
             return {
                 ...state,
-                routeTitle: 'Text search',
+                routeTitle: getTextSearchTitle(),
+                routePath: action.routePath,
                 searchText: action.text,
                 viewType: ViewTypes.TEXT_SEARCH
             };
@@ -96,7 +97,8 @@ export default function app(state = initialState, action) {
         case ActionTypes.TAG_SEARCH:
             return {
                 ...state,
-                routeTitle: `Tag “${action.text}”`,
+                routeTitle: getTagSearchTitle(action.text),
+                routePath: action.routePath,
                 searchText: action.text,
                 viewType: ViewTypes.TAG_SEARCH
             };
@@ -113,20 +115,30 @@ function getRouteTitle(state, routePath, routeParams) {
         return routeData.title;
     }
 
-    const isTextSearch = util.isTextSearchRoute(routePath, routeParams);
-    if (isTextSearch) {
-        return 'Text search';
+    if (util.isTextSearchRoute(routePath, routeParams)) {
+        return getTextSearchTitle();
     }
 
-    const isTagSearch = util.isTagSearchRoute(routePath, routeParams);
-    if (isTagSearch) {
-        return `Tag “${routeParams.tag}”`;
+    if (util.isTagSearchRoute(routePath, routeParams)) {
+        return getTagSearchTitle(routeParams.tag);
     }
 
     const catMatches = /\/category\/([^/]+)/.exec(routePath);
     if (catMatches) {
-        return `Category “${catMatches[1]}”`;
+        return getCategoryTitle(catMatches[1]);
     }
 
     return 'Unknown';
+}
+
+function getTextSearchTitle() {
+    return 'Text search';
+}
+
+function getTagSearchTitle(tag) {
+    return `Tag “${tag}”`;
+}
+
+function getCategoryTitle(name) {
+    return `Category “${name}”`;
 }
