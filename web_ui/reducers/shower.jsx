@@ -1,9 +1,13 @@
 import * as ActionTypes from '../constants/ActionTypes';
+import {writeToStorage, readFromStorage} from '../src/persist';
+
+const expandedStorageKey = 'shower:expandedState';
 
 const initialState = {
     docsRequestInProcess: true,
     docs: [],
-    error: null
+    error: null,
+    expandedState: readFromStorage(expandedStorageKey, {})
 };
 
 export default function shower(state = initialState, action) {
@@ -35,6 +39,19 @@ export default function shower(state = initialState, action) {
                 ...state,
                 error: null
             };
+
+        case ActionTypes.CHANGE_CARD_EXPAND:
+            const nextState = {
+                ...state,
+                expandedState: {
+                    ...state.expandedState,
+                    [action.docId]: action.cardState
+                }
+            };
+
+            writeToStorage(expandedStorageKey, nextState.expandedState);
+
+            return nextState;
 
         default:
             return state;

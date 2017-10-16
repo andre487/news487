@@ -28,7 +28,8 @@ class Shower extends Component {
         const {
             docsRequestInProcess,
             docs,
-            error
+            error,
+            expandedState
         } = this.props.shower;
 
         if (error) {
@@ -37,9 +38,11 @@ class Shower extends Component {
 
         return (
             <DocumentsList
+                onCardExpandChange={this._onCardExpandChange.bind(this)}
                 onTagSelected={this.props.onTagSelected}
 
                 requestInProgress={docsRequestInProcess}
+                expandedState={expandedState}
                 items={docs} />
         );
     }
@@ -91,6 +94,10 @@ class Shower extends Component {
 
     _handleCloseError() {
         this.props.actions.eraseError();
+    }
+
+    _onCardExpandChange(docId, state) {
+        this.props.actions.changeCardExpand(docId, state);
     }
 }
 

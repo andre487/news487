@@ -34,9 +34,13 @@ const styles = {
     },
 };
 
+const expandedThreshold = 3000;
+
 class DocumentsList extends Component {
     render() {
         const requestInProcess = this.props.requestInProgress;
+
+        this._expandedState = this.props.expandedState;
 
         return requestInProcess ?
             this._renderProgress() :
@@ -62,13 +66,20 @@ class DocumentsList extends Component {
     }
 
     _renderDoc(doc) {
+        let expanded = this._expandedState[doc.id];
+        if (expanded === undefined) {
+            expanded = doc.description.length < expandedThreshold;
+        }
+
         return (
             <Paper key={doc.id} zDepth={1} style={styles.paper}>
-                <Card initiallyExpanded={true} className="document-card">
+                <Card
+                    initiallyExpanded={expanded}
+                    onExpandChange={this._onCardExpandChange.bind(this, doc.id)}
+                    className="document-card">
                     <CardHeader
                         titleStyle={styles.cardTitle}
                         subtitleStyle={styles.cardSubtitle}
-                        actAsExpander={true}
                         showExpandableButton={true}
                         title={
                             <a href={doc.link}
@@ -107,6 +118,10 @@ class DocumentsList extends Component {
                     onClick={this._onSelectTag.bind(this, tag)} />
             );
         });
+    }
+
+    _onCardExpandChange(docId, state) {
+        this.props.onCardExpandChange(docId, state);
     }
 
     _onSelectTag(tag) {

@@ -14,22 +14,34 @@ export function memorizeRoute(routePath) {
         return;
     }
 
-    const data = JSON.stringify({routePath});
-    if (writeRouteData(data)) {
+    if (writeToStorage('lastRoute', { routePath })) {
         lastRoutePath = routePath;
     }
 }
 
 export function rememberRoute() {
+    return readFromStorage('lastRoute');
+}
+
+export function writeToStorage(key, val) {
+    const data = JSON.stringify(val);
     try {
-        const data = localStorage.getItem('news487:lastRoute');
-        return JSON.parse(data);
+        localStorage.setItem(`news487:${key}`, data);
+        return true;
     } catch (e) {}
 }
 
-function writeRouteData(data) {
+export function readFromStorage(key, defaultVal = null) {
     try {
-        localStorage.setItem('news487:lastRoute', data);
-        return true;
-    } catch (e) {}
+        const json = localStorage.getItem(`news487:${key}`);
+
+        let val;
+        if (json) {
+            val = JSON.parse(json);
+        }
+
+        return val !== undefined ? val : defaultVal;
+    } catch (e) {
+        return defaultVal;
+    }
 }

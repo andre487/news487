@@ -40,6 +40,14 @@ export function eraseError() {
     return { type: ActionTypes.ERASE_ERROR };
 }
 
+export function changeCardExpand(docId, cardState) {
+    return {
+        type: ActionTypes.CHANGE_CARD_EXPAND,
+        docId,
+        cardState
+    };
+}
+
 function buildUrl(viewType, routePath, routeParams) {
     const noTags = config.excludeTags.join(',');
 

@@ -13,3 +13,5 @@ export const ERASE_ERROR = 'ERASE_ERROR';
 
 export const TEXT_SEARCH = 'TEXT_SEARCH';
 export const TAG_SEARCH = 'TAG_SEARCH';
+
+export const CHANGE_CARD_EXPAND = 'CHANGE_CARD_EXPAND';
