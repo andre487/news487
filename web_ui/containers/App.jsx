@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 
 import * as AppActions from '../actions/app';
 
-import Style from '../components/Style';
 import Header from '../components/Header';
 import AppMenu from '../components/AppMenu';
 import Shower from './Shower';
@@ -46,7 +45,6 @@ class App extends Component {
         return (
             <MuiThemeProvider muiTheme={theme}>
                 <div>
-                    <Style rules={theme.globalStyle} />
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
                         onTextSearch={this._onTextSearch.bind(this)}

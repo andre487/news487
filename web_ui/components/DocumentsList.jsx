@@ -8,6 +8,8 @@ import Paper from 'material-ui/Paper';
 
 import config from '../config';
 
+import './DocumentsList.css';
+
 const styles = {
     progress: {
         marginTop: 40,
@@ -19,7 +21,7 @@ const styles = {
         overflow: 'hidden'
     },
     cardTitle: {
-        fontSize: '17px',
+        fontSize: '18px',
     },
     cardSubtitle: {
         fontSize: '15px',

@@ -1,0 +1,30 @@
+.document-card img
+{
+    max-width: 100%;
+}
+
+.document-card p
+{
+    margin: 0
+}
+
+.document-card p + p
+{
+    margin-top: 1em;
+}
+
+.document-card p + hr
+{
+    margin-top: 0.6em;
+}
+
+.document-card hr + p
+{
+    margin-top: 0.6em;
+}
+
+.document-card pre, .document-card code
+{
+    max-width: 100%;
+    overflow-x: auto;
+}
