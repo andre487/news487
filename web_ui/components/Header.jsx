@@ -8,8 +8,9 @@ import * as ViewTypes from '../constants/ViewTypes';
 const styles = {
     textSearch: {
         flex: '1 1 0%',
+        width: '160px',
         lineHeight: '16px',
-        marginTop: '8px'
+        marginTop: '9px'
     },
     textSearchHint: {
         color: theme.customStyle.lightHintColor
@@ -28,7 +29,7 @@ class Header extends Component {
         const title = this.props.filterTitle || 'News';
         const viewType = this.props.viewType;
 
-        const hintText = viewType === ViewTypes.TEXT_SEARCH && this.props.searchText || 'Search text';
+        const defaultValue = viewType === ViewTypes.TEXT_SEARCH && this.props.searchText || '';
 
         // noinspection HtmlUnknownTarget
         const searchForm = (
@@ -41,7 +42,8 @@ class Header extends Component {
                     onChange={this._onSearchInputChange.bind(this)}
 
                     name="text"
-                    hintText={hintText} />
+                    defaultValue={defaultValue}
+                    hintText="Search text" />
             </form>
         );
 

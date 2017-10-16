@@ -14,13 +14,22 @@ const styles = {
         textAlign: 'center'
     },
     paper: {
-        margin: '15px',
-        maxWidth: '800px',
+        margin: '8px',
+        maxWidth: '900px',
         overflow: 'hidden'
     },
+    cardTitle: {
+        fontSize: '17px',
+    },
+    cardSubtitle: {
+        fontSize: '15px',
+        marginTop: '10px'
+    },
     cardText: {
-        padding: '0 16px'
-    }
+        fontSize: '16px',
+        padding: '0 16px',
+        lineHeight: '1.5'
+    },
 };
 
 class DocumentsList extends Component {
@@ -55,6 +64,8 @@ class DocumentsList extends Component {
             <Paper key={doc.id} zDepth={1} style={styles.paper}>
                 <Card initiallyExpanded={true} className="document-card">
                     <CardHeader
+                        titleStyle={styles.cardTitle}
+                        subtitleStyle={styles.cardSubtitle}
                         actAsExpander={true}
                         showExpandableButton={true}
                         title={

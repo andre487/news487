@@ -1,61 +1,76 @@
 import {fade} from 'material-ui/utils/colorManipulator'
 import * as Colors from 'material-ui/styles/colors';
-import {spacing, getMuiTheme} from 'material-ui/styles';
+import {getMuiTheme, spacing} from 'material-ui/styles';
 
-const fontFamily = 'Roboto, sans-serif';
-
-const rawBaseTheme = {
+const darkTheme = {
     ...spacing,
-    fontFamily: fontFamily,
+    fontFamily: 'Roboto, sans-serif',
+    borderRadius: 2,
     palette: {
-        primary1Color: Colors.cyan500,
-        primary2Color: Colors.cyan700,
-        primary3Color: Colors.lightBlack,
+        primary1Color: Colors.blueGrey300,
+        primary2Color: Colors.blueGrey300,
+        primary3Color: Colors.grey700,
         accent1Color: Colors.pinkA200,
-        accent2Color: Colors.grey100,
-        accent3Color: Colors.grey500,
-        textColor: Colors.darkBlack,
-        alternateTextColor: Colors.white,
-        canvasColor: Colors.white,
-        borderColor: Colors.grey300,
-        disabledColor: fade(Colors.darkBlack, 0.3)
+        accent2Color: Colors.pinkA400,
+        accent3Color: Colors.pinkA100,
+        textColor: fade(Colors.fullWhite, 0.7),
+        secondaryTextColor: fade(Colors.fullWhite, 0.65),
+        alternateTextColor: '#303030',
+        canvasColor: '#303030',
+        borderColor: fade(Colors.fullWhite, 0.3),
+        disabledColor: fade(Colors.fullWhite, 0.3),
+        pickerHeaderColor: fade(Colors.fullWhite, 0.12),
+        clockCircleColor: fade(Colors.fullWhite, 0.12)
     },
     customStyle: {
-        lightHintColor: Colors.lightWhite,
-        lightInputColor: Colors.darkWhite
+        lightHintColor: Colors.grey300,
+        lightInputColor: Colors.grey200
     },
     globalStyle: {
         html: {
-            'font-family': fontFamily,
             'overflow-y': 'scroll'
         },
         body: {
-            'font-size': '15px',
-            'line-height': '20px',
-            margin: 0
+            margin: 0,
+            background: Colors.grey600
         },
         'a:link': {
-            color: Colors.blue500
+            color: Colors.blueGrey300
         },
         'a:visited': {
-            color: Colors.deepPurple500
+            color: Colors.grey400
         },
         'a:hover': {
             color: Colors.red400
         },
         hr: {
             border: 'none',
-            'border-top': `1px solid ${Colors.minBlack}`
+            'border-top': `1px solid ${Colors.lightWhite}`
         },
         '.document-card img': {
             'max-width': '100%'
+        },
+        '.document-card p': {
+            margin: 0
+        },
+        '.document-card p + p': {
+            'margin-top': '1em'
+        },
+        '.document-card p + hr': {
+            'margin-top': '0.6em'
+        },
+        '.document-card hr + p': {
+            'margin-top': '0.6em'
         },
         '.document-card pre, .document-card code': {
             'max-width': '100%',
             'overflow-x': 'auto'
         }
+    },
+    appBar: {
+        textColor: Colors.grey300
     }
 };
 
 //Theme must be wrapped in function getMuiTheme
-export default getMuiTheme(rawBaseTheme);
+export default getMuiTheme(darkTheme);
