@@ -84,6 +84,7 @@ class DocumentsList extends PureComponent {
                         title={
                             <a href={doc.link}
                                target="_blank"
+                               rel="noopener"
                                dangerouslySetInnerHTML={{ __html: doc.title }} />
                         }
                         subtitle={`${doc.source_title} – ${this._renderDate(doc)}`} />
