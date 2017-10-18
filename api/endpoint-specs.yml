@@ -41,6 +41,15 @@
         - extract_test: {jsonpath_mini: '0.source_type', test: 'exists'}
 
 - test:
+    - name: Endpoint get-documents – Fields filtering works
+    - url: /get-documents?fields=title,description
+    - validators:
+        - extract_test: {jsonpath_mini: '0.title', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.description', test: 'exists'}
+        - extract_test: {jsonpath_mini: '0.id', test: 'not_exists'}
+        - extract_test: {jsonpath_mini: '0.published', test: 'not_exists'}
+
+- test:
     - name: Endpoint get-documents – Limit for get-documents works
     - url: /get-documents?limit=3
     - validators:

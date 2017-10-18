@@ -76,15 +76,21 @@ def error_404(*args):
 
 
 def get_data_provider_response(getter):
+    url_params = flask.request.args
+
     try:
-        data = getter(**flask.request.args)
+        data = getter(**url_params)
     except data_provider.ParamsError as e:
         return create_json_response([{'error': e.message}], 400)
 
+    fields = None
+    if 'fields' in url_params and url_params['fields']:
+        fields = url_params['fields'].split(',')
+
     if data_provider.is_custom_content_provider(getter):
-        resp = create_custom_response(data)
+        resp = create_custom_response(data, fields=fields)
     else:
-        resp = create_json_response(data)
+        resp = create_json_response(data, fields=fields)
 
     cache_params = data_provider.get_cache_params(getter)
 
@@ -110,14 +116,17 @@ def get_data_provider_response(getter):
     return resp
 
 
-def create_json_response(data, status=200):
+def create_json_response(data, status=200, fields=None):
+    if fields:
+        data = filter_fields(data, fields)
+
     resp = flask.make_response(json.dumps(data, ensure_ascii=False), status)
     resp.headers['content-type'] = 'application/json; charset=utf-8'
 
     return resp
 
 
-def create_custom_response(data, status=200):
+def create_custom_response(data, status=200, fields=None):
     if data is None:
         return create_json_response([{'error': 'Document not found'}], 404)
 
@@ -132,6 +141,22 @@ def create_custom_response(data, status=200):
     resp.headers['content-type'] = content_type
 
     return resp
+
+
+def filter_fields(data, fields):
+    if not isinstance(data, list):
+        return data
+
+    new_data = []
+    for doc in data:
+        new_doc = {}
+        for field in fields:
+            print field, doc.keys()
+            if field in doc:
+                new_doc[field] = doc[field]
+        new_data.append(new_doc)
+
+    return new_data
 
 
 def create_header_date(**kwargs):
