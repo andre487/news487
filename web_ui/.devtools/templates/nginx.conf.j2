@@ -18,6 +18,13 @@ server {
 
     gzip_static on;
 
+    location ~ sw\.js {
+        add_header Cache-Control "public, max-age=31104000, must-revalidate";
+        add_header Vary "Accept-Encoding";
+
+        try_files $uri @common;
+    }
+
     location ~ \.(?:js|css|svg|ico)$ {
         add_header Cache-Control "public, max-age=31104000, immutable";
         add_header Vary "Accept-Encoding";

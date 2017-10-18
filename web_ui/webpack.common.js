@@ -42,6 +42,7 @@ module.exports = {
 
         new ServiceWorkerWebpackPlugin({
             entry: './src/service-worker.js',
+            excludes: ['**/robots.txt'],
             transformOptions(options) {
                 const { assets } = options;
                 const newAssets = assets.filter(name => !name.endsWith('.gz') && !name.endsWith('.br'));
