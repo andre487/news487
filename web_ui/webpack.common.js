@@ -4,6 +4,8 @@ const path = require('path');
 const childProcess = require('child_process');
 
 const webpack = require('webpack');
+
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 
 const apiHost = process.env.SCRAPPER_487_API_URL;
@@ -35,6 +37,9 @@ module.exports = {
                 'API_URL': `"${apiHost}"`
             }
         }),
+
+        new CopyWebpackPlugin([{ from: 'assets' }]),
+
         new ServiceWorkerWebpackPlugin({
             entry: './src/service-worker.js',
             transformOptions(options) {

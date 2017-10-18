@@ -1,0 +1,27 @@
+{
+  "name": "News 487",
+  "short_name": "News 487",
+  "icons": [
+    {
+      "src": "icons/16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }, {
+      "src": "icons/64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    }, {
+      "src": "icons/128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "icons/256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#757575",
+  "theme_color": "#90a4ae"
+}

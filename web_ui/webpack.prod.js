@@ -7,7 +7,6 @@ const merge = require('webpack-merge');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const ZopfliPlugin = require('zopfli-webpack-plugin');
 
@@ -42,8 +41,6 @@ module.exports = merge(commonConfig, {
             },
             hash: true
         }),
-
-        new CopyWebpackPlugin([{ from: 'assets' }]),
 
         new UglifyJSPlugin(),
         new ZopfliPlugin({
