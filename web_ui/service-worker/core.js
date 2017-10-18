@@ -2,7 +2,7 @@
 
 export const ORIGIN_CACHE = `origin:${serviceWorkerOption.gitHash}`;
 export const API_CACHE = `api:${serviceWorkerOption.gitHash}`;
-export const FONTS_CACHE = 'fonts';
+export const FONTS_CACHE = `fonts:${serviceWorkerOption.gitHash}`;
 
 export const T_ORIGIN = 'origin';
 export const T_DOCS_API = 'api';

@@ -43,8 +43,7 @@ export default function onFetch(event) {
 }
 
 function escapeHostPattern(host) {
-    return host.replace(/\./g, '\\.')
-        .replace(/^https?:\/\//, '');
+    return host.replace(/\./g, '\\.');
 }
 
 function isResource(url) {
