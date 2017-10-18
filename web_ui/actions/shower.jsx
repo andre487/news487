@@ -50,41 +50,46 @@ export function changeCardExpand(docId, cardState) {
 
 function buildUrl(viewType, routePath, routeParams) {
     const noTags = config.excludeTags.join(',');
+    let url;
 
-    if (viewType === ViewTypes.TEXT_SEARCH) {
-        return [
-            `${config.apiUrl}`,
-            `/get-documents`,
-            `?text=${encodeURIComponent(routeParams.text)}`,
-            `&no-tags=${noTags}`
-        ].join('');
-    }
-
-    if (viewType === ViewTypes.TAG_SEARCH) {
-        return [
-            `${config.apiUrl}`,
-            `/get-documents`,
-            `?tags=${encodeURIComponent(routeParams.tag)}`,
-            `&no-tags=${noTags}`,
-            `&limit=${config.defaultDocsLimit}`
-        ].join('');
-    }
-
-    if (viewType === ViewTypes.CATEGORY) {
-        if (routePath.startsWith('/category/')) {
-            return [
+    switch (viewType) {
+        case ViewTypes.TEXT_SEARCH:
+            url = [
                 `${config.apiUrl}`,
-                `/get-documents-by-category`,
-                `?name=${routeParams.name}`,
+                `/get-documents`,
+                `?text=${encodeURIComponent(routeParams.text)}`,
+                `&no-tags=${noTags}`
+            ].join('');
+            break;
+        case ViewTypes.TAG_SEARCH:
+            url = [
+                `${config.apiUrl}`,
+                `/get-documents`,
+                `?tags=${encodeURIComponent(routeParams.tag)}`,
+                `&no-tags=${noTags}`,
                 `&limit=${config.defaultDocsLimit}`
             ].join('');
-        }
-
-        return [
-            `${config.apiUrl}`,
-            `/get-digest?limit=${config.defaultDocsLimit}`
-        ].join('');
+            break;
+        case ViewTypes.CATEGORY:
+            if (routePath.startsWith('/category/')) {
+                url =[
+                    `${config.apiUrl}`,
+                    `/get-documents-by-category`,
+                    `?name=${routeParams.name}`,
+                    `&limit=${config.defaultDocsLimit}`
+                ].join('');
+            } else {
+                url = [
+                    `${config.apiUrl}`,
+                    `/get-digest?limit=${config.defaultDocsLimit}`
+                ].join('');
+            }
+            break;
+        default:
+            throw new Error(`Unknown viewType: ${viewType}`);
     }
 
-    throw new Error(`Unknown viewType: ${viewType}`);
+    url += `&fields=${config.fields.join(',')}`;
+
+    return url;
 }
