@@ -142,8 +142,6 @@ def get_document(**kwargs):
         'content': content,
     }
 
-    doc_data.update(text_utils.get_metadata(doc, content))
-
     log.info('End search document')
 
     return doc_data
