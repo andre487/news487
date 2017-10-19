@@ -18,10 +18,14 @@ _tags_matcher = re.compile('(?:.|\n)*tags:\s*([^\n]+)')
 
 
 def parse():
-    consumer_key = os.environ.get('TWITTER_CONSUMER_KEY')
-    consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET')
-    access_token_key = os.environ.get('TWITTER_ACCESS_TOKEN_KEY')
-    access_token_secret = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
+    consumer_key = os.environ.get('TWITTER_CONSUMER_KEY') \
+                   or os.environ.get('TWITTER_SCRAPPER_487_CONSUMER_KEY')
+    consumer_secret = os.environ.get('TWITTER_CONSUMER_SECRET') \
+                      or os.environ.get('TWITTER_SCRAPPER_487_CONSUMER_SECRET')
+    access_token_key = os.environ.get('TWITTER_ACCESS_TOKEN_KEY') \
+                       or os.environ.get('TWITTER_SCRAPPER_487_ACCESS_TOKEN_KEY')
+    access_token_secret = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET') \
+                          or os.environ.get('TWITTER_SCRAPPER_487_ACCESS_TOKEN_SECRET')
 
     if not consumer_key or not consumer_secret or not access_token_key or not access_token_secret:
         raise Exception(

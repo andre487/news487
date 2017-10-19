@@ -6,6 +6,7 @@ import re
 import sys
 import twits
 
+from data_extraction import doc_handler as hh
 from multiprocessing.pool import ThreadPool
 from rss import parse_feed_by_name, sources as rss_sources
 from util.write import write_data
@@ -72,7 +73,7 @@ def get_scrappers():
 def run_scrappers(args, scrappers):
     log.info('Start scrappers run')
 
-    data = []
+    docs = []
     names_set = set(args.names)
 
     if 'all' in names_set:
@@ -80,27 +81,22 @@ def run_scrappers(args, scrappers):
     else:
         rss_handlers = set(scrappers['rss']).intersection(names_set)
 
-    def callback(res):
+    def handlers_callback(res):
         flat_res = []
         for item in res:
             flat_res += item
 
         for item in flat_res:
-            data.append(item)
+            docs.append(item)
 
     pool = ThreadPool()
-
-    pool.map_async(
-        _run_rss_handler,
-        rss_handlers,
-        callback=callback,
-    )
+    pool.map_async(_run_rss_handler, rss_handlers, callback=handlers_callback)
 
     if 'twitter' in names_set or 'all' in names_set:
-        pool.apply_async(_run_twitter_handler, callback=callback)
+        pool.apply_async(_run_twitter_handler, callback=handlers_callback)
 
     if 'mail' in names_set or 'all' in names_set:
-        pool.apply_async(_run_mail_handler, callback=callback)
+        pool.apply_async(_run_mail_handler, callback=handlers_callback)
 
     pool.close()
     pool.join()
@@ -108,11 +104,30 @@ def run_scrappers(args, scrappers):
     log.info('End scrappers run')
 
     log.info('Start sorting data')
-    data.sort(key=lambda item: item['published'], reverse=True)
+    docs.sort(key=lambda item: item['published'], reverse=True)
     log.info('End sorting data')
 
+    old_docs = docs[:-5]
+    new_docs = docs[-5:]
+
+    new_dressed_docs = []
+
+    def dress_callback(res):
+        for doc in res:
+            new_dressed_docs.append(doc)
+
+    log.info('Start dressing docs')
+    pool = ThreadPool()
+    pool.map_async(hh.dress_document_with_metadata, new_docs, callback=dress_callback)
+
+    pool.close()
+    pool.join()
+
+    all_docs = old_docs + new_dressed_docs
+    log.info('End dressing docs')
+
     log.info('Start write data')
-    write_data(args, data)
+    write_data(args, all_docs)
     log.info('End write data')
 
 

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+packages=${@:2:$#}
+
+log_info "Installing for ${PROJECT_DIR} packages: $packages"
+
+"$DEV_VIRTUAL_ENV/bin/pip" install $packages
+
+log_info "Freezing packages"
+
+"$DEV_VIRTUAL_ENV/bin/pip" freeze > "$PROJECT_DIR/requirements.txt"
+
+log_info "Success!"

@@ -18,9 +18,9 @@ _tags_parser = re.compile(r'tags:\W*(.+)', re.UNICODE)
 def parse():
     # @see http://imapclient.readthedocs.io/en/master/
 
-    mail_server = os.environ.get('MAIL_SERVER')
-    mail_login = os.environ.get('MAIL_LOGIN')
-    mail_password = os.environ.get('MAIL_PASSWORD')
+    mail_server = os.environ.get('MAIL_SERVER') or os.environ.get('SUBSCRIBE_MAIL_SERVER')
+    mail_login = os.environ.get('MAIL_LOGIN') or os.environ.get('SUBSCRIBE_MAIL_LOGIN')
+    mail_password = os.environ.get('MAIL_PASSWORD') or os.environ.get('SUBSCRIBE_MAIL_PASSWORD')
 
     readonly = os.environ.get('MAIL_READONLY') == '1'
 
@@ -62,6 +62,8 @@ def handle_mailbox_folder(server, folder_name, readonly=True):
             tags_list = parse_tags(folder_name)
 
             data.append({
+                'from_mail': True,
+
                 'title': subj,
                 'description': subj,
                 'link': 'EmailID(%s,%s)' % (to_email, msg_id),
