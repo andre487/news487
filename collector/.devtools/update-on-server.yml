@@ -23,5 +23,6 @@
           -e 'MAIL_SERVER={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_SERVER') }}' \
           -e 'MAIL_LOGIN={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_LOGIN') }}' \
           -e 'MAIL_PASSWORD={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_PASSWORD') }}' \
+          -e MONGO_HOST=common-mongo \
           andre487/scrapper487 \
-          bash -c '/usr/local/bin/app/.devtools/schedule --mongo common-mongo run all'
+          bash -c '/usr/local/bin/app/.devtools/schedule run all'

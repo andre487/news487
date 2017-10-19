@@ -21,8 +21,9 @@ run_project_for_docker_test() {
         -e MAIL_LOGIN="$(cat ~/.private/SUBSCRIBE_MAIL_LOGIN)" \
         -e MAIL_PASSWORD="$(cat ~/.private/SUBSCRIBE_MAIL_PASSWORD)" \
         -e MAIL_READONLY=1 \
+        -e MONGO_HOST=dev-mongo \
         "$DOCKER_REPO_NAME" \
-        /usr/local/bin/app/scrap.py --mongo=dev-mongo run all \
+        /usr/local/bin/app/scrap.py run all \
         | tee "$log_file"
 
     set +e

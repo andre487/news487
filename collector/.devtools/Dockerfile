@@ -28,3 +28,5 @@ RUN set -x && \
     rm -f /var/cache/apt/*.bin && \
     find /tmp -type f -exec rm {} \; && \
     find /var/tmp -type f -exec rm {} \;
+
+ENV MONGO_HOST=common-mongo

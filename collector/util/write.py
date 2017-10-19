@@ -4,27 +4,24 @@ import logging
 import pymongo
 import pymongo.errors
 
+from util import db
+
 log = logging.getLogger('app')
 
 
 def write_data(args, data):
-    if args.mongo:
-        write_to_mongo(args, data)
-    else:
+    res = write_to_mongo(data)
+    if not res:
         need_ascii = not args.unicode_json
         print json.dumps(data, ensure_ascii=need_ascii, indent=2)
 
 
-def write_to_mongo(args, data):
-    log.info('Write to MongoDB')
+def write_to_mongo(data):
+    collection = db.get_collection()
+    if not collection:
+        return False
 
-    host = args.mongo['host'] or 'localhost'
-    port = args.mongo['port'] or 27017
-
-    log.info('Connect to MongoDB: %s:%s', host, port)
-
-    db = pymongo.MongoClient(host, port)[args.mongo_db]
-    collection = db['items']
+    log.info('Writing to MongoDB')
 
     collection.create_index([
         ('link', pymongo.ASCENDING),
@@ -36,6 +33,12 @@ def write_to_mongo(args, data):
     collection.create_index([
         ('published', pymongo.DESCENDING),
     ])
+
+    collection.create_index([
+        ('dressed', pymongo.ASCENDING),
+        ('from_mail', pymongo.ASCENDING),
+        ('published', pymongo.DESCENDING),
+    ], sparse=True)
 
     collection.create_index([
         ('tags', pymongo.ASCENDING),
@@ -69,8 +72,9 @@ def write_to_mongo(args, data):
         else:
             inserted_documents += 1
 
-    pymongo.MongoClient(host, port).close()
+    db.close()
 
     log.info('Documents have inserted: %d', inserted_documents)
     log.info('Documents have updated: %d', updated_documents)
-    log.info('Connection to MongoDB closed')
+
+    return True

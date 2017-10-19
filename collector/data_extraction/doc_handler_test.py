@@ -1,5 +1,5 @@
 # coding=utf-8
-import doc_handler
+from data_extraction import doc_handler
 
 light_html = """
 <style>p{margin:0}</style>

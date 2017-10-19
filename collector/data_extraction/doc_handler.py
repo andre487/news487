@@ -6,7 +6,9 @@ import requests
 import time
 
 from collections import defaultdict
+from datetime import datetime, timedelta
 from HTMLParser import HTMLParser
+from util import db
 
 log = logging.getLogger('app')
 
@@ -246,14 +248,21 @@ class TagsStripper(HTMLParser):
 
 
 def dress_document_with_metadata(doc):
-    if doc.get('from_mail'):
-        return dress_email_document(doc)
+    try:
+        if doc.get('from_mail'):
+            return dress_email_document(doc)
 
-    return dress_page_document(doc)
+        return dress_page_document(doc)
+    except Exception as e:
+        log.warn(e)
+        return doc
 
 
 def dress_email_document(doc):
     extr = MeaningExtractor(doc['text'])
+
+    doc['orig_description'] = doc['description']
+    doc['description'] = extr.get_description() or doc['description']
 
     doc['picture'] = extr.get_picture()
     doc['dressed'] = True
@@ -264,10 +273,17 @@ def dress_email_document(doc):
 def dress_page_document(doc):
     url = doc['link']
 
-    timeout = random.randint(100, 3000) / 1000.0
+    timeout = random.randint(1000, 2500) / 1000.0
     time.sleep(timeout)
 
-    result = requests.get(url)
+    headers = {
+        'User-Agent': (
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) '
+            'AppleWebKit/537.36 (KHTML, like Gecko) '
+            'Chrome/60.0.3112.113 YaBrowser/17.9.1.888 Yowser/2.5 Safari/537.36'
+        )
+    }
+    result = requests.get(url, headers=headers)
 
     if result.status_code != 200:
         log.warn('Code %s from url %s', result.status_code, url)
@@ -275,7 +291,7 @@ def dress_page_document(doc):
 
     extr = MeaningExtractor(result.text)
 
-    doc['orig_picture'] = doc['picture']
+    doc['orig_picture'] = doc.get('picture')
     doc['picture'] = extr.get_picture() or doc['picture']
 
     doc['orig_description'] = doc['description']
@@ -291,3 +307,45 @@ def strip_tags(html):
     parser = TagsStripper()
     parser.feed(html)
     return parser.get_data()
+
+
+def split_docs_by_dressing(docs):
+    collection = db.get_collection()
+    if not collection:
+        return [], docs
+
+    cursor = collection.find({
+        'dressed': True,
+        '$or': [
+            {'from_mail': {'$exists': False}},
+            {'from_mail': False},
+        ],
+        'published': {'$gt': datetime.now() - timedelta(days=2 * 360)}
+    })
+
+    dressed_doc_ids = set()
+    for doc in cursor:
+        dressed_doc_ids.add(create_doc_id(doc))
+
+    log.info('Have %d already dressed documents', len(dressed_doc_ids))
+
+    old_docs = []
+    new_docs = []
+
+    for doc in docs:
+        if create_doc_id(doc) in dressed_doc_ids:
+            doc['dressed'] = True
+            old_docs.append(doc)
+        else:
+            new_docs.append(doc)
+
+    return old_docs, new_docs
+
+
+def create_doc_id(doc):
+    return '%s:%s:%s:%s' % (
+        doc['link'],
+        doc['title'],
+        doc['source_name'],
+        doc['source_type'],
+    )

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import util
+from util import common as util
 
 
 def main():
