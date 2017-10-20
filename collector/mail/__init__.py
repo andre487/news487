@@ -5,9 +5,9 @@ import logging
 import os
 import re
 
+from data_extraction import link_handler
 from email import header as eh
 from util import date, tags
-
 
 log = logging.getLogger('app')
 
@@ -61,7 +61,7 @@ def handle_mailbox_folder(server, folder_name, readonly=True):
 
             tags_list = parse_tags(folder_name)
 
-            data.append({
+            doc = handle_doc_links({
                 'from_mail': True,
 
                 'title': subj,
@@ -82,6 +82,8 @@ def handle_mailbox_folder(server, folder_name, readonly=True):
 
                 'tags': tags.string_format(*tags_list),
             })
+
+            data.append(doc)
 
     return data
 
@@ -134,6 +136,26 @@ def parse_tags(folder_name):
         tags_list += [tag.strip() for tag in tags_string.split(',')]
 
     return tags_list
+
+
+def handle_doc_links(doc):
+    text_fields = ('title', 'description', 'text')
+
+    for name in text_fields:
+        try:
+            doc[name] = link_handler.replace_redirects(doc[name])
+        except Exception as e:
+            log.warn(e)
+
+    for name in text_fields:
+        doc[name] = link_handler.replace_email_settings_links(doc[name])
+
+    content_type = doc.get('text_content_type', '')
+    if content_type.startswith('text/plain'):
+        log.info('Highlight links for email %s', doc['link'])
+        doc['text'] = link_handler.highlight_urls(doc['text'])
+
+    return doc
 
 
 if __name__ == '__main__':

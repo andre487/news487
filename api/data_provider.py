@@ -87,6 +87,7 @@ def cache_params(**kwargs):
     def wrapper(func):
         func.cached_params = kwargs
         return func
+
     return wrapper
 
 
@@ -132,8 +133,6 @@ def get_document(**kwargs):
     content = doc.get('text', doc.get('description', ''))
 
     is_text = content_type.startswith('text/plain')
-    if is_text:
-        content = text_utils.highlight_urls(content)
 
     doc_data = {
         'title': doc['title'],
@@ -388,10 +387,5 @@ def dress_item(item):
 
     if 'published' in item and item['published']:
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
-
-    for name in ('title', 'description', 'text'):
-        if name in item:
-            if item[name]:
-                item[name] = text_utils.replace_email_settings_links(item[name])
 
     return item
