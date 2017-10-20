@@ -28,7 +28,8 @@ run_project_tests() {
     export WEB_PORT=35000
     export MONGO_PORT=37017
 
-    "$DEV_VIRTUAL_ENV/bin/pytest"
+    # TODO: enable when there will be new tests
+    # "$DEV_VIRTUAL_ENV/bin/pytest"
 
     if [[ -z "$(docker ps | grep scrapper_api_testing_web)" ]]; then
         log_info "Starting service for tests"
