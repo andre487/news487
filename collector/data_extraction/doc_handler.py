@@ -289,6 +289,9 @@ def dress_page_document(doc):
         log.warn('Code %s from url %s', result.status_code, url)
         return doc
 
+    if result.encoding == 'ISO-8859-1':
+        result.encoding = 'UTF-8'
+
     extr = MeaningExtractor(result.text)
 
     doc['orig_picture'] = doc.get('picture')

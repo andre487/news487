@@ -30,14 +30,17 @@ heavy_html = """
         </article>
     </div>
     <script>alert(1)</script>
+    <script>
+    // Скрипт с комментарием
+    </script>
 </body>
 """
 
 og_meta = """
 <meta name='og:type' content='OgType'>
 <meta name='og:url' content='http://og.url'>
-<meta name='og:title' content='OgTitle'>
-<meta name='og:description' content='OgDescription'>
+<meta name='og:title' content='Тайтл OgTitle'>
+<meta name='og:description' content='Описание OgDescription'>
 <meta name='og:image' content='og-image.png'>
 """
 
@@ -100,7 +103,7 @@ def test_meaning_extractor_title_no():
 def test_meaning_extractor_title_no_but_og():
     parser = doc_handler.MeaningExtractor(light_html_og_meta)
 
-    assert parser.get_title() == 'OgTitle'
+    assert parser.get_title() == u'Тайтл OgTitle'
 
 
 def test_meaning_extractor_title_no_but_twitter():
@@ -124,7 +127,7 @@ def test_meaning_extractor_header_no():
 def test_meaning_extractor_description_og():
     parser = doc_handler.MeaningExtractor(heavy_html_with_og_meta)
 
-    assert parser.get_description() == 'OgDescription'
+    assert parser.get_description() == u'Описание OgDescription'
 
 
 def test_meaning_extractor_description_twitter():
