@@ -11,7 +11,7 @@ export const T_FONT = 'font';
 export const SR_NET_FIRST = 'strategy-net-first';
 export const SR_CACHE_FIRST = 'strategy-cache-first';
 
-export const HANDLER_PATTERNS = [/\/digest/, /\/category\/.+/, /\/tag\/.+/, /\/search\/.+/];
+export const HANDLER_PATTERNS = [/\/digest/, /\/category\/.+/, /\/tag\/.+/];
 export const HANDLER_CANONICAL = `${self.location.origin}/index.html`;
 
 export function onInstall(event) {
