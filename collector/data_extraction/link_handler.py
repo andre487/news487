@@ -12,6 +12,7 @@ change_email_settings_tips = [
     'edit-subscription',
     'confirm',
     'click.e.mozilla.org',
+    '/leave/',
 ]
 
 no_redir_tips = [
@@ -20,6 +21,7 @@ no_redir_tips = [
     'edit_subscription',
     'edit-subscription',
     'confirm',
+    '/leave/',
     'http://www.w3.org/1999/xhtml',
 ]
 

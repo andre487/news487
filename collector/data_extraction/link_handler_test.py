@@ -15,6 +15,7 @@ change_email_settings_links = [
     'https://mobilewebweekly.com/unsubscribe/hash',
     'https://frontendfoc.us/unsubscribe/hash',
     'https://frontendfoc.us/edit_subscription/hash#hash',
+    'https://nodeweekly.com/leave/hash',
     'https://click.e.mozilla.org/?qs=hash',
 ]
 
