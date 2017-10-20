@@ -1,12 +1,11 @@
 'use strict';
 
-const path = require('path');
 const childProcess = require('child_process');
-
-const webpack = require('webpack');
-
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require('fs');
+const path = require('path');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
+const webpack = require('webpack');
 
 const apiHost = process.env.SCRAPPER_487_API_URL;
 if (!apiHost) {
@@ -25,7 +24,19 @@ module.exports = {
     module: {
         rules: [
             { test: /\.jsx?$/, exclude: /node_modules/, loaders: ['babel-loader'] },
-            { test: /\.css?$/, loaders: ['style-loader', 'css-loader'] },
+            {
+                test: /\.css?$/,
+                loaders: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            attrs: { nonce: gitHash }
+                        }
+                    },
+                    'css-loader'
+                ]
+            },
+            { test: /\.txt?$/, loaders: ['raw-loader'] },
         ]
     },
     resolve: {
@@ -34,7 +45,8 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'API_URL': `"${apiHost}"`
+                'API_URL': `"${apiHost}"`,
+                'GIT_HASH': `"${gitHash}"`,
             }
         }),
 

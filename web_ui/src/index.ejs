@@ -1,4 +1,5 @@
 <!doctype html>
+<!--suppress HtmlUnknownTarget -->
 <html>
     <head>
         <meta charset="utf-8">
@@ -11,7 +12,16 @@
         <meta name="theme-color" content="#90a4ae">
         <link rel="manifest" href="/manifest.json">
 
-        <style>
+        <meta http-equiv="Content-Security-Policy" content="${
+            require('../config/csp.txt')
+                .replace(/\n+/g, ' ')
+                .replace(/\s+/, ' ')
+                .replace(/\$API_URL/g, process.env.API_URL)
+                .replace(/\$NONCE/g, process.env.GIT_HASH)
+                .trim()
+         }">
+
+        <style nonce="${process.env.GIT_HASH}">
             #page-loading-spinner-container
             {
                 margin-top: 40px;
@@ -54,10 +64,9 @@
             </div>
         </div>
 
-        <!--suppress HtmlUnknownTarget -->
         <script async src="/<%=htmlWebpackPlugin.files.chunks.main.entry%>"></script>
 
-        <script>
+        <script nonce="${process.env.GIT_HASH}">
             (function() {
                 'use strict';
                 var fontCssUrl = '//fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic';
@@ -106,15 +115,13 @@
 
                         var style = document.createElement('style');
                         style.textContent = cssText;
+                        style.setAttribute('nonce', '${process.env.GIT_HASH}');
                         document.body.appendChild(style);
                     };
                     loader.send();
                 }
             })();
-        </script>
 
-        <!-- Yandex.Metrika counter -->
-        <script type="text/javascript">
             (function(d, w, c) {
                 (w[c] = w[c] || []).push(function() {
                     try {
