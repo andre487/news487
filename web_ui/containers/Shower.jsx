@@ -7,7 +7,7 @@ import FlatButton from 'material-ui/FlatButton';
 
 import * as ShowerActions from '../actions/shower';
 import * as ViewTypes from '../constants/ViewTypes';
-import DocumentsList from '../components/DocumentsList';
+import DocumentsList from '../components/DocumentList';
 
 class Shower extends PureComponent {
     componentDidMount() {

@@ -295,7 +295,7 @@ def dress_page_document(doc):
     extr = MeaningExtractor(result.text)
 
     doc['orig_picture'] = doc.get('picture')
-    doc['picture'] = extr.get_picture() or doc['picture']
+    doc['picture'] = extr.get_picture() or doc['orig_picture']
 
     doc['orig_description'] = doc['description']
     doc['description'] = extr.get_description() or doc['description']

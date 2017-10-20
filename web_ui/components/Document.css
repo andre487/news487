@@ -3,9 +3,19 @@
     max-width: 100%;
 }
 
+.document-card h1, .document-card h2
+{
+    margin-top: 0;
+}
+
+.document-card * + h1, .document-card * + h2
+{
+    margin-top: 20px;
+}
+
 .document-card p
 {
-    margin: 0
+    margin: 0;
 }
 
 .document-card p + p

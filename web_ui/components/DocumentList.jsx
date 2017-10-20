@@ -6,9 +6,9 @@ import FlatButton from 'material-ui/FlatButton';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 
-import config from '../config';
+import Document from './Document';
 
-import './DocumentsList.css';
+import config from '../config';
 
 const styles = {
     progress: {
@@ -75,8 +75,7 @@ class DocumentsList extends PureComponent {
             <Paper key={doc.id} zDepth={1} style={styles.paper}>
                 <Card
                     initiallyExpanded={expanded}
-                    onExpandChange={this._onCardExpandChange.bind(this, doc.id)}
-                    className="document-card">
+                    onExpandChange={this._onCardExpandChange.bind(this, doc.id)}>
                     <CardHeader
                         titleStyle={styles.cardTitle}
                         subtitleStyle={styles.cardSubtitle}
@@ -90,8 +89,13 @@ class DocumentsList extends PureComponent {
                         subtitle={`${doc.source_title} – ${this._renderDate(doc)}`} />
                     <CardText
                         expandable={true}
-                        style={styles.cardText}
-                        dangerouslySetInnerHTML={{ __html: doc.description }} />
+                        style={styles.cardText}>
+                        <Document
+                            title={doc.title}
+                            picture={doc.picture}
+                            origPicture={doc.orig_picture}
+                            description={doc.description} />
+                    </CardText>
                     <CardActions>
                         {this._renderTagsLine(doc)}
                     </CardActions>

@@ -32,5 +32,12 @@ hr
 
 pre, code
 {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    padding: 5px 10px;
+
     color: #A1887F;
+    background: #222222;
 }
