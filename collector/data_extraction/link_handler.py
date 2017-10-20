@@ -20,6 +20,7 @@ no_redir_tips = [
     'edit_subscription',
     'edit-subscription',
     'confirm',
+    'http://www.w3.org/1999/xhtml',
 ]
 
 _url_finder = re.compile(
