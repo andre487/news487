@@ -40,6 +40,9 @@ def replace_redirects(html):
 def _redirect_replacer(match):
     url = match.group(0)
 
+    if is_local_link(url):
+        return url
+
     for tip in no_redir_tips:
         if tip in url:
             return url
@@ -55,11 +58,15 @@ def _redirect_replacer(match):
 
     if res.is_redirect:
         location = res.headers.get('Location', res.headers.get('location'))
-        if location:
+        if location and not is_local_link(location):
             log.info('Replace redirect for email: %s... -> %s...', url[:32], location[:32])
             return location
 
     return url
+
+
+def is_local_link(url):
+    return url.startswith('/') and not url.startswith('//')
 
 
 def replace_email_settings_links(html):
