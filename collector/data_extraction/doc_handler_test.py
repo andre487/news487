@@ -103,7 +103,7 @@ def test_meaning_extractor_title_no():
 def test_meaning_extractor_title_no_but_og():
     parser = doc_handler.MeaningExtractor(light_html_og_meta)
 
-    assert parser.get_title() == u'Тайтл OgTitle'
+    assert parser.get_title() == 'Тайтл OgTitle'
 
 
 def test_meaning_extractor_title_no_but_twitter():
@@ -127,7 +127,7 @@ def test_meaning_extractor_header_no():
 def test_meaning_extractor_description_og():
     parser = doc_handler.MeaningExtractor(heavy_html_with_og_meta)
 
-    assert parser.get_description() == u'Описание OgDescription'
+    assert parser.get_description() == 'Описание OgDescription'
 
 
 def test_meaning_extractor_description_twitter():
