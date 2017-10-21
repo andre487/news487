@@ -19,7 +19,7 @@ server {
     gzip_static on;
 
     location ~ sw\.js {
-        add_header Cache-Control "no-cache, no-store";
+        add_header Cache-Control "public, max-age=120, must-revalidate";
         add_header Vary "Accept-Encoding";
 
         try_files $uri @common;
@@ -42,7 +42,7 @@ server {
     }
 
     location @handlers {
-        add_header Cache-Control "no-cache, no-store";
+        add_header Cache-Control "public, max-age=120, must-revalidate";
         add_header Vary "Accept-Encoding";
 
         try_files /index.html =503;
