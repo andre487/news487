@@ -100,7 +100,7 @@ def run_scrappers(args, scrappers):
 
     log.info('End scrappers run')
 
-    old_docs, new_docs = doc_handler.split_docs_by_dressing(docs)
+    new_docs = doc_handler.filter_new_docs(docs)
     new_dressed_docs = []
 
     def dress_callback(res):
@@ -114,15 +114,14 @@ def run_scrappers(args, scrappers):
     pool.close()
     pool.join()
 
-    all_docs = old_docs + new_dressed_docs
     log.info('End dressing docs')
 
     log.info('Start sorting data')
-    all_docs.sort(key=lambda item: item['published'], reverse=True)
+    new_dressed_docs.sort(key=lambda item: item['published'], reverse=True)
     log.info('End sorting data')
 
     log.info('Start write data')
-    write_data(args, all_docs)
+    write_data(args, new_dressed_docs)
     log.info('End write data')
 
 

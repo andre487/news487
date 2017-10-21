@@ -312,10 +312,10 @@ def strip_tags(html):
     return parser.get_data()
 
 
-def split_docs_by_dressing(docs):
+def filter_new_docs(docs):
     collection = db.get_collection()
     if not collection:
-        return [], docs
+        return docs
 
     cursor = collection.find({
         'dressed': True,
@@ -323,32 +323,26 @@ def split_docs_by_dressing(docs):
             {'from_mail': {'$exists': False}},
             {'from_mail': False},
         ],
-        'published': {'$gt': datetime.now() - timedelta(days=2 * 360)}
+        'published': {'$gt': datetime.now() - timedelta(days=2 * 360)},
     })
 
-    dressed_doc_ids = set()
-    for doc in cursor:
-        dressed_doc_ids.add(create_doc_id(doc))
+    dressed_doc_ids = {create_doc_id(doc) for doc in cursor}
+    new_documents = [doc for doc in docs if create_doc_id(doc) not in dressed_doc_ids]
 
-    log.info('Have %d already dressed documents', len(dressed_doc_ids))
+    log.info(
+        'Have %d dressed documents, %d new documents',
+        len(dressed_doc_ids), len(new_documents),
+    )
 
-    old_docs = []
-    new_docs = []
-
-    for doc in docs:
-        if create_doc_id(doc) in dressed_doc_ids:
-            doc['dressed'] = True
-            old_docs.append(doc)
-        else:
-            new_docs.append(doc)
-
-    return old_docs, new_docs
+    return new_documents
 
 
 def create_doc_id(doc):
-    return '%s:%s:%s:%s' % (
+    doc_id = '%s:%s:%s:%s' % (
         doc['link'],
         doc['title'],
         doc['source_name'],
         doc['source_type'],
     )
+
+    return doc_id.encode('utf-8')
