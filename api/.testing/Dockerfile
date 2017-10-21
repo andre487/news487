@@ -8,7 +8,7 @@ WORKDIR /var/requirements
 RUN set -x && \
     apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev && \
+    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev default-libmysqlclient-dev && \
     apt-get clean -y && \
     apt-get autoclean -y && \
     rm -f /var/cache/apt/*.bin && \

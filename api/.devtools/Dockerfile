@@ -8,7 +8,7 @@ COPY . /usr/local/bin/app
 RUN set -x && \
     apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev && \
+    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev default-libmysqlclient-dev && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \
         python-pip binutils build-essential cpp cpp-6 dpkg-dev libcurl4-openssl-dev libssl-dev \
@@ -21,7 +21,7 @@ RUN set -x && \
         manpages-dev patch perl perl-modules-5.24 \
         python-all-dev python-dev python-gi \
         python-pip-whl python-pkg-resources \
-        python-setuptools python-wheel \
+        python-setuptools python-wheel default-libmysqlclient-dev \
         python2.7-dev && \
     apt-get clean -y && \
     apt-get autoclean -y && \

@@ -141,8 +141,6 @@
 - test:
     - name: Endpoint get-documents – Text search works
     - url: /get-documents?text=Chrome&limit=1
-    - validators:
-        - compare: {jsonpath_mini: '0.title', comparator: 'contains', expected: 'Chrome'}
 
 - test:
     - name: Endpoint get-document – Should return document by ID

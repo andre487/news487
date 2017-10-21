@@ -15,8 +15,10 @@
           -d \
           --restart always \
           --link common-mongo \
+          --link scrapper487-sphinx \
           --name scrapper487-api \
           -e 'MONGO_HOST=common-mongo' \
+          -e 'SPHINX_HOST=scrapper487-sphinx' \
           -e 'SCRAPPER_API_URL={{ lookup('file', '~/.private/SCRAPPER_487_API_URL') }}' \
           -p 127.0.0.1:10100:5000 \
           andre487/scrapper487-api

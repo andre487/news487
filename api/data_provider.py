@@ -1,5 +1,6 @@
 import dateutil.parser
 import logging
+import MySQLdb
 import pymongo
 import os
 import re
@@ -67,6 +68,9 @@ CATEGORIES = {
 log = logging.getLogger('app')
 
 _mongo_db = None
+_sphinx_connection = None
+_sphinx_index = None
+
 _tags_validator = re.compile('^[\w\s,]+$', re.UNICODE)
 
 
@@ -99,9 +103,10 @@ def get_cache_params(func):
 def get_documents(**kwargs):
     log.info('Start search documents. Params: %s', kwargs.keys())
 
-    db = _get_mongo_db()
-
+    create_query = create_query_text_search if 'text' in kwargs else create_query_general
     query, order, limit = create_query(**kwargs)
+
+    db = _get_mongo_db()
     res = make_query(db, query, order, limit)
 
     log.info('End search documents')
@@ -181,7 +186,7 @@ def get_documents_by_category(**kwargs):
     args['op'] = ['and']
     del args['name']
 
-    query, order, limit = create_query(**args)
+    query, order, limit = create_query_general(**args)
 
     res = make_query(db, query, order, limit)
 
@@ -227,7 +232,7 @@ def get_digest(**kwargs):
 
         args['op'] = ['and']
 
-        query, order, limit = create_query(**args)
+        query, order, limit = create_query_general(**args)
         or_part.append(query)
 
     data = make_query(db, big_query, order, limit)
@@ -257,7 +262,7 @@ def get_stats(**kwargs):
     return data
 
 
-def create_query(**kwargs):
+def create_query_general(**kwargs):
     order = -1
     limit = 0
     op = 'and'
@@ -299,8 +304,8 @@ def create_query(**kwargs):
     if 'author-name' in kwargs:
         add_find_by_author(query, kwargs['author-name'][-1])
 
-    if 'text' in kwargs:
-        add_find_by_text(query, ' '.join(kwargs['text']))
+    if 'doc-ids' in kwargs:
+        add_find_by_doc_ids(query, kwargs['doc-ids'][-1])
 
     if not full_query['$and']:
         full_query = {}
@@ -346,8 +351,31 @@ def add_find_by_author(query, source):
     query.append({'author_name': source})
 
 
-def add_find_by_text(query, text):
-    query.append({'$text': {'$search': text}})
+def add_find_by_doc_ids(query, doc_ids_str):
+    doc_ids = doc_ids_str.split(',')
+    mongo_ids = [objectid.ObjectId(doc_id) for doc_id in doc_ids]
+    query.append({'_id': {'$in': mongo_ids}})
+
+
+def create_query_text_search(**kwargs):
+    text = kwargs['text'] and kwargs['text'][-1].strip()
+    if not text:
+        raise ParamsError('Text should not be empty')
+
+    sphinx, index_name = _get_sphinx_connection()
+    cursor = sphinx.cursor()
+
+    query = 'SELECT doc_id FROM {index} WHERE MATCH(%s)'.format(index=index_name)
+    cursor.execute(query, [text])
+
+    doc_ids = ','.join(item[0] for item in cursor)
+    cursor.close()
+
+    args = kwargs.copy()
+    del args['text']
+    args['doc-ids'] = [doc_ids]
+
+    return create_query_general(**args)
 
 
 def _get_mongo_db():
@@ -367,6 +395,24 @@ def _get_mongo_db():
     _mongo_db = mongo_client[db_name]
 
     return _mongo_db
+
+
+def _get_sphinx_connection():
+    global _sphinx_connection, _sphinx_index
+
+    if _sphinx_connection and _sphinx_index:
+        return _sphinx_connection, _sphinx_index
+
+    host = os.environ.get('SPHINX_HOST', '127.0.0.1')
+    port = int(os.environ.get('SPHINX_PORT', 9306))
+    index_name = os.environ.get('SPHINX_INDEX', 'news_documents')
+
+    log.info('Create new SphinxQL client. Host %s, port %s', host, port)
+
+    _sphinx_connection = MySQLdb.connect(host=host, port=port)
+    _sphinx_index = index_name
+
+    return _sphinx_connection, _sphinx_index
 
 
 def make_query(db, query, order, limit):

@@ -56,7 +56,7 @@ API works through `get-documents`, `get-digest`, `get-documents-by-category` end
   * tags – filter by tags
   * source-name – filter by source name
   * author-name – filter by author name
-  * text – fulltext search by tags, title, description and author name
+  * text – fulltext search by title, text and description
   * name – name of category
 
 Detailed endpoint specs see in file `endpoint-specs.yml`
@@ -65,6 +65,11 @@ API MongoDB setup makes via environment variables:
   * MONGO_HOST – `localhost` by default
   * MONGO_PORT – `27017` by default
   * MONGO_DB – `news_documents` by default
+
+API SphinxSearch setup makes via environment variables:
+  * SPHINX_HOST – `localhost` by default
+  * SPHINX_PORT – `9306` by default
+  * SPHINX_INDEX – `news_documents` by default
 
 For API testing run script `run-test`
 
