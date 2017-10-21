@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -e
+
+tools_dir="$(cd "$(dirname "$0")" && pwd)"
+source "${tools_dir}/_common"
+
+log_info "Creating virtual env"
+
+virtualenv "$DEV_VIRTUAL_ENV"
+
+"$tools_dir/pip-install" "$PROJECT_DIR" -r "$PROJECT_DIR/requirements.txt"
+
+log_info "Success!"

@@ -1,0 +1,23 @@
+#@IgnoreInspection BashAddShebang
+
+DOCKER_REPO_NAME="andre487/scrapper487-sphinx"
+DEV_VIRTUAL_ENV="$HOME/.venv/scrapper487-sphinx"
+SKIP_PROJECT_TESTS=1
+
+run_project_for_dev() {
+    MONGO_HOST=localhost "$DEV_VIRTUAL_ENV/bin/python" get-documents $@
+}
+
+run_project_for_docker_test() {
+    container_id="$(docker run --rm -tid -p 127.0.0.1:9306:9306 --link dev-mongo -e MONGO_HOST=dev-mongo "$DOCKER_REPO_NAME")"
+    sleep 2
+
+    set +e
+    echo 'SELECT * FROM news_documents LIMIT 1;' | mysql -h 127.0.0.1 -P 9306 > /dev/null
+    result="$?"
+    set -e
+
+    docker stop "$container_id" > /dev/null
+
+    return "$result"
+}
