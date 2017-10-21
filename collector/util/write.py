@@ -44,14 +44,6 @@ def write_to_mongo(data):
         ('tags', pymongo.ASCENDING),
     ])
 
-    collection.create_index([
-        ('tags', pymongo.TEXT),
-        ('title', pymongo.TEXT),
-        ('description', pymongo.TEXT),
-        ('text', pymongo.TEXT),
-        ('author_name', pymongo.TEXT),
-    ], default_language='russian')
-
     inserted_documents = 0
     updated_documents = 0
 

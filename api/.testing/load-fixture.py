@@ -24,10 +24,6 @@ def main():
     for item in fixture:
         item['published'] = dateutil.parser.parse(item['published'])
 
-    collection.create_index([
-        ('title', pymongo.TEXT),
-    ])
-
     collection.insert_many(fixture)
 
     collection.insert_one({
