@@ -73,14 +73,6 @@
         - compare: {jsonpath_mini: '0.tags', comparator: 'contains', expected: 'web'}
 
 - test:
-    - name: Endpoint get-documents – Invalid tags cause error 400
-    - url: /get-documents?tags=tech|web&limit=1
-    - expected_status: 400
-    - validators:
-        - compare: {header: 'content-type', expected: 'application/json; charset=utf-8'}
-        - extract_test: {jsonpath_mini: '0.error', test: 'exists'}
-
-- test:
     - name: Endpoint get-documents – Tags search uses operator and by default
     - url: /get-documents?tags=not_exists,web&limit=1
     - validators:
