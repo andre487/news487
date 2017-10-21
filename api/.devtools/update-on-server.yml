@@ -4,13 +4,51 @@
   become_method: sudo
 
   tasks:
+    - name: Setup NGINX host config
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/scrapper487-api.conf
+
+    - name: Enable NGINX host
+      file:
+        src: /etc/nginx/sites-available/scrapper487-api.conf
+        dest: /etc/nginx/sites-enabled/scrapper487-api.conf
+        state: link
+
+    - name: Create web root
+      file:
+        dest: /var/www/{{ scrapper_487_api_host }}
+        state: directory
+        owner: www-data
+        group: www-data
+
+    - name: Install certificate
+      shell: |
+        certbot certonly \
+          --webroot \
+          -w /var/www/{{ scrapper_487_api_host }} \
+          -d {{ scrapper_487_api_host }} \
+          -n \
+          --agree-tos \
+          -m '{{ admin_email }}'
+      args:
+        creates: /etc/letsencrypt/live/{{ scrapper_487_api_host }}
+
+    - name: Reload NGINX
+      service:
+        name: nginx
+        state: reloaded
+
     - name: Update image
       shell: docker pull andre487/scrapper487-api
 
-    - name: Restart container
+    - name: Stop container
       shell: |
-        docker stop scrapper487-api && \
-        docker rm scrapper487-api && \
+        docker stop scrapper487-api || true
+        docker rm scrapper487-api || true
+
+    - name: Start container
+      shell: |
         docker run \
           -d \
           --restart always \

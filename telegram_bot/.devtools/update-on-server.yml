@@ -7,10 +7,13 @@
     - name: Update image
       shell: docker pull andre487/news-bot487
 
-    - name: Restart container
+    - name: Stop container
       shell: |
-        docker stop news-bot487 && \
-        docker rm news-bot487 && \
+        docker stop news-bot487 || true
+        docker rm news-bot487 || true
+
+    - name: Start container
+      shell: |
         docker run \
           -d \
           --restart always \
