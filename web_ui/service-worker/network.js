@@ -35,6 +35,10 @@ const handleStrategies = {
 export default function onFetch(event) {
     const { request } = event;
 
+    if (request.url.includes('/sw.js')) {
+        return;
+    }
+
     const handleStrategy = getHandleStrategy(request);
     if (handleStrategy) {
         const resp = new Responder(request, handleStrategy);
