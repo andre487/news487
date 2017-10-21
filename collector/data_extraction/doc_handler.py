@@ -4,6 +4,7 @@ import random
 import re
 import requests
 import time
+import urlparse
 
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -14,6 +15,7 @@ log = logging.getLogger('app')
 
 words_splitter = re.compile(r'\s+', re.UNICODE)
 non_word_stripper = re.compile(r'(\w)\W+$', re.UNICODE)
+full_url_pattern = re.compile(r'^(?:https?:)?//')
 
 
 class MeaningParser(HTMLParser):
@@ -83,7 +85,11 @@ class MeaningParser(HTMLParser):
 
 
 class MeaningExtractor(object):
-    def __init__(self, html):
+    def __init__(self, html, base_url=None):
+        if base_url and base_url.endswith('/'):
+            base_url = base_url[:-1]
+        self._base_url = base_url
+
         parser = MeaningParser()
         parser.feed(html)
 
@@ -189,6 +195,11 @@ class MeaningExtractor(object):
         elif no_alt_images:
             pic = no_alt_images[0]
 
+        if not full_url_pattern.match(pic) and self._base_url:
+            if not pic.startswith('/'):
+                pic = '/' + pic
+            pic = self._base_url + pic
+
         return pic
 
     def _get_meta_card_type(self):
@@ -292,7 +303,9 @@ def dress_page_document(doc):
     if result.encoding == 'ISO-8859-1':
         result.encoding = 'UTF-8'
 
-    extr = MeaningExtractor(result.text)
+    url_data = urlparse.urlparse(url)
+    base_url = '{}://{}'.format(url_data.scheme, url_data.netloc)
+    extr = MeaningExtractor(result.text, base_url=base_url)
 
     doc['orig_picture'] = doc.get('picture')
     doc['picture'] = extr.get_picture() or doc['orig_picture']

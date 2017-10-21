@@ -216,6 +216,15 @@ def test_meaning_extractor_picture_from_content_prefere_alt():
     assert parser.get_picture() == 'foo.jpg'
 
 
+def test_meaning_extractor_picture_from_content_with_base_url():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=bar.jpg width=100 height=100>' + heavy_html,
+        base_url='http://example.com/'
+    )
+
+    assert parser.get_picture() == 'http://example.com/foo.jpg'
+
+
 def test_meaning_extractor_picture_no():
     parser = doc_handler.MeaningExtractor(light_html)
 
