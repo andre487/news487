@@ -69,10 +69,10 @@ CATEGORIES = {
 log = logging.getLogger('app')
 
 _mongo_db = None
-_sphinx_connection = None
+_sphinx_client = None
 _sphinx_index = None
 
-_tags_validator = re.compile('^[\w\s,]+$', re.UNICODE)
+_tags_validator = re.compile('^[\w\s,&-]+$', re.UNICODE)
 
 
 class ParamsError(Exception):
@@ -414,10 +414,10 @@ def _get_mongo_db():
 
 
 def _get_sphinx_connection():
-    global _sphinx_connection, _sphinx_index
+    global _sphinx_client, _sphinx_index
 
-    if _sphinx_connection and _sphinx_index:
-        return _sphinx_connection, _sphinx_index
+    if _sphinx_client and _sphinx_index:
+        return _sphinx_client, _sphinx_index
 
     host = os.environ.get('SPHINX_HOST', '127.0.0.1')
     port = int(os.environ.get('SPHINX_PORT', 9306))
@@ -425,19 +425,21 @@ def _get_sphinx_connection():
 
     log.info('Create new SphinxQL client. Host %s, port %s', host, port)
 
-    _sphinx_connection = MySQLdb.connect(host=host, port=port, use_unicode=True, charset='utf8')
+    _sphinx_client = MySQLdb.connect(host=host, port=port, use_unicode=True, charset='utf8')
     _sphinx_index = index_name
 
-    return _sphinx_connection, _sphinx_index
+    return _sphinx_client, _sphinx_index
 
 
 def _close_sphinx_connection():
-    global _sphinx_connection, _sphinx_index
+    global _sphinx_client, _sphinx_index
 
-    if _sphinx_connection:
-        _sphinx_connection.close()
+    if _sphinx_client:
+        log.info('Closing SphinxQL client')
 
-        _sphinx_connection = None
+        _sphinx_client.close()
+
+        _sphinx_client = None
         _sphinx_index = None
 
 
