@@ -9,11 +9,8 @@
 
     - name: Stop container
       shell: |
-        container_res="$(docker ps | grep scrapper487-sphinx || true)"
-        if [[ -n "$container_res" ]]; then
-            docker stop scrapper487-sphinx
-            docker rm scrapper487-sphinx
-        fi
+        docker stop scrapper487-sphinx || true
+        docker rm scrapper487-sphinx || true
 
     - name: Run container
       shell: |

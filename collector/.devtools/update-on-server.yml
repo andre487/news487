@@ -9,11 +9,8 @@
 
     - name: Stop container
       shell: |
-        container_res="$(docker ps | grep scrapper487-collector || true)"
-        if [[ -n "$container_res" ]]; then
-            docker stop scrapper487-collector
-            docker rm scrapper487-collector
-        fi
+        docker stop scrapper487-collector || true
+        docker rm scrapper487-collector || true
 
     - name: Restart container
       shell: |
