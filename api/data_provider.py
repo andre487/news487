@@ -72,8 +72,6 @@ _mongo_db = None
 _sphinx_client = None
 _sphinx_index = None
 
-_tags_validator = re.compile('^[\w\s,&-]+$', re.UNICODE)
-
 
 class ParamsError(Exception):
     pass
@@ -325,9 +323,6 @@ def create_query_general(**kwargs):
 def add_find_by_tags(query, tags, op):
     if not tags:
         return
-
-    if not _tags_validator.match(tags):
-        raise ParamsError('Invalid tags format. Need tag1,tag2,tag3')
 
     pattern = create_tags_pattern(tags, op)
 
