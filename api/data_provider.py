@@ -4,6 +4,7 @@ import MySQLdb
 import pymongo
 import os
 import re
+import sys
 import text_utils
 
 from bson import objectid
@@ -103,11 +104,19 @@ def get_cache_params(func):
 def get_documents(**kwargs):
     log.info('Start search documents. Params: %s', kwargs.keys())
 
-    create_query = create_query_text_search if 'text' in kwargs else create_query_general
-    query, order, limit = create_query(**kwargs)
-
     db = _get_mongo_db()
-    res = make_query(db, query, order, limit)
+
+    if 'text' in kwargs:
+        query, limit, doc_ids = create_query_text_search(**kwargs)
+        if query is None:
+            return []
+        docs = make_query(db, query, None, limit)
+        res = reorder_docs_by_ids(docs, doc_ids)
+    else:
+        query, order, limit = create_query_general(**kwargs)
+        if query is None:
+            return []
+        res = make_query(db, query, order, limit)
 
     log.info('End search documents')
     return res
@@ -368,14 +377,21 @@ def create_query_text_search(**kwargs):
     query = 'SELECT doc_id FROM {index} WHERE MATCH(%s)'.format(index=index_name)
     cursor.execute(query, [text])
 
-    doc_ids = ','.join(item[0] for item in cursor)
+    doc_ids = [item[0] for item in cursor]
     cursor.close()
+
+    _close_sphinx_connection()
+
+    if not doc_ids:
+        return None, None, None
 
     args = kwargs.copy()
     del args['text']
-    args['doc-ids'] = [doc_ids]
+    args['doc-ids'] = [','.join(doc_ids)]
 
-    return create_query_general(**args)
+    query, _, limit = create_query_general(**args)
+
+    return query, limit, doc_ids
 
 
 def _get_mongo_db():
@@ -415,8 +431,21 @@ def _get_sphinx_connection():
     return _sphinx_connection, _sphinx_index
 
 
+def _close_sphinx_connection():
+    global _sphinx_connection, _sphinx_index
+
+    if _sphinx_connection:
+        _sphinx_connection.close()
+
+        _sphinx_connection = None
+        _sphinx_index = None
+
+
 def make_query(db, query, order, limit):
-    cursor = db.items.find(query).sort([('published', order)])
+    cursor = db.items.find(query)
+    if order is not None:
+        cursor = cursor.sort([('published', order)])
+
     if limit:
         cursor = cursor.limit(limit)
 
@@ -435,3 +464,22 @@ def dress_item(item):
         item['published'] = item['published'].strftime('%Y-%m-%dT%H:%M:%S')
 
     return item
+
+
+def reorder_docs_by_ids(docs, doc_ids):
+    if docs is None or doc_ids is None:
+        return None
+
+    doc_order = {}
+    for i in range(0, len(doc_ids)):
+        doc_order[doc_ids[i]] = i
+
+    def compare(a, b):
+        a_pos = doc_order.get(a['id'], sys.maxint)
+        b_pos = doc_order.get(b['id'], sys.maxint)
+
+        return a_pos - b_pos
+
+    docs.sort(compare)
+
+    return docs

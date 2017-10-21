@@ -151,7 +151,6 @@ def filter_fields(data, fields):
     for doc in data:
         new_doc = {}
         for field in fields:
-            print field, doc.keys()
             if field in doc:
                 new_doc[field] = doc[field]
         new_data.append(new_doc)
