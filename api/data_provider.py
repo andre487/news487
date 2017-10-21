@@ -425,7 +425,7 @@ def _get_sphinx_connection():
 
     log.info('Create new SphinxQL client. Host %s, port %s', host, port)
 
-    _sphinx_connection = MySQLdb.connect(host=host, port=port)
+    _sphinx_connection = MySQLdb.connect(host=host, port=port, use_unicode=True, charset='utf8')
     _sphinx_index = index_name
 
     return _sphinx_connection, _sphinx_index
