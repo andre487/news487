@@ -7,15 +7,21 @@
     - name: Update image
       shell: docker pull andre487/scrapper487
 
+    - name: Stop container
+      shell: |
+        container_res="$(docker ps | grep scrapper487-collector || true)"
+        if [[ -n "$container_res" ]]; then
+            docker stop scrapper487-collector
+            docker rm scrapper487-collector
+        fi
+
     - name: Restart container
       shell: |
-        docker stop scrapper487 && \
-        docker rm scrapper487 && \
         docker run \
           -d \
           --restart always \
           --link common-mongo \
-          --name scrapper487 \
+          --name scrapper487-collector \
           -e 'TWITTER_CONSUMER_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_KEY') }}' \
           -e 'TWITTER_CONSUMER_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_SECRET') }}' \
           -e 'TWITTER_ACCESS_TOKEN_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_KEY') }}' \

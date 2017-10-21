@@ -3,7 +3,7 @@ FROM debian:9.1
 RUN mkdir -p /usr/local/bin/app
 WORKDIR /usr/local/bin/app
 
-COPY . /usr/local/bin/app
+ADD ./requirements.txt /usr/local/bin/app/requirements.txt
 
 RUN set -x && \
     apt-get update && \
@@ -28,5 +28,7 @@ RUN set -x && \
     rm -f /var/cache/apt/*.bin && \
     find /tmp -type f -exec rm {} \; && \
     find /var/tmp -type f -exec rm {} \;
+
+ADD . /usr/local/bin/app
 
 ENV MONGO_HOST=common-mongo
