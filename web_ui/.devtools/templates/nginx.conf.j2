@@ -42,7 +42,7 @@ server {
     }
 
     location @handlers {
-        add_header Cache-Control "public, max-age=3600, must-revalidate";
+        add_header Cache-Control "no-cache, no-store";
         add_header Vary "Accept-Encoding";
 
         try_files /index.html =503;
