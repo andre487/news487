@@ -7,6 +7,7 @@ Docker images:
   * [Collector](https://hub.docker.com/r/andre487/scrapper487/)
   * [Documents API](https://hub.docker.com/r/andre487/scrapper487-api/)
   * [Telegram bot](https://hub.docker.com/r/andre487/news-bot487/)
+  * [SphinxSearch](https://hub.docker.com/r/andre487/scrapper487-sphinx/)
 
 ## DevTools
 
