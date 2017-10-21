@@ -17,6 +17,7 @@ change_email_settings_links = [
     'https://frontendfoc.us/edit_subscription/hash#hash',
     'https://nodeweekly.com/leave/hash',
     'https://click.e.mozilla.org/?qs=hash',
+    'https://www.mozilla.org/newsletter/existing/hash/'
 ]
 
 email_settings_document = ''.join([
