@@ -17,12 +17,6 @@ if not host:
 
 
 def main():
-    try:
-        with open('/var/log/sphinx/test.json', 'w') as f:
-            json.dump(sys.argv, f)
-    except:
-        pass
-
     db = pymongo.MongoClient(host, port)[mongo_db]
     collection = db[mongo_collection]
 
