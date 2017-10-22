@@ -82,6 +82,11 @@ FEEDS = {
         'author_name': 'Ilya Grigorik',
         'author_link': 'https://www.igvita.com/',
     },
+    'kinopoisk': {
+        'name': 'Kinopoisk',
+        'url': 'https://st.kp.yandex.net/rss/news.rss',
+        'tags': ('cinema', 'no_tech'),
+    },
     'meduza': {
         'name': 'Meduza',
         'url': 'https://meduza.io/rss/all',
