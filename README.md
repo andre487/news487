@@ -11,12 +11,15 @@ Docker images:
 
 ## DevTools
 
+  * `devtools/create-venv project` – Create VirtualEnv for Python based module
+  * `devtools/pip-install project ...packages` – Install packages in VirtualEnv of Python based module
   * `devtools/start-dev project` – Start development version
   * `devtools/run-test project` – Run tests for project
-  * `devtools/make-update project` – Update project on server
+  * `devtools/make-install project` – Install or update project on server
   * `devtools/docker-build project` – Build Docker image
   * `devtools/docker-test project` – Test local Docker image
   * `devtools/docker-push project` – Push Docker image to registry
+  * `devtools/build-static-package project` – Build static package for project if it has
 
 ## Collector
 Collector usage:
