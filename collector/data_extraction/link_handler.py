@@ -59,7 +59,7 @@ def _redirect_replacer(match):
         if tip in url:
             return url
 
-    timeout = random.randint(10, 50) / 1000.0
+    timeout = random.randint(100, 150) / 1000.0
     time.sleep(timeout)
 
     try:
