@@ -28,7 +28,7 @@ no_redir_tips = [
 ]
 
 _url_finder = re.compile(
-    r'(?:https?:)?//(?:(?:[\w-]+\.)+[\w/#@~-]*)(?:\?(?:[\w&=.!,;$#-]+)?)?',
+    r'(?:https?:)?//(?:(?:[\w-]+\.)+[\w/#@~.-]*)(?:\?(?:[\w&=.!,;$#%-]+)?)?',
     re.UNICODE | re.IGNORECASE
 )
 
@@ -63,7 +63,7 @@ def _redirect_replacer(match):
     if res.is_redirect:
         location = res.headers.get('Location', res.headers.get('location'))
         if location and not is_local_link(location):
-            log.info('Replace redirect for email: %s... -> %s...', url[:32], location[:32])
+            log.info('Replace redirect for email: %s... -> %s...', url[:40], location[:40])
             return location
 
     return url
