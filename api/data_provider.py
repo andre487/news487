@@ -19,6 +19,10 @@ CATEGORIES = {
         'tags': 'tech,browsers',
         'no-tags': 'no_tech,twitter',
     },
+    'cinema': {
+        'tags': 'cinema',
+        'no-tags': 'twitter',
+    },
     'css': {
         'tags': 'tech,css',
         'no-tags': 'no_tech,twitter',
