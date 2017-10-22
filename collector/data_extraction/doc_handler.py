@@ -312,7 +312,7 @@ def dress_page_document(doc):
     doc['card_type'] = extr.get_card_type()
 
     doc['orig_title'] = doc['title']
-    doc['title'] = extr.get_title()
+    doc['title'] = extr.get_title() or doc['title']
 
     doc['orig_picture'] = doc.get('picture')
     doc['picture'] = extr.get_picture() or doc['orig_picture']
