@@ -67,7 +67,7 @@ class MeaningParser(HTMLParser):
 
     def _handle_meta(self, attrs):
         d_attrs = dict(attrs)
-        name = d_attrs.get('name')
+        name = d_attrs.get('name', d_attrs.get('property'))
         content = d_attrs.get('content')
 
         if name and content:
