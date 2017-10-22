@@ -6,6 +6,15 @@ firebase.initializeApp(config.firebase);
 
 const messaging = firebase.messaging();
 
+messaging.onMessage(payload => {
+    const permission = Notification.permission;
+    if (permission === 'granted') {
+        new Notification(payload.notification.title, payload.notification);
+    } else {
+        console.warn(`Notification permission is ${permission}`);
+    }
+});
+
 setupMessaging().catch(err => {
     console.warn('Unable to setup notifications:', err);
 });
