@@ -49,6 +49,8 @@ def handle_mailbox_folder(server, folder_name, readonly=True, replace_redirects=
 
     for res in responses:
         for msg_id, resp_item in res.items():
+            log.info('Handling email with ID %s', msg_id)
+
             message = email.message_from_string(resp_item['RFC822'])
 
             published = date.utc_format(message['date'])
