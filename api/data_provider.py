@@ -8,67 +8,74 @@ import sys
 import text_utils
 
 from bson import objectid
+from collections import OrderedDict
 
-CATEGORIES = {
-    'buzzinga': {
+CATEGORIES = OrderedDict((
+    ('tech', {
+        'tags': 'tech',
+        'no-tags': 'css,no_tech,search,twitter',
+    }),
+    ('web', {
+        'tags': 'tech,web',
+        'no-tags': 'no_tech,services,twitter',
+    }),
+    ('perf', {
+        'tags': 'tech,perf',
+        'no-tags': 'no_tech,twitter',
+    }),
+    ('browsers', {
+        'tags': 'tech,browsers',
+        'no-tags': 'no_tech,twitter',
+    }),
+    ('js', {
+        'tags': 'tech,js',
+        'no-tags': 'no_tech,twitter',
+    }),
+    ('css', {
+        'tags': 'tech,css',
+        'no-tags': 'no_tech,twitter',
+    }),
+    ('fin', {
+        'tags': 'finances,no_tech',
+        'no-tags': 'tech,twitter',
+    }),
+    ('services', {
+        'tags': 'tech,services',
+        'no-tags': 'no_tech,twitter',
+    }),
+    ('news', {
+        'tags': 'no_tech,world',
+        'no-tags': 'tech,twitter',
+        'digest': False,
+    }),
+    ('letters', {
+        'tags': 'from_mail',
+        'no-tags': '',
+        'digest': False,
+    }),
+    ('cinema', {
+        'tags': 'cinema',
+        'no-tags': 'twitter',
+        'digest': False,
+    }),
+    ('buzzinga', {
         'tags': 'buzzinga',
         'no-tags': '',
         'digest': False,
-    },
-    'browsers': {
-        'tags': 'tech,browsers',
-        'no-tags': 'no_tech,twitter',
-    },
-    'cinema': {
-        'tags': 'cinema',
-        'no-tags': 'twitter',
-    },
-    'css': {
-        'tags': 'tech,css',
-        'no-tags': 'no_tech,twitter',
-    },
-    'fin': {
-        'tags': 'finances,no_tech',
-        'no-tags': 'tech,twitter',
-    },
-    'js': {
-        'tags': 'tech,js',
-        'no-tags': 'no_tech,twitter',
-    },
-    'node': {
+    }),
+
+    ('node', {
         'tags': 'tech,node',
         'no-tags': 'no_tech,twitter',
         'disabled': True,
-    },
-    'perf': {
-        'tags': 'tech,perf',
-        'no-tags': 'no_tech,twitter',
-    },
-    'services': {
-        'tags': 'tech,services',
-        'no-tags': 'no_tech,twitter',
-    },
-    'tech': {
-        'tags': 'tech',
-        'no-tags': 'no_tech,search,twitter',
-    },
-    'tw': {
+    }),
+    ('tw', {
         'tags': 'twitter',
         'no-tags': 'buzzinga',
         'digest': False,
         'disabled': True,
-    },
-    'web': {
-        'tags': 'tech,web',
-        'no-tags': 'no_tech,services,twitter',
-        'disabled': True,
-    },
-    'news': {
-        'tags': 'no_tech,world',
-        'no-tags': 'tech,twitter',
-        'digest': False,
-    },
-}
+    }),
+))
 
 log = logging.getLogger('app')
 
