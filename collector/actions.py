@@ -6,7 +6,7 @@ import re
 import sys
 import twits.reader as twits
 
-from data_extraction import doc_handler
+from data_extraction import doc_handler, link_handler
 from functools import partial
 from multiprocessing.pool import ThreadPool
 from rss.reader import parse_feed_by_name, sources as rss_sources
@@ -72,58 +72,60 @@ def get_scrappers():
 def run_scrappers(args, scrappers):
     log.info('Start scrappers run')
 
-    docs = []
     names_set = set(args.names)
-
     if 'all' in names_set:
         rss_handlers = scrappers['rss']
     else:
         rss_handlers = set(scrappers['rss']).intersection(names_set)
 
-    def handlers_callback(res):
-        flat_res = []
-        for item in res:
-            flat_res += item
-
-        for item in flat_res:
-            docs.append(item)
-
     pool = ThreadPool()
-    pool.map_async(partial(_run_rss_handler, args), rss_handlers, callback=handlers_callback)
+    rss_result = pool.map_async(partial(_run_rss_handler, args), rss_handlers)
 
+    twitter_result = None
     if 'twitter' in names_set or 'all' in names_set:
-        pool.apply_async(partial(_run_twitter_handler, args), callback=handlers_callback)
+        twitter_result = pool.apply_async(partial(_run_twitter_handler, args))
 
+    mail_result = None
     if 'mail' in names_set or 'all' in names_set:
-        pool.apply_async(partial(_run_mail_handler, args), callback=handlers_callback)
+        mail_result = pool.apply_async(partial(_run_mail_handler, args))
+
+    rss_data = rss_result.get()
+    log.info('Got RSS docs')
+
+    twitter_data = twitter_result.get() if twitter_result else []
+    log.info('Got Twitter docs')
+
+    mail_data = mail_result.get() if mail_result else []
+    log.info('Got Mail docs')
 
     pool.close()
-    pool.join()
+
+    docs = twitter_data + mail_data
+    for feed_data in rss_data:
+        docs += feed_data
 
     log.info('End scrappers run')
 
-    new_docs = doc_handler.filter_new_docs(docs)
-    new_dressed_docs = []
+    log.info('Start cleaning urls')
+    docs = map(_clean_doc_url, docs)
+    log.info('End cleaning urls')
 
-    def dress_callback(res):
-        for doc in res:
-            new_dressed_docs.append(doc)
+    log.info('Start filtering new docs')
+    new_docs = doc_handler.filter_new_docs(docs)
+    log.info('End filtering new docs')
 
     log.info('Start dressing %d docs', len(new_docs))
     pool = ThreadPool()
-    pool.map_async(doc_handler.dress_document_with_metadata, new_docs, callback=dress_callback)
-
+    new_docs = pool.map(partial(_run_dress_document, args), new_docs)
     pool.close()
-    pool.join()
-
     log.info('End dressing docs')
 
     log.info('Start sorting data')
-    new_dressed_docs.sort(key=lambda item: item['published'], reverse=True)
+    new_docs.sort(key=lambda item: item['published'], reverse=True)
     log.info('End sorting data')
 
     log.info('Start write data')
-    write_data(args, new_dressed_docs)
+    write_data(args, new_docs)
     log.info('End write data')
 
 
@@ -143,7 +145,7 @@ def _run_twitter_handler(args):
         log.info('Start twitter handling')
         res = twits.parse()
         log.info('End twitter handling')
-        return [res]
+        return res
     except Exception as e:
         log.error('Error in twitter: %s', e)
         return []
@@ -154,7 +156,17 @@ def _run_mail_handler(args):
         log.info('Start mail handling')
         res = mail.parse(replace_redirects=not args.no_replace_redirects)
         log.info('End mail handling')
-        return [res]
+        return res
     except Exception as e:
         log.error('Error in mail: %s', e)
         return []
+
+
+def _clean_doc_url(doc):
+    doc['orig_link'] = doc['link']
+    doc['link'] = link_handler.clean_url(doc['link'])
+    return doc
+
+
+def _run_dress_document(args, doc):
+    return doc_handler.dress_document_with_metadata(doc)

@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import link_handler
 import random
 import re
 import requests
@@ -7,8 +8,8 @@ import time
 import urlparse
 
 from collections import defaultdict
-from datetime import datetime, timedelta
 from HTMLParser import HTMLParser
+from params import REQUEST_HEADERS
 from util import db
 
 log = logging.getLogger('app')
@@ -287,14 +288,7 @@ def dress_page_document(doc):
     timeout = random.randint(1000, 2500) / 1000.0
     time.sleep(timeout)
 
-    headers = {
-        'User-Agent': (
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/60.0.3112.113 YaBrowser/17.9.1.888 Yowser/2.5 Safari/537.36'
-        )
-    }
-    result = requests.get(url, headers=headers)
+    result = requests.get(url, headers=REQUEST_HEADERS)
 
     if result.status_code != 200:
         log.warn('Code %s from url %s', result.status_code, url)
@@ -306,6 +300,11 @@ def dress_page_document(doc):
     url_data = urlparse.urlparse(url)
     base_url = '{}://{}'.format(url_data.scheme, url_data.netloc)
     extr = MeaningExtractor(result.text, base_url=base_url)
+
+    doc['link'] = link_handler.clean_url(result.url)
+
+    doc['orig_title'] = doc['title']
+    doc['title'] = extr.get_title()
 
     doc['orig_picture'] = doc.get('picture')
     doc['picture'] = extr.get_picture() or doc['orig_picture']
@@ -335,27 +334,15 @@ def filter_new_docs(docs):
         '$or': [
             {'from_mail': {'$exists': False}},
             {'from_mail': False},
-        ],
-        'published': {'$gt': datetime.now() - timedelta(days=2 * 360)},
+        ]
     })
 
-    dressed_doc_ids = {create_doc_id(doc) for doc in cursor}
-    new_documents = [doc for doc in docs if create_doc_id(doc) not in dressed_doc_ids]
+    dressed_links = {doc['link'] for doc in cursor}
+    new_documents = [doc for doc in docs if doc['link'] not in dressed_links]
 
     log.info(
         'Have %d dressed documents, %d new documents',
-        len(dressed_doc_ids), len(new_documents),
+        len(dressed_links), len(new_documents),
     )
 
     return new_documents
-
-
-def create_doc_id(doc):
-    doc_id = '%s:%s:%s:%s' % (
-        doc['link'],
-        doc['title'],
-        doc['source_name'],
-        doc['source_type'],
-    )
-
-    return doc_id.encode('utf-8')

@@ -64,3 +64,36 @@ def test_highlight_urls():
     res = link_handler.highlight_urls(urls)
 
     assert res == expected
+
+
+def test_clean_url_utm_params():
+    url = (
+        'https://developers.google.com/web/updates/2016/10/navigator-share?'
+        'utm_source=feed&foo=bar&utm_medium=feed&utm_campaign=updates_feed'
+    )
+
+    res = link_handler.clean_url(url)
+
+    assert res == 'https://developers.google.com/web/updates/2016/10/navigator-share?foo=bar'
+
+
+def test_clean_url_from_rss():
+    url = (
+        'https://developers.google.com/web/updates/2016/10/navigator-share?'
+        'source=rss&utm_source=feed&utm_medium=feed&utm_campaign=updates_feed&from=rss&foo=bar'
+    )
+
+    res = link_handler.clean_url(url)
+
+    assert res == 'https://developers.google.com/web/updates/2016/10/navigator-share?foo=bar'
+
+
+def test_clean_url_trailing_question():
+    url = (
+        'https://developers.google.com/web/updates/2016/10/navigator-share?'
+        'utm_source=feed&utm_medium=feed&utm_campaign=updates_feed&from=rss'
+    )
+
+    res = link_handler.clean_url(url)
+
+    assert res == 'https://developers.google.com/web/updates/2016/10/navigator-share'

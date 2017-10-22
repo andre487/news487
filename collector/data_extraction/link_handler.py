@@ -1,7 +1,11 @@
 # coding=utf-8
 import logging
+import random
 import re
 import requests
+import time
+
+from data_extraction.params import REQUEST_HEADERS
 
 log = logging.getLogger('app')
 
@@ -27,18 +31,22 @@ no_redir_tips = [
     'http://www.w3.org/1999/xhtml',
 ]
 
-_url_finder = re.compile(
+url_pattern = re.compile(
     r'(?:https?:)?//(?:(?:[\w-]+\.)+[\w/#@~.-]*)(?:\?(?:[\w&=.!,;$#%-]+)?)?',
     re.UNICODE | re.IGNORECASE
 )
 
+garbage_params_pattern = re.compile(r'(?:&?utm_[^&]+)|(?:&?from=rss)|(?:&?source=rss)')
+double_amp_pattern = re.compile(r'&&')
+leading_amp_pattern = re.compile(r'\?&')
+
 
 def extract_all_links(html):
-    return _url_finder.findall(html)
+    return url_pattern.findall(html)
 
 
-def replace_redirects(html):
-    return _url_finder.sub(_redirect_replacer, html)
+def replace_redirects(text):
+    return url_pattern.sub(_redirect_replacer, text)
 
 
 def _redirect_replacer(match):
@@ -51,20 +59,16 @@ def _redirect_replacer(match):
         if tip in url:
             return url
 
-    headers = {
-        'User-Agent': (
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) '
-            'AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/60.0.3112.113 YaBrowser/17.9.1.888 Yowser/2.5 Safari/537.36'
-        )
-    }
-    res = requests.get(url, headers=headers, allow_redirects=False)
+    timeout = random.randint(10, 100) / 1000.0
+    time.sleep(timeout)
 
-    if res.is_redirect:
-        location = res.headers.get('Location', res.headers.get('location'))
-        if location and not is_local_link(location):
-            log.info('Replace redirect for email: %s... -> %s...', url[:40], location[:40])
-            return location
+    res = requests.head(url, headers=REQUEST_HEADERS, allow_redirects=True)
+
+    if res.status_code == 200 and res.url != url:
+        log.info('Replace redirect: %s -> %s', url, res.url)
+        return res.url
+    elif res.status_code != 200:
+        log.warn('Got code %d from redirect request', res.status_code)
 
     return url
 
@@ -74,7 +78,7 @@ def is_local_link(url):
 
 
 def replace_email_settings_links(html):
-    return _url_finder.sub(_email_settings_replacer, html)
+    return url_pattern.sub(_email_settings_replacer, html)
 
 
 def _email_settings_replacer(match):
@@ -85,9 +89,20 @@ def _email_settings_replacer(match):
 
 
 def highlight_urls(html):
-    return _url_finder.sub(_url_highlighter, html)
+    return url_pattern.sub(_url_highlighter, html)
 
 
 def _url_highlighter(match):
     url = match.group(0)
     return '<a href="{url}">{url}</a>'.format(url=url)
+
+
+def clean_url(url):
+    url = garbage_params_pattern.sub('', url)
+    url = leading_amp_pattern.sub('?', url)
+    url = double_amp_pattern.sub('&', url)
+
+    if url.endswith('?'):
+        url = url[:-1]
+
+    return url
