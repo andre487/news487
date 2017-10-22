@@ -1,14 +1,15 @@
 import argparse
 import codecs
 import logging
-import mail
+import mail.reader as mail
 import re
 import sys
-import twits
+import twits.reader as twits
 
 from data_extraction import doc_handler
+from functools import partial
 from multiprocessing.pool import ThreadPool
-from rss import parse_feed_by_name, sources as rss_sources
+from rss.reader import parse_feed_by_name, sources as rss_sources
 from util.write import write_data
 
 file_name_getter = re.compile(r'(.+?)\.py')
@@ -38,6 +39,7 @@ def get_cli_args(scrappers=None):
 
     run_parser = action_parsers.add_parser('run', help='Run scrappers')
     run_parser.add_argument('names', nargs='+', choices=scrappers['all'])
+    run_parser.add_argument('--no-replace-redirects', action='store_true')
 
     action_parsers.add_parser('list', help='List scrappers')
 
@@ -87,13 +89,13 @@ def run_scrappers(args, scrappers):
             docs.append(item)
 
     pool = ThreadPool()
-    pool.map_async(_run_rss_handler, rss_handlers, callback=handlers_callback)
+    pool.map_async(partial(_run_rss_handler, args), rss_handlers, callback=handlers_callback)
 
     if 'twitter' in names_set or 'all' in names_set:
-        pool.apply_async(_run_twitter_handler, callback=handlers_callback)
+        pool.apply_async(partial(_run_twitter_handler, args), callback=handlers_callback)
 
     if 'mail' in names_set or 'all' in names_set:
-        pool.apply_async(_run_mail_handler, callback=handlers_callback)
+        pool.apply_async(partial(_run_mail_handler, args), callback=handlers_callback)
 
     pool.close()
     pool.join()
@@ -125,7 +127,7 @@ def run_scrappers(args, scrappers):
     log.info('End write data')
 
 
-def _run_rss_handler(feed):
+def _run_rss_handler(args, feed):
     try:
         log.info('Start feed handling: %s', feed)
         res = parse_feed_by_name(feed)
@@ -136,7 +138,7 @@ def _run_rss_handler(feed):
         return []
 
 
-def _run_twitter_handler():
+def _run_twitter_handler(args):
     try:
         log.info('Start twitter handling')
         res = twits.parse()
@@ -147,10 +149,10 @@ def _run_twitter_handler():
         return []
 
 
-def _run_mail_handler():
+def _run_mail_handler(args):
     try:
         log.info('Start mail handling')
-        res = mail.parse()
+        res = mail.parse(replace_redirects=not args.no_replace_redirects)
         log.info('End mail handling')
         return [res]
     except Exception as e:

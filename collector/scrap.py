@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-from util import common as util
+import actions
 
 
 def main():
-    scrappers = util.get_scrappers()
-    args = util.get_cli_args(scrappers)
-    util.setup(args)
+    scrappers = actions.get_scrappers()
+    args = actions.get_cli_args(scrappers)
+    actions.setup(args)
 
     if args.action == 'list':
-        util.write_data(args, scrappers['all'])
+        actions.write_data(args, scrappers['all'])
     elif args.action == 'run':
-        util.run_scrappers(args, scrappers)
+        actions.run_scrappers(args, scrappers)
     else:
         raise RuntimeError('Wrong action: %s' % args.action)
 
