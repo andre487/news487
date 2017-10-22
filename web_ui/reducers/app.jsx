@@ -140,5 +140,5 @@ function getTagSearchTitle(tag) {
 }
 
 function getCategoryTitle(name) {
-    return `Category “${name}”`;
+    return `Cat “${name}”`;
 }
