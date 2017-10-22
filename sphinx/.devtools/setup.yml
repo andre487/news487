@@ -3,6 +3,9 @@
   become: True
   become_method: sudo
 
+  roles:
+    - common
+
   tasks:
     - name: Update image
       shell: docker pull andre487/scrapper487-sphinx
@@ -18,6 +21,6 @@
           -d \
           --restart always \
           --name scrapper487-sphinx \
-          --link common-mongo \
-          -e MONGO_HOST=common-mongo \
+          --network {{ network_name }} \
+          -e MONGO_HOST={{ mongo_name }} \
           andre487/scrapper487-sphinx

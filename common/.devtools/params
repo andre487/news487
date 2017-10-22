@@ -1,0 +1,4 @@
+#@IgnoreInspection BashAddShebang
+
+DOCKER_BUILD=0
+SKIP_PROJECT_TESTS=1

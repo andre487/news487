@@ -3,6 +3,9 @@
   become: True
   become_method: sudo
 
+  roles:
+    - common
+
   tasks:
     - name: Update image
       shell: docker pull andre487/scrapper487
@@ -17,7 +20,7 @@
         docker run \
           -d \
           --restart always \
-          --link common-mongo \
+          --network {{ network_name }} \
           --name scrapper487-collector \
           -e 'TWITTER_CONSUMER_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_KEY') }}' \
           -e 'TWITTER_CONSUMER_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_SECRET') }}' \
@@ -26,6 +29,6 @@
           -e 'MAIL_SERVER={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_SERVER') }}' \
           -e 'MAIL_LOGIN={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_LOGIN') }}' \
           -e 'MAIL_PASSWORD={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_PASSWORD') }}' \
-          -e MONGO_HOST=common-mongo \
+          -e MONGO_HOST={{ mongo_name }} \
           andre487/scrapper487 \
           bash -c '/usr/local/bin/app/.devtools/schedule run all'

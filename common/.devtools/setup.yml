@@ -1,0 +1,14 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  roles:
+    - common
+
+  tasks:
+    - name: Create docker network for all services
+      shell: docker network create --driver bridge '{{ network_name }}' || true
+
+    - name: Connect MongoDB to network
+      shell: docker network connect '{{ network_name }}' '{{ mongo_name }}' || true
