@@ -1,6 +1,6 @@
 default-src 'self';
 style-src 'self' 'nonce-$NONCE' http://fonts.googleapis.com https://fonts.googleapis.com 'sha256-D8Sj8qhd4FvnVwN5w9riiArwsqYOEwHolv228Ic6Vqk=';
 script-src 'self' 'nonce-$NONCE' https://mc.yandex.ru;
-connect-src 'self' http://fonts.googleapis.com https://fonts.googleapis.com https://mc.yandex.ru $API_URL;
+connect-src 'self' http://fonts.googleapis.com https://fonts.googleapis.com https://mc.yandex.ru https://fcm.googleapis.com $API_URL;
 font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com;
 img-src *;

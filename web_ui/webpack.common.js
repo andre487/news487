@@ -54,6 +54,7 @@ module.exports = {
 
         new ServiceWorkerWebpackPlugin({
             entry: './src/service-worker.js',
+            filename: 'firebase-messaging-sw.js',
             excludes: ['**/robots.txt'],
             transformOptions(options) {
                 const { assets } = options;
