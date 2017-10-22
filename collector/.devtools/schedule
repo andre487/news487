@@ -10,6 +10,6 @@ if [[ -n "$SCHEDULE_INTERVAL" ]]; then
 fi
 
 while true; do
-    "$dir/scrap.py" $@
+    time "$dir/scrap.py" $@
     sleep "$interval"
 done
