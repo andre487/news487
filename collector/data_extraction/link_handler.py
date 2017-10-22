@@ -59,16 +59,16 @@ def _redirect_replacer(match):
         if tip in url:
             return url
 
-    timeout = random.randint(10, 100) / 1000.0
+    timeout = random.randint(10, 50) / 1000.0
     time.sleep(timeout)
 
     res = requests.head(url, headers=REQUEST_HEADERS, allow_redirects=True)
 
     if res.status_code == 200 and res.url != url:
-        log.info('Replace redirect: %s -> %s', url, res.url)
+        log.debug('Resolve redirect: %s -> %s', url, res.url)
         return res.url
     elif res.status_code != 200:
-        log.warn('Got code %d from redirect request', res.status_code)
+        log.warn('Got code %d from redirect request: %s', res.status_code, url)
 
     return url
 

@@ -196,7 +196,7 @@ class MeaningExtractor(object):
         elif no_alt_images:
             pic = no_alt_images[0]
 
-        if not full_url_pattern.match(pic) and self._base_url:
+        if pic and not full_url_pattern.match(pic) and self._base_url:
             if not pic.startswith('/'):
                 pic = '/' + pic
             pic = self._base_url + pic
@@ -210,10 +210,10 @@ class MeaningExtractor(object):
         return self._get_meta_general('og:url')
 
     def _get_meta_title(self):
-        return self._get_meta_general('og:title', 'twitter:title')
+        return self._get_meta_general('og:title', 'twitter:title', 'title')
 
     def _get_meta_description(self):
-        return self._get_meta_general('og:description', 'twitter:description')
+        return self._get_meta_general('og:description', 'twitter:description', 'description')
 
     def _get_meta_picture(self):
         return self._get_meta_general('og:image', 'twitter:image')
@@ -260,6 +260,9 @@ class TagsStripper(HTMLParser):
 
 
 def dress_document_with_metadata(doc):
+    if doc.get('dressed'):
+        return doc
+
     try:
         if doc.get('from_mail'):
             return dress_email_document(doc)
@@ -294,6 +297,10 @@ def dress_page_document(doc):
         log.warn('Code %s from url %s', result.status_code, url)
         return doc
 
+    if not result.headers.get('Content-Type', '').startswith('text/'):
+        log.info('Document is not a text: %s', url)
+        return doc
+
     if result.encoding == 'ISO-8859-1':
         result.encoding = 'UTF-8'
 
@@ -302,6 +309,7 @@ def dress_page_document(doc):
     extr = MeaningExtractor(result.text, base_url=base_url)
 
     doc['link'] = link_handler.clean_url(result.url)
+    doc['card_type'] = extr.get_card_type()
 
     doc['orig_title'] = doc['title']
     doc['title'] = extr.get_title()

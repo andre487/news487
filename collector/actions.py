@@ -6,7 +6,7 @@ import re
 import sys
 import twits.reader as twits
 
-from data_extraction import doc_handler, link_handler
+from data_extraction import doc_handler, email_handler, link_handler
 from functools import partial
 from multiprocessing.pool import ThreadPool
 from rss.reader import parse_feed_by_name, sources as rss_sources
@@ -109,6 +109,10 @@ def run_scrappers(args, scrappers):
     log.info('Start cleaning urls')
     docs = map(_clean_doc_url, docs)
     log.info('End cleaning urls')
+
+    log.info('Start extracting contained email docs')
+    docs += email_handler.extract_contained_documents(docs)
+    log.info('End extracting contained email docs')
 
     log.info('Start filtering new docs')
     new_docs = doc_handler.filter_new_docs(docs)
