@@ -9,15 +9,34 @@ run_project_for_dev() {
 }
 
 run_project_for_docker_test() {
-    container_id="$(docker run --rm -tid -p 127.0.0.1:9306:9306 --link dev-mongo -e MONGO_HOST=dev-mongo "$DOCKER_REPO_NAME")"
-    sleep 2
+    log_info "Starting container"
 
+    docker run \
+        --rm \
+        --name scrapper487-sphinx-docker-test \
+        -tid \
+        -p 127.0.0.1:9306:9306 \
+        --link dev-mongo \
+        -e MONGO_HOST=dev-mongo \
+        "$DOCKER_REPO_NAME" > /dev/null
+
+    log_info "Waiting 10s for indexing"
+    sleep 10
+
+    log_info "Trying request docs"
     set +e
-    echo 'SELECT * FROM news_documents LIMIT 1;' | mysql -h 127.0.0.1 -P 9306 > /dev/null
-    result="$?"
+    echo 'SELECT doc_id FROM news_documents LIMIT 1;' | mysql -h 127.0.0.1 -P 9306
+    res="$?"
     set -e
 
-    docker stop "$container_id" > /dev/null
+    _cleanup_testing_container
 
-    return "$result"
+    if [[ "$res" != 0 ]]; then
+        log_error "request test failed with result $res"
+        return "$res"
+    fi
+}
+
+_cleanup_testing_container() {
+    docker stop scrapper487-sphinx-docker-test > /dev/null
 }

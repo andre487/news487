@@ -1,4 +1,4 @@
-FROM debian:9.1
+FROM andre487/scrapper487-py-common:latest
 
 ENV MONGO_HOST=common-mongo \
     SPHINX_INDEX_DIR=/var/lib/sphinx/idx \
@@ -8,15 +8,10 @@ RUN mkdir -p "${SPHINX_INDEX_DIR}" && \
     mkdir -p "${SPHINX_RUN_DIR}" \
     mkdir -p /etc/get-documents
 
-EXPOSE 9306
-VOLUME ["${SPHINX_INDEX_DIR}"]
-
 ADD requirements.txt /etc/get-documents/requirements.txt
 
 RUN set -x && \
-    apt-get update && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y sphinxsearch python-pip supervisor && \
+    apt-get install -y sphinxsearch supervisor && \
     pip install --no-cache-dir -r /etc/get-documents/requirements.txt && \
     apt-get purge -y \
         python-pip binutils build-essential cpp cpp-6 dpkg-dev \
@@ -45,3 +40,6 @@ ADD .devtools/start-search.sh /usr/local/bin/start-search.sh
 ADD .devtools/start-indexing.sh /usr/local/bin/start-indexing.sh
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+EXPOSE 9306
+VOLUME ["${SPHINX_INDEX_DIR}"]
