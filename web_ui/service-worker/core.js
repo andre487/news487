@@ -1,8 +1,6 @@
-/* globals serviceWorkerOption */
-
-export const ORIGIN_CACHE = `origin:${serviceWorkerOption.gitHash}`;
-export const API_CACHE = `api:${serviceWorkerOption.gitHash}`;
-export const FONTS_CACHE = `fonts:${serviceWorkerOption.gitHash}`;
+export const ORIGIN_CACHE = `origin:${process.env.GIT_HASH}`;
+export const API_CACHE = `api:${process.env.GIT_HASH}`;
+export const FONTS_CACHE = `fonts:${process.env.GIT_HASH}`;
 
 export const T_ORIGIN = 'origin';
 export const T_DOCS_API = 'api';
@@ -15,25 +13,7 @@ export const HANDLER_PATTERNS = [/\/digest/, /\/category\/.+/, /\/tag\/.+/];
 export const HANDLER_CANONICAL = `${self.location.origin}/index.html`;
 
 export function onInstall(event) {
-    const { assets } = serviceWorkerOption;
-
-    const done = Promise
-        .all(assets.map(url => {
-            return fetch(`${url}?r=${Math.random()}`);
-        }))
-        .then(responses => {
-            return caches.open(ORIGIN_CACHE)
-                .then(cache => {
-                    return Promise.all(responses.map((response, idx) => {
-                        return cache.put(assets[idx], response);
-                    }));
-                })
-        })
-        .then(() => {
-            return self.skipWaiting();
-        });
-
-    event.waitUntil(done);
+    event.waitUntil(self.skipWaiting());
 }
 
 export function onActivate(event) {
@@ -49,3 +29,27 @@ export function onActivate(event) {
 
     event.waitUntil(done);
 }
+
+self.addEventListener('message', event => {
+    const { data } = event;
+
+    if (data.type !== 'assets') {
+        return;
+    }
+
+    const assets = Object.entries(data.payload)
+        .map(([,data]) => data)
+        .filter(item => !item.entry.endsWith('sw.js'));
+
+    const entries = assets.map(({ entry }) => entry);
+
+    const done = Promise
+        .all(assets.map(({ entry, hash }) => fetch(`/${entry}?${hash}`)))
+        .then(responses => {
+            return caches.open(ORIGIN_CACHE).then(cache => Promise.all(
+                responses.map((response, idx) => cache.put(entries[idx], response))
+            ));
+        });
+
+    event.waitUntil(done);
+});

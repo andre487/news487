@@ -79,8 +79,11 @@
                 var spinner = document.getElementById('page-loading-spinner');
                 var rotateDegree = 0;
 
+                window.pageStaticBundles = ${JSON.stringify(htmlWebpackPlugin.files.chunks)};
+
                 rotateSpinner();
                 loadFonts();
+                registerServiceWorker();
 
                 window.stopPageLoadingRotation = function() {
                     var spinnerContainer = document.getElementById('page-loading-spinner-container');
@@ -124,6 +127,12 @@
                         document.body.appendChild(style);
                     };
                     loader.send();
+                }
+
+                function registerServiceWorker() {
+                    if (navigator.serviceWorker) {
+                        navigator.serviceWorker.register('/<%=htmlWebpackPlugin.files.chunks.sw.entry%>', { scope: '/' });
+                    }
                 }
             })();
 

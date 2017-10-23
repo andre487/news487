@@ -44,10 +44,10 @@ module.exports = merge(commonConfig, {
 
         new UglifyJSPlugin(),
         new ZopfliPlugin({
-            test: /bundle\.js/
+            threshold: 10240
         }),
         new BrotliPlugin({
-            test: /bundle\.js/
+            threshold: 10240
         })
     ]
 });

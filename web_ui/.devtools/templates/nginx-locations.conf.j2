@@ -1,6 +1,6 @@
 root /var/www/{{ service_host }}/build;
 
-location ~ sw\.js {
+location ~ firebase-messaging-sw\.js {
     add_header Cache-Control "public, max-age=1800, must-revalidate";
 }
 

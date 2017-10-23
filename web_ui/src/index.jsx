@@ -15,10 +15,9 @@ import Home from '../components/Home';
 import App from '../containers/App';
 import NotFound from '../components/NotFound';
 
-import runtime from 'serviceworker-webpack-plugin/lib/runtime';
-
 import persist, {rememberRoute} from './persist';
 import '../modules/messaging';
+import '../service-worker/client';
 
 window.stopPageLoadingRotation();
 injectTapEventPlugin();
@@ -68,7 +67,3 @@ ReactDOM.render(
     </Provider>,
     document.getElementById('root')
 );
-
-if (navigator.serviceWorker) {
-    runtime.register();
-}

@@ -4,7 +4,6 @@ const childProcess = require('child_process');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const fs = require('fs');
 const path = require('path');
-const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const webpack = require('webpack');
 
 const apiUrl = process.env.SCRAPPER_487_API_URL;
@@ -23,6 +22,7 @@ module.exports = {
     context: __dirname,
     entry: {
         app: ['babel-polyfill', './src/index.jsx'],
+        sw: './src/offline-sw.js',
         'firebase-messaging-sw': './src/push-sw.js',
     },
     output: {
@@ -60,23 +60,6 @@ module.exports = {
         }),
 
         new CopyWebpackPlugin([{ from: 'assets' }]),
-
-        new ServiceWorkerWebpackPlugin({
-            entry: './src/offline-sw.js',
-            filename: 'sw.js',
-            excludes: ['**/robots.txt'],
-            transformOptions(options) {
-                const { assets } = options;
-                const newAssets = assets.filter(name => !name.endsWith('.gz') && !name.endsWith('.br'));
-
-                newAssets.unshift('/index.html');
-
-                return {
-                    assets: newAssets,
-                    gitHash
-                };
-            },
-        }),
     ],
     devtool: 'cheap-module-source-map',
 };
