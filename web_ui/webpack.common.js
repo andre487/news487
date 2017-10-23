@@ -21,10 +21,13 @@ const gitHash = String(childProcess.execSync('git rev-parse HEAD')).trim();
 
 module.exports = {
     context: __dirname,
-    entry: ['babel-polyfill', './src/index.jsx'],
+    entry: {
+        app: ['babel-polyfill', './src/index.jsx'],
+        'firebase-messaging-sw': './src/push-sw.js',
+    },
     output: {
         path: path.join(__dirname, 'build'),
-        filename: 'bundle.js',
+        filename: '[name].js',
     },
     module: {
         rules: [
@@ -59,8 +62,8 @@ module.exports = {
         new CopyWebpackPlugin([{ from: 'assets' }]),
 
         new ServiceWorkerWebpackPlugin({
-            entry: './src/service-worker.js',
-            filename: 'firebase-messaging-sw.js',
+            entry: './src/offline-sw.js',
+            filename: 'sw.js',
             excludes: ['**/robots.txt'],
             transformOptions(options) {
                 const { assets } = options;
