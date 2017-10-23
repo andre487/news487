@@ -1,0 +1,7 @@
+- name: Update image
+  shell: docker pull andre487/{{ module_name }}
+
+- name: Stop container
+  shell: |
+    docker stop {{ module_name }} || true
+    docker rm {{ module_name }} || true

@@ -1,0 +1,37 @@
+- name: Install certificate
+  shell: |
+    certbot certonly \
+      --webroot \
+      -w /var/www/common \
+      -d {{ service_host }} \
+      -n \
+      --agree-tos \
+      -m '{{ admin_email }}'
+  args:
+    creates: /etc/letsencrypt/live/{{ service_host }}
+  register: certificate_res
+
+- name: Create web root
+  file:
+    dest: /var/www/{{ service_host }}
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Setup NGINX host config
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/{{ module_name }}.conf
+  register: config_res
+
+- name: Enable NGINX host config
+  file:
+    state: link
+    src: /etc/nginx/sites-available/{{ module_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ module_name }}.conf
+
+- name: Reload NGINX
+  service:
+    name: nginx
+    state: reloaded
+  when: config_res.changed or certificate_res.changed

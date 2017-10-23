@@ -1,26 +1,21 @@
 - hosts: all
-  remote_user: '{{ remote_user }}'
   become: True
   become_method: sudo
 
+  vars:
+    module_name: '{{ sphinx_name }}'
+
   roles:
     - common
+    - prepare_install_container
 
   tasks:
-    - name: Update image
-      shell: docker pull andre487/scrapper487-sphinx
-
-    - name: Stop container
-      shell: |
-        docker stop scrapper487-sphinx || true
-        docker rm scrapper487-sphinx || true
-
     - name: Run container
       shell: |
         docker run \
           -d \
           --restart always \
-          --name scrapper487-sphinx \
+          --name {{ module_name }} \
           --network {{ network_name }} \
           -e MONGO_HOST={{ mongo_name }} \
-          andre487/scrapper487-sphinx
+          andre487/{{ module_name }}

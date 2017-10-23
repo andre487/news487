@@ -3,62 +3,26 @@
   become: True
   become_method: sudo
 
+  vars:
+    module_name: '{{ api_name }}'
+    service_host: '{{ scrapper_487_api_host }}'
+    service_port: 10100
+
   roles:
     - common
+    - nginx_ssl_host
+    - prepare_install_container
 
   tasks:
-    - name: Setup NGINX host config
-      template:
-        src: templates/nginx.conf.j2
-        dest: /etc/nginx/sites-available/scrapper487-api.conf
-
-    - name: Enable NGINX host
-      file:
-        src: /etc/nginx/sites-available/scrapper487-api.conf
-        dest: /etc/nginx/sites-enabled/scrapper487-api.conf
-        state: link
-
-    - name: Create web root
-      file:
-        dest: /var/www/{{ scrapper_487_api_host }}
-        state: directory
-        owner: www-data
-        group: www-data
-
-    - name: Install certificate
-      shell: |
-        certbot certonly \
-          --webroot \
-          -w /var/www/{{ scrapper_487_api_host }} \
-          -d {{ scrapper_487_api_host }} \
-          -n \
-          --agree-tos \
-          -m '{{ admin_email }}'
-      args:
-        creates: /etc/letsencrypt/live/{{ scrapper_487_api_host }}
-
-    - name: Reload NGINX
-      service:
-        name: nginx
-        state: reloaded
-
-    - name: Update image
-      shell: docker pull andre487/scrapper487-api
-
-    - name: Stop container
-      shell: |
-        docker stop scrapper487-api || true
-        docker rm scrapper487-api || true
-
     - name: Start container
       shell: |
         docker run \
           -d \
           --restart always \
           --network {{ network_name }} \
-          --name scrapper487-api \
-          -e 'MONGO_HOST={{ mongo_name }}' \
-          -e 'SPHINX_HOST=scrapper487-sphinx' \
-          -e 'SCRAPPER_API_URL={{ lookup('file', '~/.private/SCRAPPER_487_API_URL') }}' \
-          -p 127.0.0.1:10100:5000 \
-          andre487/scrapper487-api
+          --name {{ module_name }} \
+          -e MONGO_HOST={{ mongo_name }} \
+          -e SPHINX_HOST={{ sphinx_name }} \
+          -e SCRAPPER_API_URL={{ lookup('file', '~/.private/SCRAPPER_487_API_URL') }} \
+          -p 127.0.0.1:{{ service_port }}:5000 \
+          andre487/{{ module_name }}

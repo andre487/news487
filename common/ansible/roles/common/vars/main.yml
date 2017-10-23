@@ -1,3 +1,5 @@
 ---
 network_name: news487_net
 mongo_name: common-mongo
+api_name: scrapper487-api
+sphinx_name: scrapper487-sphinx

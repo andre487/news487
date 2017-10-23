@@ -1,19 +1,22 @@
 - hosts: all
-  remote_user: '{{ remote_user }}'
   become: True
   become_method: sudo
+
+  vars:
+    image_name: scrapper487
+    module_name: scrapper487-collector
 
   roles:
     - common
 
   tasks:
     - name: Update image
-      shell: docker pull andre487/scrapper487
+      shell: docker pull andre487/{{ image_name }}
 
     - name: Stop container
       shell: |
-        docker stop scrapper487-collector || true
-        docker rm scrapper487-collector || true
+        docker stop {{ module_name }} || true
+        docker rm {{ module_name }} || true
 
     - name: Start container
       shell: |
@@ -21,14 +24,14 @@
           -d \
           --restart always \
           --network {{ network_name }} \
-          --name scrapper487-collector \
-          -e 'TWITTER_CONSUMER_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_KEY') }}' \
-          -e 'TWITTER_CONSUMER_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_SECRET') }}' \
-          -e 'TWITTER_ACCESS_TOKEN_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_KEY') }}' \
-          -e 'TWITTER_ACCESS_TOKEN_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_SECRET') }}' \
-          -e 'MAIL_SERVER={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_SERVER') }}' \
-          -e 'MAIL_LOGIN={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_LOGIN') }}' \
-          -e 'MAIL_PASSWORD={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_PASSWORD') }}' \
+          --name {{ module_name }} \
+          -e TWITTER_CONSUMER_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_KEY') }} \
+          -e TWITTER_CONSUMER_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_CONSUMER_SECRET') }} \
+          -e TWITTER_ACCESS_TOKEN_KEY={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_KEY') }} \
+          -e TWITTER_ACCESS_TOKEN_SECRET={{ lookup('file', '~/.private/TWITTER_SCRAPPER_487_ACCESS_TOKEN_SECRET') }} \
+          -e MAIL_SERVER={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_SERVER') }} \
+          -e MAIL_LOGIN={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_LOGIN') }} \
+          -e MAIL_PASSWORD={{ lookup('file', '~/.private/SUBSCRIBE_MAIL_PASSWORD') }} \
           -e MONGO_HOST={{ mongo_name }} \
-          andre487/scrapper487 \
+          andre487/{{ image_name }} \
           bash -c '/usr/local/bin/app/.devtools/schedule run all'
