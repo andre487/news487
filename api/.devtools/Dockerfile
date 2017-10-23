@@ -3,7 +3,7 @@ FROM andre487/scrapper487-py-common:latest
 ADD ./requirements.txt /usr/local/bin/app/requirements.txt
 
 RUN set -x && \
-    apt-get install -y python-pip libcurl4-openssl-dev libssl-dev default-libmysqlclient-dev && \
+    apt-get install -y libcurl4-openssl-dev libssl-dev default-libmysqlclient-dev && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \
         python-pip binutils build-essential cpp cpp-6 dpkg-dev libcurl4-openssl-dev libssl-dev \

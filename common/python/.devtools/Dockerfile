@@ -7,7 +7,7 @@ WORKDIR /usr/local/bin/app
 
 RUN apt-get update && \
     apt-get dist-upgrade -y && \
-    apt-get install -y python && \
+    apt-get install -y python-pip && \
     apt-get clean -y && \
     apt-get autoclean -y && \
     rm -f /var/cache/apt/*.bin && \

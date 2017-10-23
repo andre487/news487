@@ -2,13 +2,15 @@ import data_provider
 import json
 import flask
 import logging
+import logging_common
 
 from datetime import datetime, timedelta
-from logging_common import log_handler
+
+logging_common.setup()
 
 app = flask.Flask(__name__)
 
-app.logger.addHandler(log_handler)
+app.logger.addHandler(logging_common.log_handler)
 app.logger.setLevel(logging.WARN)
 
 

@@ -2,6 +2,8 @@
 DOCKER_REPO_NAME="andre487/scrapper487-pusher"
 DEV_VIRTUAL_ENV="$HOME/.venv/scrapper487-pusher"
 
+WEB_PORT=35001
+
 run_project_for_dev() {
     export FLASK_DEBUG=1
     export FLASK_APP=api.py
@@ -9,7 +11,52 @@ run_project_for_dev() {
 }
 
 run_project_for_docker_test() {
-    true
+    log_info "Running API workability test"
+
+    docker run \
+          -d \
+          --rm \
+          --name scrapper487-pusher-docker-test \
+          --link dev-mongo \
+          -e MONGO_HOST=dev-mongo \
+          -e FIREBASE_SERVER_KEY="$(cat ~/.private/SCRAPPER_487_FIREBASE_SERVER_KEY)" \
+          -p "127.0.0.1:$WEB_PORT:5001" \
+          andre487/scrapper487-pusher > /dev/null
+
+    sleep 2
+
+    set +e
+    curl -v -H 'Content-Type: text/plain' --data 'InvalidToken' "http://127.0.0.1:$WEB_PORT/add-token"
+    res="$?"
+    echo
+    set -e
+
+    if [[ "$res" != 0 ]]; then
+        log_error "API test failed with result $res"
+        _cleanup_testing_container
+        return "$res"
+    fi
+
+    log_info "Error 400 – OK"
+
+    log_info "Testing push messages"
+
+    set +e
+    docker exec -ti scrapper487-pusher-docker-test ./push-stats-message
+    res="$?"
+    set -e
+
+    if [[ "$res" != 0 ]]; then
+        log_error "Push message test failed with result $res"
+        _cleanup_testing_container
+        return "$res"
+    fi
+
+    _cleanup_testing_container
+}
+
+_cleanup_testing_container() {
+    docker stop scrapper487-pusher-docker-test > /dev/null
 }
 
 run_project_tests() {
