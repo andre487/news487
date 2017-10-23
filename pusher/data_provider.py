@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 
 FB_API_URL = 'https://fcm.googleapis.com/fcm/send'
 
+log = logging.getLogger('app')
+
 news_url = os.environ.get('NEWS_MAIN_URL')
 tokens_db_name = os.environ.get('MONGO_TOKENS_DB', 'pusher_data')
 docs_db_name = os.environ.get('MONGO_DOCUMENTS_DB', 'news_documents')
@@ -105,7 +107,7 @@ def _get_mongo_client():
     host = os.environ.get('MONGO_HOST', 'localhost')
     port = int(os.environ.get('MONGO_PORT', 27017))
 
-    logging.info('Create new MongoDB client. Host %s, port %s', host, port)
+    log.info('Create new MongoDB client. Host %s, port %s', host, port)
 
     mongo_client = pymongo.MongoClient(host, port)
 

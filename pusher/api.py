@@ -1,8 +1,14 @@
+import logging
 import json
 import data_provider
 import flask
 
+from logging_common import log_handler
+
 app = flask.Flask(__name__)
+
+app.logger.addHandler(log_handler)
+app.logger.setLevel(logging.WARN)
 
 
 @app.route('/add-token', methods=['POST'])

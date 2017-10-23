@@ -1,13 +1,8 @@
-FROM debian:9.1
-
-RUN mkdir -p /usr/local/bin/app
-WORKDIR /usr/local/bin/app
+FROM andre487/scrapper487-py-common:latest
 
 ADD ./requirements.txt /usr/local/bin/app/requirements.txt
 
 RUN set -x && \
-    apt-get update && \
-    apt-get dist-upgrade -y && \
     apt-get install -y python-pip supervisor && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \

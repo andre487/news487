@@ -63,7 +63,7 @@ PROJECT_DIR="$(cd "$1" && pwd)"
 DEVTOOLS_PARAMS_DIR="$PROJECT_DIR/.devtools"
 PARAMS_FILE="$DEVTOOLS_PARAMS_DIR/params"
 
-export PYTHONPATH="$PROJECT_DIR/../common/py_common:$PYTHONPATH"
+export PYTHONPATH="$PROJECT_DIR/../common/python:$PYTHONPATH"
 
 if [[ ! -d "$PROJECT_DIR" ]]; then
     log_error "Directory $PROJECT_DIR does not exist"
