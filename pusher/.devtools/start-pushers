@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+sent_today=0
+
+while true; do
+    hour="$(date +'%H')"
+
+    if [[ "$hour" == "06" ]] && [[ "$sent_today" == "0" ]]; then
+        ./push-stats-message
+        sent_today=1
+    elif [[ "$hour" == "12" ]]; then
+        sent_today=0
+    else
+        echo "$hour: It is not the time"
+    fi
+
+    sleep 900
+done

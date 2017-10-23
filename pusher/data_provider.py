@@ -85,10 +85,8 @@ def push_message_to_all(message, title='News 487'):
 
     cursor = db.get_collection('tokens').find({})
     for item in cursor:
-        token = item['token']
-
-        result = request_fb_api({
-            'to': token,
+        request_fb_api({
+            'to': item['token'],
             'notification': {
                 'title': title,
                 'body': message,
@@ -96,11 +94,6 @@ def push_message_to_all(message, title='News 487'):
                 'click_action': news_url,
             },
         })
-
-        success = result.get('data', {}).get('success')
-        if not success:
-            logging.warn('Push to token failed. We will remove it from base: %s', token)
-            remove_token(token)
 
 
 def _get_mongo_client():

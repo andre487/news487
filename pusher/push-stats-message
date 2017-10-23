@@ -1,14 +1,16 @@
 #!/usr/bin/env python
+import logging
 import data_provider
 
 
 def main():
+    logging.info('Pushing stats messages to all')
     docs_count = data_provider.get_docs_count_from_yesterday()
 
     message = 'We got {:d} new documents till yesterday!'.format(docs_count)
     data_provider.push_message_to_all(message)
 
-    print 'Success!'
+    logging.info('Success!')
 
 if __name__ == '__main__':
     main()
