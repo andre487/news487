@@ -1,9 +1,8 @@
 import argparse
-import codecs
 import logging
+import logging_common
 import mail.reader as mail
 import re
-import sys
 import twits.reader as twits
 
 from data_extraction import doc_handler, email_handler, link_handler
@@ -14,17 +13,8 @@ from util.write import write_data
 
 file_name_getter = re.compile(r'(.+?)\.py')
 
-sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
-
+logging_common.setup()
 log = logging.getLogger('app')
-_log_handler = logging.StreamHandler(stream=sys.stderr)
-_log_handler.setFormatter(
-    logging.Formatter(
-        '%(asctime)s %(levelname)s\t%(message)s\t%(pathname)s:%(lineno)d %(funcName)s %(process)d %(threadName)s'
-    )
-)
-log.addHandler(_log_handler)
 
 
 def get_cli_args(scrappers=None):
