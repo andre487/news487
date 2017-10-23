@@ -1,0 +1,82 @@
+- hosts: all
+  remote_user: '{{ remote_user }}'
+  become: True
+  become_method: sudo
+
+  roles:
+    - common
+
+  tasks:
+    - name: Check NGINX config exists
+      stat:
+        path: /etc/nginx/sites-available/scrapper487-pusher.conf
+      register: config_res
+
+    - name: Setup no SSL NGINX host config
+      template:
+        src: templates/nginx-no-ssl.conf.j2
+        dest: /etc/nginx/sites-available/scrapper487-pusher.conf
+      when: config_res.stat.exists == False
+
+    - name: Enable NGINX host
+      file:
+        src: /etc/nginx/sites-available/scrapper487-pusher.conf
+        dest: /etc/nginx/sites-enabled/scrapper487-pusher.conf
+        state: link
+      register: host_cfg_res
+
+    - name: Create web root
+      file:
+        dest: /var/www/{{ scrapper_487_pusher_host }}
+        state: directory
+        owner: www-data
+        group: www-data
+
+    - name: Reload NGINX
+      service:
+        name: nginx
+        state: reloaded
+      when: host_cfg_res.changed
+
+    - name: Install certificate
+      shell: |
+        certbot certonly \
+          --webroot \
+          -w /var/www/{{ scrapper_487_pusher_host }} \
+          -d {{ scrapper_487_pusher_host }} \
+          -n \
+          --agree-tos \
+          -m '{{ admin_email }}'
+      args:
+        creates: /etc/letsencrypt/live/{{ scrapper_487_pusher_host }}
+
+    - name: Setup final NGINX host config
+      template:
+        src: templates/nginx-final.conf.j2
+        dest: /etc/nginx/sites-available/scrapper487-pusher.conf
+      register: final_config_res
+
+    - name: Reload NGINX
+      service:
+        name: nginx
+        state: reloaded
+      when: final_config_res.changed
+
+    - name: Update image
+      shell: docker pull andre487/scrapper487-pusher
+
+    - name: Stop container
+      shell: |
+        docker stop scrapper487-pusher || true
+        docker rm scrapper487-pusher || true
+
+    - name: Start container
+      shell: |
+        docker run \
+          -d \
+          --restart always \
+          --network {{ network_name }} \
+          --name scrapper487-pusher \
+          -e 'MONGO_HOST={{ mongo_name }}' \
+          -p 127.0.0.1:10101:5001 \
+          andre487/scrapper487-pusher

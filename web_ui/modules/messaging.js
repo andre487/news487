@@ -7,6 +7,10 @@ firebase.initializeApp(config.firebase);
 const messaging = firebase.messaging();
 
 messaging.onMessage(payload => {
+    if (!payload.notification) {
+        return;
+    }
+
     const permission = Notification.permission;
     if (permission === 'granted') {
         new Notification(payload.notification.title, payload.notification);

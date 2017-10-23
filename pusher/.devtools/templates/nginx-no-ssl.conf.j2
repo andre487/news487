@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ scrapper_487_pusher_host }};
+
+    location / {
+        root /var/www/{{ scrapper_487_pusher_host }};
+    }
+}

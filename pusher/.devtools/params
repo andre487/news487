@@ -1,0 +1,17 @@
+#@IgnoreInspection BashAddShebang
+DOCKER_REPO_NAME="andre487/scrapper487-pusher"
+DEV_VIRTUAL_ENV="$HOME/.venv/scrapper487-pusher"
+
+run_project_for_dev() {
+    export FLASK_DEBUG=1
+    export FLASK_APP=api.py
+    "$DEV_VIRTUAL_ENV/bin/flask" run --host=localhost --port 5001
+}
+
+run_project_for_docker_test() {
+    true
+}
+
+run_project_tests() {
+    true
+}
