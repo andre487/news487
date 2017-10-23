@@ -22,14 +22,14 @@ def get_cli_args(scrappers=None):
         scrappers = get_scrappers()
 
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('--log-level', default=logging.INFO)
     arg_parser.add_argument('--unicode-json', action='store_true')
 
     action_parsers = arg_parser.add_subparsers(dest='action', help='Actions')
 
     run_parser = action_parsers.add_parser('run', help='Run scrappers')
     run_parser.add_argument('names', nargs='+', choices=scrappers['all'])
-    run_parser.add_argument('--no-replace-redirects', action='store_true')
+    run_parser.add_argument('--no-replace-redirects', action='store_true',
+        help='Disable redirects replacing inside email documents')
 
     action_parsers.add_parser('list', help='List scrappers')
 
@@ -46,10 +46,6 @@ def parse_host_arg(value):
         'host': matches.group(1),
         'port': int(matches.group(2) or 0),
     }
-
-
-def setup(args):
-    log.setLevel(args.log_level)
 
 
 def get_scrappers():

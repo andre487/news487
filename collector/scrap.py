@@ -5,7 +5,6 @@ import actions
 def main():
     scrappers = actions.get_scrappers()
     args = actions.get_cli_args(scrappers)
-    actions.setup(args)
 
     if args.action == 'list':
         actions.write_data(args, scrappers['all'])
