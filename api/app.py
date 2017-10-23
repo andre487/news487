@@ -1,33 +1,15 @@
-import codecs
 import data_provider
 import json
 import flask
 import logging
-import sys
 
 from datetime import datetime, timedelta
+from logging_common import log_handler
 
 app = flask.Flask(__name__)
 
-LOG_FORMAT = '%(asctime)s %(levelname)s\t%(message)s\t%(pathname)s:%(lineno)d %(funcName)s %(process)d %(threadName)s'
-
-sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
-sys.stderr = codecs.getwriter('utf-8')(sys.stderr)
-
-app_log = logging.getLogger('app')
-access_log = logging.getLogger('werkzeug')
-
-_log_handler = logging.StreamHandler(stream=sys.stderr)
-_log_handler.setFormatter(logging.Formatter(LOG_FORMAT))
-
-app_log.addHandler(_log_handler)
-app_log.setLevel(logging.INFO)
-
-app.logger.addHandler(_log_handler)
+app.logger.addHandler(log_handler)
 app.logger.setLevel(logging.WARN)
-
-access_log.addHandler(_log_handler)
-access_log.setLevel(logging.INFO)
 
 
 @app.route('/')

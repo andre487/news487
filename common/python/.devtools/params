@@ -1,0 +1,3 @@
+#@IgnoreInspection BashAddShebang
+
+DOCKER_REPO_NAME="andre487/scrapper487-py-common"

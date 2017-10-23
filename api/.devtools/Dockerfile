@@ -1,13 +1,8 @@
-FROM debian:9.1
-
-RUN mkdir -p /usr/local/bin/app
-WORKDIR /usr/local/bin/app
+FROM andre487/scrapper487-py-common:latest
 
 ADD ./requirements.txt /usr/local/bin/app/requirements.txt
 
 RUN set -x && \
-    apt-get update && \
-    apt-get dist-upgrade -y && \
     apt-get install -y python-pip libcurl4-openssl-dev libssl-dev default-libmysqlclient-dev && \
     pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y \
@@ -30,7 +25,8 @@ RUN set -x && \
     find /var/tmp -type f -exec rm {} \;
 
 ADD . /usr/local/bin/app
+ADD .devtools/start /usr/local/bin/app/start
 
-CMD bash .devtools/start
+CMD /usr/local/bin/app/start
 
 EXPOSE 5000

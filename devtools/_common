@@ -59,9 +59,11 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-PROJECT_DIR="$1"
+PROJECT_DIR="$(cd "$1" && pwd)"
 DEVTOOLS_PARAMS_DIR="$PROJECT_DIR/.devtools"
 PARAMS_FILE="$DEVTOOLS_PARAMS_DIR/params"
+
+export PYTHONPATH="$PROJECT_DIR/../common/py_common:$PYTHONPATH"
 
 if [[ ! -d "$PROJECT_DIR" ]]; then
     log_error "Directory $PROJECT_DIR does not exist"
