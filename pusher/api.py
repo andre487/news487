@@ -33,5 +33,8 @@ def handle_request(handler, *args, **kwargs):
 
 def create_response(data, code=200):
     resp = flask.make_response(json.dumps(data), code)
+
     resp.headers['content-type'] = 'application/json; charset=utf-8'
+    resp.headers['access-control-allow-origin'] = '*'
+
     return resp

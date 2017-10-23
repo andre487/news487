@@ -17,6 +17,7 @@
                 .replace(/\n+/g, ' ')
                 .replace(/\s+/, ' ')
                 .replace(/\$API_URL/g, process.env.API_URL)
+                .replace(/\$PUSHER_URL/g, process.env.PUSHER_URL)
                 .replace(/\$NONCE/g, process.env.GIT_HASH)
                 .trim()
          }">
@@ -52,6 +53,10 @@
                 stroke-dashoffset: -68.8009;
             }
         </style>
+
+        <link rel="preconnect" href="${process.env.API_URL}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
     </head>
     <body>
         <div id="root"></div>

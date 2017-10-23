@@ -7,9 +7,14 @@ const path = require('path');
 const ServiceWorkerWebpackPlugin = require('serviceworker-webpack-plugin');
 const webpack = require('webpack');
 
-const apiHost = process.env.SCRAPPER_487_API_URL;
-if (!apiHost) {
+const apiUrl = process.env.SCRAPPER_487_API_URL;
+if (!apiUrl) {
     throw new Error('You should provide SCRAPPER_487_API_URL env var');
+}
+
+const pusherUrl = process.env.SCRAPPER_487_PUSHER_URL;
+if (!pusherUrl) {
+    throw new Error('You should provide SCRAPPER_487_PUSHER_URL env var');
 }
 
 const gitHash = String(childProcess.execSync('git rev-parse HEAD')).trim();
@@ -45,8 +50,9 @@ module.exports = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'API_URL': `"${apiHost}"`,
-                'GIT_HASH': `"${gitHash}"`,
+                API_URL: `"${apiUrl}"`,
+                PUSHER_URL: `"${pusherUrl}"`,
+                GIT_HASH: `"${gitHash}"`,
             }
         }),
 
