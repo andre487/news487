@@ -79,7 +79,7 @@ CATEGORIES = OrderedDict((
 
 log = logging.getLogger('app')
 
-_mongo_db = None
+_mongo_client = None
 _sphinx_client = None
 _sphinx_index = None
 
@@ -401,10 +401,10 @@ def create_query_text_search(**kwargs):
 
 
 def _get_mongo_db():
-    global _mongo_db
+    global _mongo_client
 
-    if _mongo_db:
-        return _mongo_db
+    if _mongo_client:
+        return _mongo_client
 
     host = os.environ.get('MONGO_HOST', 'localhost')
     port = int(os.environ.get('MONGO_PORT', 27017))

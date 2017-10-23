@@ -4,14 +4,20 @@ import pymongo
 import os
 import requests
 
+from datetime import datetime, timedelta
+
 FB_API_URL = 'https://fcm.googleapis.com/fcm/send'
+
+news_url = os.environ.get('NEWS_MAIN_URL')
+tokens_db_name = os.environ.get('MONGO_TOKENS_DB', 'pusher_data')
+docs_db_name = os.environ.get('MONGO_DOCUMENTS_DB', 'news_documents')
 
 fb_server_key = os.environ.get('FIREBASE_SERVER_KEY', os.environ.get('SCRAPPER_487_FIREBASE_SERVER_KEY', '')).strip()
 if not fb_server_key:
     raise EnvironmentError('You should provide FIREBASE_SERVER_KEY env var')
 
 _firebase_app = None
-_mongo_db = None
+_mongo_client = None
 
 
 class ParamsError(Exception):
@@ -30,7 +36,7 @@ def add_token(token):
     if res['code'] != 200 or res['data'].get('success') != 1:
         raise ParamsError('Invalid token')
 
-    db = _get_mongo_db()
+    db = _get_mongo_client()[tokens_db_name]
     collection = db.get_collection('tokens')
 
     collection.create_index([
@@ -39,6 +45,13 @@ def add_token(token):
 
     doc = {'token': token}
     collection.update_one(doc, {'$set': doc}, upsert=True)
+
+
+def remove_token(token):
+    db = _get_mongo_client()[tokens_db_name]
+    collection = db.get_collection('tokens')
+
+    collection.delete_one({'token': token})
 
 
 def request_fb_api(data):
@@ -59,11 +72,42 @@ def request_fb_api(data):
     }
 
 
-def _get_mongo_db():
-    global _mongo_db
+def get_docs_count_from_yesterday():
+    yesterday = datetime.now() - timedelta(days=1)
 
-    if _mongo_db:
-        return _mongo_db
+    db = _get_mongo_client()[docs_db_name]
+
+    return db.get_collection('items').find({'published': {'$gte': yesterday}}).count()
+
+
+def push_message_to_all(message, title='News 487'):
+    db = _get_mongo_client()[tokens_db_name]
+
+    cursor = db.get_collection('tokens').find({})
+    for item in cursor:
+        token = item['token']
+
+        result = request_fb_api({
+            'to': token,
+            'notification': {
+                'title': title,
+                'body': message,
+                'icon': '/icons/512.png',
+                'click_action': news_url,
+            },
+        })
+
+        success = result.get('data', {}).get('success')
+        if not success:
+            logging.warn('Push to token failed. We will remove it from base: %s', token)
+            remove_token(token)
+
+
+def _get_mongo_client():
+    global _mongo_client
+
+    if _mongo_client:
+        return _mongo_client
 
     host = os.environ.get('MONGO_HOST', 'localhost')
     port = int(os.environ.get('MONGO_PORT', 27017))
@@ -72,7 +116,6 @@ def _get_mongo_db():
 
     mongo_client = pymongo.MongoClient(host, port)
 
-    db_name = os.environ.get('MONGO_DB', 'pusher_data')
-    _mongo_db = mongo_client[db_name]
+    _mongo_client = mongo_client
 
-    return _mongo_db
+    return _mongo_client
