@@ -5,6 +5,7 @@
   vars:
     module_name: scrapper487-web-ui
     service_host: '{{ scrapper_487_web_ui_host }}'
+    nginx_locations: "{{ lookup('template', 'templates/nginx-locations.conf.j2') }}"
 
   roles:
     - common
