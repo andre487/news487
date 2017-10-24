@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api/api.iml" filepath="$PROJECT_DIR$/api/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/collector/collector.iml" filepath="$PROJECT_DIR$/collector/collector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pusher/pusher.iml" filepath="$PROJECT_DIR$/pusher/pusher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/common/python/py_common.iml" filepath="$PROJECT_DIR$/common/python/py_common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scrapper487.iml" filepath="$PROJECT_DIR$/scrapper487.iml" />
+      <module fileurl="file://$PROJECT_DIR$//sphinx.iml" filepath="$PROJECT_DIR$//sphinx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/telegram_bot/telegram_bot.iml" filepath="$PROJECT_DIR$/telegram_bot/telegram_bot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web_ui/web_ui.iml" filepath="$PROJECT_DIR$/web_ui/web_ui.iml" />
+    </modules>
+  </component>
+</project>

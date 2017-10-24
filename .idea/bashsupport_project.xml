@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BashSupportProjectSettings">
+    <option name="globalVariables">
+      <set>
+        <option value="DEPLOY_PARAMS_DIR" />
+        <option value="DEPLOY_TOOLS_COMMON" />
+        <option value="DEPLOY_TOOLS_COMMON_SOURCED" />
+        <option value="DEVTOOLS_DEBUG" />
+        <option value="DEVTOOLS_DIR" />
+        <option value="DEVTOOLS_PARAMS_DIR" />
+        <option value="DEV_VIRTUAL_ENV" />
+        <option value="DISABLE_DOCKER_TEST_VIA_UPDATE" />
+        <option value="DOCKER" />
+        <option value="DOCKER_BUILD" />
+        <option value="DOCKER_REPO_NAME" />
+        <option value="DOCKER_TEST_VIA_UPDATE" />
+        <option value="HAS_STATIC_PACKAGE" />
+        <option value="NO_STOP_SERVICE" />
+        <option value="PARAMS_FILE" />
+        <option value="PROJECT_DIR" />
+        <option value="REPO_NAME" />
+        <option value="SCHEDULE_INTERVAL" />
+        <option value="SKIP_DOCKER_TEST_VIA_UPDATE" />
+        <option value="SKIP_PROJECT_TEST" />
+        <option value="SKIP_PROJECT_TESTS" />
+        <option value="SKIP_TEST" />
+        <option value="WEB_PORT" />
+      </set>
+    </option>
+  </component>
+</project>
