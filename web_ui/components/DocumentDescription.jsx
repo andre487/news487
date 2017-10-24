@@ -1,5 +1,7 @@
 import React, {PureComponent} from 'react';
 
+import linkify from 'linkify-lite';
+
 const styles = {
     description: {},
     twitterDescription: {
@@ -16,7 +18,7 @@ class DocumentDescription extends PureComponent {
         if (isTwitter) {
             Object.assign(descriptionStyle, styles.twitterDescription);
 
-            description = description.replace(/(?:^\s*“)|(?:”\s*$)/g, '');
+            description = linkify(description.replace(/(?:^\s*“)|(?:”\s*$)/g, ''));
         }
 
         if (docType === 'video') {
