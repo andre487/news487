@@ -128,6 +128,12 @@ FEEDS = {
         'url': 'https://www.sitepoint.com/feed/',
         'tags': ('tech', 'web'),
     },
+    # TODO fix SSL error
+    'soasta': {
+        'name': 'Soasta',
+        'url': 'https://www.soasta.com/feed/',
+        'tags': ('tech', 'perf'),
+    },
     'tinkoff_journal': {
         'name': 'TinkoffJournal',
         'url': 'https://journal.tinkoff.ru/feed/atom/',
