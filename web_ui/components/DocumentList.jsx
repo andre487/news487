@@ -111,9 +111,7 @@ class DocumentsList extends PureComponent {
     }
 
     _renderTagsLine(doc) {
-        const tags = (doc.tags || '')
-            .split(',')
-            .filter(tag => !config.hideTags.includes(tag));
+        const tags = doc.tags.filter(tag => !config.hideTags.includes(tag));
 
         return tags.map((tag, idx) => {
             return (

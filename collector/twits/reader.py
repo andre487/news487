@@ -74,7 +74,7 @@ def parse():
                 'author_name': status.user.name,
                 'author_link': author_link,
 
-                'tags': tags.string_format('twitter', *list_info['tags']),
+                'tags': tags.create_tags_list('twitter', *list_info['tags']),
 
                 'share_count': status.retweet_count,
                 'favorite_count': status.favorite_count,

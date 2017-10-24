@@ -91,7 +91,7 @@ def create_doc(source_name, feed, entry, additional_tags, default_author_name, d
 
         'comments_count': comments_count,
 
-        'tags': tags.string_format(*additional_tags),
+        'tags': tags.create_tags_list(*additional_tags),
     }
 
 

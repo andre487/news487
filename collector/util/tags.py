@@ -1,2 +1,4 @@
-def string_format(*tags):
-    return ','.join([tag.lower() for tag in sorted(tags)])
+def create_tags_list(*tags):
+    tags_list = list(set(tags))
+    tags_list.sort()
+    return tags_list

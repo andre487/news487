@@ -3,7 +3,6 @@ import logging
 import MySQLdb
 import pymongo
 import os
-import re
 import sys
 import text_utils
 
@@ -335,27 +334,22 @@ def add_find_by_tags(query, tags, op):
     if not tags:
         return
 
-    pattern = create_tags_pattern(tags, op)
+    tags_list = tags.split(',')
 
-    query.append({'tags': pattern})
+    if op == 'or':
+        spec = {'tags': {'$in': tags_list}}
+    else:
+        spec = {'tags': {'$all': tags_list}}
+
+    query.append(spec)
 
 
 def add_exclude_by_tags(query, tags):
     if not tags:
         return
 
-    pattern = create_tags_pattern(tags, 'or')
-
-    query.append({'tags': {'$not': pattern}})
-
-
-def create_tags_pattern(tags, op):
-    tags_list = sorted(tags.split(','))
-
-    joiner = '(?:,|$).*' if op == 'and' else '(?:,|$)|'
-    pattern = '(?:^|.+,)' + joiner.join(tags_list)
-
-    return re.compile(pattern)
+    tags_list = tags.split(',')
+    query.append({'tags': {'$not': {'$in': tags_list}}})
 
 
 def add_find_by_source(query, source):

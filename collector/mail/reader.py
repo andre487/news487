@@ -82,7 +82,7 @@ def handle_mailbox_folder(server, folder_name, readonly=True, replace_redirects=
 
                 'author_name': from_name,
 
-                'tags': tags.string_format(*tags_list),
+                'tags': tags.create_tags_list(*tags_list),
             }, replace_redirects)
 
             data.append(doc)
