@@ -13,39 +13,39 @@ from collections import OrderedDict
 CATEGORIES = OrderedDict((
     ('tech', {
         'tags': 'tech',
-        'no-tags': 'css,from_mail,no_tech,search,twitter',
+        'no-tags': 'css,no_tech,search,twitter',
     }),
     ('web', {
         'tags': 'tech,web',
-        'no-tags': 'no_tech,from_mail,services,twitter',
+        'no-tags': 'no_tech,services,twitter',
     }),
     ('perf', {
         'tags': 'tech,perf',
-        'no-tags': 'no_tech,from_mail,twitter',
+        'no-tags': 'no_tech,twitter',
     }),
     ('browsers', {
         'tags': 'tech,browsers',
-        'no-tags': 'no_tech,from_mail,twitter',
+        'no-tags': 'no_tech,twitter',
     }),
     ('js', {
         'tags': 'tech,js',
-        'no-tags': 'no_tech,from_mail,twitter',
+        'no-tags': 'no_tech,twitter',
     }),
     ('css', {
         'tags': 'tech,css',
-        'no-tags': 'no_tech,from_mail,twitter',
+        'no-tags': 'no_tech,twitter',
     }),
     ('fin', {
         'tags': 'finances,no_tech',
-        'no-tags': 'tech,from_mail,twitter',
+        'no-tags': 'tech,twitter',
     }),
     ('services', {
         'tags': 'tech,services',
-        'no-tags': 'no_tech,from_mail,twitter',
+        'no-tags': 'no_tech,twitter',
     }),
     ('news', {
         'tags': 'no_tech,world',
-        'no-tags': 'tech,from_mail,twitter',
+        'no-tags': 'tech,twitter',
         'digest': False,
     }),
     ('letters', {
