@@ -36,7 +36,7 @@ def extract_contained_documents(docs):
             all_links.add(link)
 
             if link_ok:
-                doc_tags = filter(lambda t: t not in {'from_mail', 'composite'}, doc['tags'].split(','))
+                doc_tags = filter(lambda t: t not in {'from_mail', 'composite'}, doc['tags'])
                 doc_tags.append('extracted')
                 doc_tags.sort()
 
