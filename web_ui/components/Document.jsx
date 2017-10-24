@@ -26,7 +26,7 @@ class Document extends PureComponent {
 
         const pictureSrc = origPicture || picture;
 
-        let docType = cardType;
+        let docType = cardType || '';
         if (isTwitter && docType === 'article' && pictureSrc) {
             docType = 'summary-large-image';
         }

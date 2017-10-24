@@ -50,13 +50,15 @@ export function receiveCategories(categories) {
         '/digest': {
             name: 'digest',
             pathName: '/digest',
-            title: 'Digest'
+            title: 'Digest',
+            label: 'Digest'
         }
     };
 
     for (let category of categories) {
         category.pathName = `/category/${category.name}`;
-        category.title = `Category "${category.name}"`;
+        category.title = `Cat "${category.name}"`;
+        category.label = `Category "${category.name}"`;
 
         routesMap[category.pathName] = category;
     }
@@ -66,12 +68,14 @@ export function receiveCategories(categories) {
         '/tag': {
             name: 'tagSearch',
             pathName: '/tag',
-            title: 'Tag search'
+            title: 'Tag search',
+            label: 'Tag search',
         },
         '/search': {
             name: 'textSearch',
             pathName: '/search',
-            title: 'Text search'
+            title: 'Text search',
+            label: 'Text search',
         }
     };
 

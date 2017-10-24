@@ -83,12 +83,14 @@ class AppMenu extends PureComponent {
         const options = Object.entries(routesMap).map(([pathName, params], idx) => {
             const disabled = optionsAreDisabled || pathName === '/search' || pathName === '/tag';
 
+            console.log(params);
+
             return (
                 <RadioButton
                     key={`route:${idx}`}
                     disabled={disabled}
                     value={pathName}
-                    label={params.title}
+                    label={params.label}
                     style={styles.option} />
             );
         });
