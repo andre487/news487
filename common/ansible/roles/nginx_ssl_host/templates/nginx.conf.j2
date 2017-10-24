@@ -9,7 +9,10 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/{{ service_host }}/privkey.pem;
     ssl_certificate /etc/letsencrypt/live/{{ service_host }}/fullchain.pem;
 
+    add_header X-XSS-Protection "1; mode=block";
     add_header Strict-Transport-Security "max-age=86400";
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options nosniff;
 
     gzip on;
     gzip_comp_level 6;

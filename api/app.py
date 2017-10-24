@@ -3,8 +3,10 @@ import json
 import flask
 import logging
 import logging_common
+import random
 
 from datetime import datetime, timedelta
+from functools import partial
 
 logging_common.setup()
 
@@ -117,12 +119,21 @@ def create_custom_response(data, status=200, fields=None):
     content_type = data['content_type']
     resp_content = data['content']
 
+    csp = None
     if content_type.startswith('text/'):
+        nonce = random.randint(100000, 999999)
+        csp = flask.render_template('csp.txt', nonce=nonce).replace('\n', ' ')
+
+        data['nonce'] = nonce
+
         resp_content = flask.render_template('wrapper.html', **data)
         content_type = content_type.replace('text/plain', 'text/html')
 
     resp = flask.make_response(resp_content, status)
+
     resp.headers['content-type'] = content_type
+    if csp:
+        resp.headers['content-security-policy'] = csp
 
     return resp
 
