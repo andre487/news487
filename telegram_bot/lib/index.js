@@ -11,6 +11,10 @@ async function main() {
     const bot = new TeleBot({
         token: config.token,
         usePlugins: ['namedButtons'],
+        polling: {
+            timeout: 10000,
+            retryTimeout: 5000,
+        },
         pluginConfig: {
             namedButtons: {
                 buttons: await handlers.getButtons()

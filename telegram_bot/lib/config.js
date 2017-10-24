@@ -9,6 +9,8 @@ const config = {
     storeData: Boolean(env.MONGO_HOST || env.MONGO_PORT || env.MONGO_DB),
     mongoHost: env.MONGO_HOST || 'localhost',
     mongoPort: env.MONGO_PORT || 27017,
+    mongoUser: env.MONGO_USER,
+    mongoPassword: env.MONGO_PASSWORD,
     mongoDb: env.MONGO_DB || 'news_bot_487',
 
     tz: env.TZ || 'Europe/Moscow',

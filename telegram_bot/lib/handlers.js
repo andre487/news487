@@ -247,7 +247,18 @@ function getLastDateKeyPattern(msg) {
 async function getMongo() {
     console.profile('get mongo');
     if (!_mongoDb) {
-        _mongoDb = await MongoClient.connect(`mongodb://${config.mongoHost}:${config.mongoPort}/${config.mongoDb}`);
+        const authConfig = config.mongoUser && config.mongoPassword ? {
+            auth: {
+                user: config.mongoUser,
+                password: config.mongoPassword,
+            }
+        } : {};
+
+        _mongoDb = await MongoClient.connect(
+            `mongodb://${config.mongoHost}:${config.mongoPort}/${config.mongoDb}`,
+            authConfig
+        );
+
         const collection = _mongoDb.collection('last_published');
         await collection.createIndex({ key: 1 }, { unique: true, expireAfterSeconds: 10080 });
     }

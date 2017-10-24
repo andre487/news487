@@ -31,6 +31,13 @@ Main things in `.devtools` dir:
   * `ansible` – roles for setup services on server
   * `python` – common Python code and `Dockerfile` for base Python image
 
+Common MongoDB setup makes via environment variables:
+
+  * `MONGO_HOST` – `localhost` by default
+  * `MONGO_PORT` – `27017` by default
+  * `MONGO_USER` – empty by default
+  * `MONGO_PASSWORD` – empty by default
+
 ## Collector
 
 Service for scrapping sources and extracting documents and their metadata. 
@@ -84,12 +91,6 @@ For using email scrapping auth data for mail server should be provided vie envir
 
 And if you don't want to mark emails as read, you can provide variable `MAIL_READONLY=1`.
 
-Collector's MongoDB setup makes via environment variables:
-
-  * `MONGO_HOST` – `localhost` by default
-  * `MONGO_PORT` – `27017` by default
-  * `MONGO_DB` – `news_documents` by default
-
 ## API
 
 API works through `get-documents`, `get-digest`, `get-documents-by-category` endpoint. Params:
@@ -104,28 +105,15 @@ API works through `get-documents`, `get-digest`, `get-documents-by-category` end
 
 Detailed endpoint specs see in file `endpoint-specs.yml`
 
-API's MongoDB setup makes via environment variables:
-
-  * `MONGO_HOST` – `localhost` by default
-  * `MONGO_PORT` – `27017` by default
-  * `MONGO_DB` – `news_documents` by default
-
 API's SphinxSearch setup makes via environment variables:
 
   * `SPHINX_HOST` – `localhost` by default
   * `SPHINX_PORT` – `9306` by default
-  * `SPHINX_INDEX` – `news_documents` by default
 
 ## Sphinx
 
 Service for indexing and full text search that uses SphinxSearch inside. 
 Used by API for handling `text` param query.
-
-Service's MongoDB setup makes via environment variables:
-
-  * `MONGO_HOST` – `localhost` by default
-  * `MONGO_PORT` – `27017` by default
-  * `MONGO_DB` – `news_documents` by default
 
 ## Pusher
 
@@ -133,12 +121,6 @@ Service for collecting push messaging tokens and send push notifications to Web 
 
 Works through the FireBase. 
 Firebase key should be provided via `FIREBASE_KEY` environment variable.
-
-Service's MongoDB setup makes via environment variables:
-
-  * `MONGO_HOST` – `localhost` by default
-  * `MONGO_PORT` – `27017` by default
-  * `MONGO_DB` – `news_documents` by default
 
 ## Web UI
 
@@ -157,6 +139,8 @@ Configuration environment variables:
   * `TELEGRAM_TOKEN` – token of the Telegram API
   * `MONGO_HOST` – `localhost` by default
   * `MONGO_PORT` – `27017` by default
+  * `MONGO_USER` – empty by default
+  * `MONGO_PASSWORD` – empty by default
   * `MONGO_DB` – `news_bot_487` by default
   * `TZ` – `Europe/Moscow` by default
   * `SHORTEN_LINKS` – need shorten links, causes issues with Telegram preview widgets
