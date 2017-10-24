@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 
+import DocumentDescription from './DocumentDescription';
 import DocumentPicture from './DocumentPicture';
 
 import './Document.css';
@@ -12,14 +13,29 @@ const styles = {
 
 class Document extends PureComponent {
     render() {
-        const { title, picture, origPicture, description } = this.props;
+        const {
+            cardType,
+            isTwitter,
+            title,
+            link,
+            picture,
+            origPicture,
+        } = this.props;
+
+        let { description } = this.props;
 
         const pictureSrc = origPicture || picture;
 
+        let docType = cardType;
+        if (isTwitter && docType === 'article' && pictureSrc) {
+            docType = 'summary-large-image';
+        }
+        docType = docType.replace(/_/g, '-');
+
         return (
-            <div style={styles.container} className="document-card">
-                <DocumentPicture src={pictureSrc} alt={title} />
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+            <div style={styles.container} className={`document-card ${docType}`}>
+                <DocumentPicture src={pictureSrc} alt={title} link={link} docType={docType} />
+                <DocumentDescription description={description} docType={docType} isTwitter={isTwitter} />
             </div>
         );
     }

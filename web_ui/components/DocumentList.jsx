@@ -71,6 +71,8 @@ class DocumentsList extends PureComponent {
             expanded = doc.description.length < expandedThreshold;
         }
 
+        const isTwitter = doc.tags.includes('twitter');
+
         return (
             <Paper key={doc.id} zDepth={1} style={styles.paper}>
                 <Card
@@ -91,7 +93,10 @@ class DocumentsList extends PureComponent {
                         expandable={true}
                         style={styles.cardText}>
                         <Document
+                            cardType={doc.card_type}
+                            isTwitter={isTwitter}
                             title={doc.title}
+                            link={doc.link}
                             picture={doc.picture}
                             origPicture={doc.orig_picture}
                             description={doc.description} />
