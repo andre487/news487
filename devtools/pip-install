@@ -5,12 +5,17 @@ source "${tools_dir}/_common"
 
 packages=${@:2:$#}
 
+log_info "Installing common requirements"
+
+common_requirements="$PROJECT_DIR/../common/python/requirements.txt"
+"$DEV_VIRTUAL_ENV/bin/pip" install -r "$common_requirements"
+
 log_info "Installing for ${PROJECT_DIR} packages: $packages"
 
 "$DEV_VIRTUAL_ENV/bin/pip" install $packages
 
 log_info "Freezing packages"
 
-"$DEV_VIRTUAL_ENV/bin/pip" freeze > "$PROJECT_DIR/requirements.txt"
+"$DEV_VIRTUAL_ENV/bin/pip" freeze | grep -v "$(cat "$common_requirements")" > "$PROJECT_DIR/requirements.txt"
 
 log_info "Success!"

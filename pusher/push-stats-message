@@ -4,15 +4,21 @@ import data_provider
 
 logging_common.setup()
 
+log = logging_common.log
+
 
 def main():
-    logging_common.log.info('Pushing stats messages to all')
+    log.info('Pushing stats messages to all')
     docs_count = data_provider.get_docs_count_from_yesterday()
 
     message = 'We got {:d} new documents from yesterday!'.format(docs_count)
+    log.info(message)
+
     data_provider.push_message_to_all(message)
 
-    logging_common.log.info('Success!')
+    data_provider.close_db()
+
+    log.info('Success!')
 
 
 if __name__ == '__main__':

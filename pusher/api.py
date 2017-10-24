@@ -11,6 +11,11 @@ app.logger.addHandler(log_handler)
 app.logger.setLevel(logging.WARN)
 
 
+@app.route('/get-stats')
+def get_stats():
+    return handle_request(data_provider.get_stats)
+
+
 @app.route('/add-token', methods=['POST'])
 def add_token():
     token = flask.request.data

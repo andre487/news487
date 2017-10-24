@@ -16,4 +16,6 @@ RUN apt-get update && \
 
 ADD . /usr/local/bin/py_common
 
+RUN pip install --no-cache-dir -r /usr/local/bin/py_common/requirements.txt
+
 ENV PYTHONPATH="/usr/local/bin/py_common:${PYTHONPATH}"

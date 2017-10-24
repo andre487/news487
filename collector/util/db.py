@@ -1,34 +1,17 @@
 import logging
-import pymongo
-import os
+import mongo_db
+import proj_constants as const
 
 log = logging.getLogger('app')
 
-host = os.environ.get('MONGO_HOST')
-port = int(os.environ.get('MONGO_PORT', 27017))
-mongo_db = os.environ.get('MONGO_DB', 'news_documents')
-
-_collection = None
-
 
 def get_collection():
-    global _collection
+    client = mongo_db.get_client()
 
-    if not host:
+    if not client:
         return
 
-    if _collection:
-        return _collection
-
-    log.info('Connecting to MongoDB: %s:%s', host, port)
-
-    db = pymongo.MongoClient(host, port)[mongo_db]
-    _collection = db['items']
-
-    return _collection
+    return client[const.NEWS_DB][const.NEWS_COLLECTION]
 
 
-def close():
-    if host:
-        log.info('Closing connection to MongoDB: %s:%s', host, port)
-        pymongo.MongoClient(host, port).close()
+close = mongo_db.close

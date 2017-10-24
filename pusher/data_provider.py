@@ -1,7 +1,9 @@
 import json
 import logging
 import pymongo
+import mongo_db
 import os
+import proj_constants as const
 import requests
 
 from datetime import datetime, timedelta
@@ -11,19 +13,21 @@ FB_API_URL = 'https://fcm.googleapis.com/fcm/send'
 log = logging.getLogger('app')
 
 news_url = os.environ.get('NEWS_MAIN_URL')
-tokens_db_name = os.environ.get('MONGO_TOKENS_DB', 'pusher_data')
-docs_db_name = os.environ.get('MONGO_DOCUMENTS_DB', 'news_documents')
-
 fb_server_key = os.environ.get('FIREBASE_SERVER_KEY', os.environ.get('SCRAPPER_487_FIREBASE_SERVER_KEY', '')).strip()
 if not fb_server_key:
     raise EnvironmentError('You should provide FIREBASE_SERVER_KEY env var')
 
 _firebase_app = None
-_mongo_client = None
 
 
 class ParamsError(Exception):
     pass
+
+
+def get_stats():
+    return {
+        'tokens_count': _get_tokens_collection().count()
+    }
 
 
 def add_token(token):
@@ -38,8 +42,7 @@ def add_token(token):
     if res['code'] != 200 or res['data'].get('success') != 1:
         raise ParamsError('Invalid token')
 
-    db = _get_mongo_client()[tokens_db_name]
-    collection = db.get_collection('tokens')
+    collection = _get_tokens_collection()
 
     collection.create_index([
         ('token', pymongo.ASCENDING),
@@ -47,13 +50,6 @@ def add_token(token):
 
     doc = {'token': token}
     collection.update_one(doc, {'$set': doc}, upsert=True)
-
-
-def remove_token(token):
-    db = _get_mongo_client()[tokens_db_name]
-    collection = db.get_collection('tokens')
-
-    collection.delete_one({'token': token})
 
 
 def request_fb_api(data):
@@ -77,15 +73,11 @@ def request_fb_api(data):
 def get_docs_count_from_yesterday():
     yesterday = datetime.now() - timedelta(days=1)
 
-    db = _get_mongo_client()[docs_db_name]
-
-    return db.get_collection('items').find({'published': {'$gte': yesterday}}).count()
+    return _get_documents_collection().count({'published': {'$gte': yesterday}})
 
 
 def push_message_to_all(message, title='News 487'):
-    db = _get_mongo_client()[tokens_db_name]
-
-    cursor = db.get_collection('tokens').find({})
+    cursor = _get_tokens_collection().find({})
     for item in cursor:
         request_fb_api({
             'to': item['token'],
@@ -98,19 +90,15 @@ def push_message_to_all(message, title='News 487'):
         })
 
 
-def _get_mongo_client():
-    global _mongo_client
+def close_db():
+    mongo_db.close()
 
-    if _mongo_client:
-        return _mongo_client
 
-    host = os.environ.get('MONGO_HOST', 'localhost')
-    port = int(os.environ.get('MONGO_PORT', 27017))
+def _get_tokens_collection():
+    client = mongo_db.get_client()
+    return client[const.PUSHER_TOKENS_DB][const.PUSHER_TOKENS_COLLECTION]
 
-    log.info('Create new MongoDB client. Host %s, port %s', host, port)
 
-    mongo_client = pymongo.MongoClient(host, port)
-
-    _mongo_client = mongo_client
-
-    return _mongo_client
+def _get_documents_collection():
+    client = mongo_db.get_client()
+    return client[const.NEWS_DB][const.NEWS_COLLECTION]

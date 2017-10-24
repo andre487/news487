@@ -1,8 +1,9 @@
 import dateutil.parser
 import logging
 import MySQLdb
-import pymongo
+import mongo_db
 import os
+import proj_constants as const
 import sys
 import text_utils
 
@@ -78,9 +79,7 @@ CATEGORIES = OrderedDict((
 
 log = logging.getLogger('app')
 
-_mongo_client = None
 _sphinx_client = None
-_sphinx_index = None
 
 
 class ParamsError(Exception):
@@ -144,7 +143,7 @@ def get_document(**kwargs):
         return None
 
     db = _get_mongo_db()
-    doc = db.items.find_one({'_id': doc_id})
+    doc = db[const.NEWS_COLLECTION].find_one({'_id': doc_id})
 
     if not doc:
         return None
@@ -267,7 +266,7 @@ def get_category_names(*args, **kwargs):
 def get_stats(**kwargs):
     db = _get_mongo_db()
 
-    cursor = db.items.aggregate([
+    cursor = db[const.NEWS_COLLECTION].aggregate([
         {'$group': {'_id': '$source_name', 'count': {'$sum': 1}}},
         {'$sort': {'count': -1}},
     ])
@@ -371,10 +370,10 @@ def create_query_text_search(**kwargs):
     if not text:
         raise ParamsError('Text should not be empty')
 
-    sphinx, index_name = _get_sphinx_connection()
+    sphinx = _get_sphinx_connection()
     cursor = sphinx.cursor()
 
-    query = 'SELECT doc_id FROM {index} WHERE MATCH(%s)'.format(index=index_name)
+    query = 'SELECT doc_id FROM {index} WHERE MATCH(%s)'.format(index=const.SPHINX_INDEX)
     cursor.execute(query, [text])
 
     doc_ids = [item[0] for item in cursor]
@@ -395,56 +394,42 @@ def create_query_text_search(**kwargs):
 
 
 def _get_mongo_db():
-    global _mongo_client
+    client = mongo_db.get_client()
 
-    if _mongo_client:
-        return _mongo_client
+    if not client:
+        raise EnvironmentError('No connection to MongoDB')
 
-    host = os.environ.get('MONGO_HOST', 'localhost')
-    port = int(os.environ.get('MONGO_PORT', 27017))
-
-    log.info('Create new MongoDB client. Host %s, port %s', host, port)
-
-    mongo_client = pymongo.MongoClient(host, port)
-
-    db_name = os.environ.get('MONGO_DB', 'news_documents')
-    _mongo_db = mongo_client[db_name]
-
-    return _mongo_db
+    return client[const.NEWS_DB]
 
 
 def _get_sphinx_connection():
-    global _sphinx_client, _sphinx_index
+    global _sphinx_client
 
-    if _sphinx_client and _sphinx_index:
-        return _sphinx_client, _sphinx_index
+    if _sphinx_client:
+        return _sphinx_client
 
     host = os.environ.get('SPHINX_HOST', '127.0.0.1')
     port = int(os.environ.get('SPHINX_PORT', 9306))
-    index_name = os.environ.get('SPHINX_INDEX', 'news_documents')
 
     log.info('Create new SphinxQL client. Host %s, port %s', host, port)
 
     _sphinx_client = MySQLdb.connect(host=host, port=port, use_unicode=True, charset='utf8')
-    _sphinx_index = index_name
 
-    return _sphinx_client, _sphinx_index
+    return _sphinx_client
 
 
 def _close_sphinx_connection():
-    global _sphinx_client, _sphinx_index
+    global _sphinx_client
 
     if _sphinx_client:
         log.info('Closing SphinxQL client')
 
         _sphinx_client.close()
-
         _sphinx_client = None
-        _sphinx_index = None
 
 
 def make_query(db, query, order, limit):
-    cursor = db.items.find(query)
+    cursor = db[const.NEWS_COLLECTION].find(query)
     if order is not None:
         cursor = cursor.sort([('published', order)])
 

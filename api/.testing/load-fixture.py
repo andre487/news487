@@ -3,6 +3,7 @@ import dateutil.parser
 import json
 import pymongo
 import os
+import proj_constants as const
 
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -17,9 +18,9 @@ def main():
         raise Exception('You should provide MONGO_PORT')
 
     client = pymongo.MongoClient(port=int(mongo_port))
-    client.drop_database('news_documents')
+    client.drop_database(const.NEWS_DB)
 
-    collection = client.get_database('news_documents').get_collection('items')
+    collection = client[const.NEWS_DB][const.NEWS_COLLECTION]
 
     for item in fixture:
         item['published'] = dateutil.parser.parse(item['published'])
