@@ -6,6 +6,13 @@ import theme from '../config/theme';
 import * as ViewTypes from '../constants/ViewTypes';
 
 const styles = {
+    container: {
+        height: '64px',
+    },
+    appBar: {
+        top: 0,
+        position: 'fixed',
+    },
     textSearch: {
         flex: '1 1 0%',
         width: '160px',
@@ -48,11 +55,14 @@ class Header extends PureComponent {
         );
 
         return (
-            <AppBar
-                title={title}
-                onLeftIconButtonTouchTap={this.props.onMenuButtonTap}>
-                {searchForm}
-            </AppBar>
+            <div style={styles.container}>
+                <AppBar
+                    style={styles.appBar}
+                    title={title}
+                    onLeftIconButtonTouchTap={this.props.onMenuButtonTap}>
+                    {searchForm}
+                </AppBar>
+            </div>
         );
     }
 

@@ -25,11 +25,9 @@ const styles = {
 
 class AppMenu extends PureComponent {
     render() {
-        if (!this.props.opened) {
-            return (null);
-        }
-
-        const childNodes = [
+        const childNodes = this.props.categoriesRequestInProcess ? [
+            this._createProgress()
+        ] : [
             <AppBar
                 key="header"
                 title="Filters"
@@ -38,14 +36,10 @@ class AppMenu extends PureComponent {
                 onLeftIconButtonTouchTap={this.props.onMenuClose} />
         ].concat(this._createFilterNodeList());
 
-        if (this.props.categoriesRequestInProcess) {
-            childNodes.push(this._createProgress());
-        }
-
         return (
             <Drawer
                 docked={false}
-                open={true}
+                open={this.props.opened}
                 width={300}
 
                 onRequestChange={this.props.onMenuClose}>
