@@ -65,7 +65,7 @@ def _redirect_replacer(match):
     try:
         res = requests.head(url, headers=REQUEST_HEADERS, allow_redirects=True)
     except Exception as e:
-        log.warn('Got error from redirect request: %s', e)
+        log.warn('Got issue with redirect request: %s', e)
         return url
 
     if res.status_code == 200 and res.url != url:
