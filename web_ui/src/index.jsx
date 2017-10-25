@@ -25,17 +25,17 @@ injectTapEventPlugin();
 const history = createHistory();
 
 let middleware;
-if (process.env.NODE_ENV === 'production') {
-    middleware = applyMiddleware(
-        thunkMiddleware,
-        routerMiddleware(history)
-    );
-} else {
+if (process.env.REDUX_LOGGER) {
     const createLogger = require('redux-logger').createLogger;
 
     middleware = applyMiddleware(
         thunkMiddleware,
         createLogger(),
+        routerMiddleware(history)
+    );
+} else {
+    middleware = applyMiddleware(
+        thunkMiddleware,
         routerMiddleware(history)
     );
 }

@@ -14,7 +14,8 @@ module.exports = merge(commonConfig, {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': '"development"'
+                NODE_ENV: '"development"',
+                REDUX_LOGGER: JSON.stringify(process.env.REDUX_LOGGER),
             }
         }),
         new HtmlWebpackPlugin({

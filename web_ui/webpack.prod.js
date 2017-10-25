@@ -15,7 +15,8 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin(['build']),
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': '"production"'
+                NODE_ENV: '"production"',
+                REDUX_LOGGER: 'false',
             }
         }),
         new HtmlWebpackPlugin({
