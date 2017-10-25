@@ -12,6 +12,13 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import theme from '../config/theme';
 
 class App extends PureComponent {
+    constructor(props, state) {
+        super(props, state);
+
+        this._onTextSearch = this._onTextSearch.bind(this);
+        this._onTagSelected = this._onTagSelected.bind(this);
+    }
+
     componentWillMount() {
         this.props.actions.fetchCategories();
     }
@@ -36,7 +43,7 @@ class App extends PureComponent {
                 <div>
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
-                        onTextSearch={this._onTextSearch.bind(this)}
+                        onTextSearch={this._onTextSearch}
                         viewType={viewType}
                         searchText={searchText}
                         filterTitle={routeTitle} />
@@ -51,7 +58,7 @@ class App extends PureComponent {
                         categoriesRequestInProcess={categoriesRequestInProcess}
                         docsRequestInProcess={docsRequestInProcess} />
                     <Shower
-                        onTagSelected={this._onTagSelected.bind(this)}
+                        onTagSelected={this._onTagSelected}
                         viewType={viewType}
                         searchText={searchText}
                         filterTitle={routeTitle} />

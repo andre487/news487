@@ -28,6 +28,13 @@ const styles = {
 };
 
 class Header extends PureComponent {
+    constructor(props, state) {
+        super(props, state);
+
+        this._onTextSearch = this._onTextSearch.bind(this);
+        this._onSearchInputChange = this._onSearchInputChange.bind(this);
+    }
+
     componentDidMount() {
         this._searchText = '';
     }
@@ -40,13 +47,13 @@ class Header extends PureComponent {
 
         // noinspection HtmlUnknownTarget
         const searchForm = (
-            <form action="/search" onSubmit={this._onTextSearch.bind(this)}>
+            <form action="/search" onSubmit={this._onTextSearch}>
                 <TextField
                     style={styles.textSearch}
                     hintStyle={styles.textSearchHint}
                     inputStyle={styles.textInput}
 
-                    onChange={this._onSearchInputChange.bind(this)}
+                    onChange={this._onSearchInputChange}
 
                     name="text"
                     defaultValue={defaultValue}

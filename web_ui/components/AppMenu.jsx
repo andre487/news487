@@ -24,6 +24,12 @@ const styles = {
 };
 
 class AppMenu extends PureComponent {
+    constructor(props, state) {
+        super(props, state);
+
+        this._onSelectFilter = this._onSelectFilter.bind(this);
+    }
+
     render() {
         const childNodes = this.props.categoriesRequestInProcess ? [
             this._createProgress()
@@ -93,7 +99,7 @@ class AppMenu extends PureComponent {
                 name="categories"
                 defaultSelected={defaultSelected}
                 style={styles.radioGroup}
-                onChange={this._onSelectFilter.bind(this)}>
+                onChange={this._onSelectFilter}>
                 {options}
             </RadioButtonGroup>
         ];
