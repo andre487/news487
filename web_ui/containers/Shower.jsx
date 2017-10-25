@@ -6,21 +6,20 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import * as ShowerActions from '../actions/shower';
-import * as ViewTypes from '../constants/ViewTypes';
 import DocumentsList from '../components/DocumentList';
 
 class Shower extends PureComponent {
     componentDidMount() {
-        const { viewType, routePath, routeParams } = this.props;
+        const { viewType, searchText } = this.props;
 
-        this._fetchDocuments(viewType, routePath, routeParams);
+        this._fetchDocuments(viewType, searchText);
     }
 
     componentWillUpdate(newProps) {
-        const { viewType, routePath, routeParams } = newProps;
+        const { viewType, searchText } = newProps;
 
-        if (this._shouldFetchDocuments(viewType, routePath, routeParams)) {
-            this._fetchDocuments(viewType, routePath, routeParams);
+        if (viewType !== this._viewType || searchText !== this._searchText) {
+            this._fetchDocuments(viewType, searchText);
         }
     }
 
@@ -47,27 +46,11 @@ class Shower extends PureComponent {
         );
     }
 
-    _shouldFetchDocuments(viewType, routePath, routeParams) {
-        if (viewType !== this._viewType) {
-            return true;
-        }
-
-        switch (viewType) {
-            case ViewTypes.TEXT_SEARCH:
-                return this._routeParams.text !== routeParams.text;
-            case ViewTypes.TAG_SEARCH:
-                return this._routeParams.tag !== routeParams.tag;
-            default:
-                return routePath !== this._routePath;
-        }
-    }
-
-    _fetchDocuments(viewType, routePath, routeParams) {
+    _fetchDocuments(viewType, searchText) {
         this._viewType = viewType;
-        this._routePath = routePath;
-        this._routeParams = routeParams;
+        this._searchText = searchText;
 
-        this.props.actions.fetchDocs(viewType, routePath, routeParams);
+        this.props.actions.fetchDocs(viewType, searchText);
     }
 
     _showErrorWindow(error) {

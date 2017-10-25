@@ -98,7 +98,6 @@ class DocumentsList extends PureComponent {
                             title={doc.title}
                             link={doc.link}
                             picture={doc.picture}
-                            origPicture={doc.orig_picture}
                             description={doc.description} />
                     </CardText>
                     <CardActions>
@@ -118,10 +117,10 @@ class DocumentsList extends PureComponent {
     _renderTagsLine(doc) {
         const tags = doc.tags.filter(tag => !config.hideTags.includes(tag));
 
-        return tags.map((tag, idx) => {
+        return tags.map(tag => {
             return (
                 <FlatButton
-                    key={idx}
+                    key={tag}
                     label={tag}
                     onClick={this._onSelectTag.bind(this, tag)} />
             );

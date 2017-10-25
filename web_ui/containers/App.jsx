@@ -13,23 +13,12 @@ import theme from '../config/theme';
 
 class App extends PureComponent {
     componentWillMount() {
-        const { actions, match } = this.props;
-
-        const routePath = match.url;
-        const routeParams = match.params;
-
-        actions.syncRoutes(routePath, routeParams);
-        actions.fetchCategories();
+        this.props.actions.fetchCategories();
     }
 
     render() {
-        if (!this.props.app.routesSynced) {
-            return (null);
-        }
-
         const { actions, match } = this.props;
-        const routePath = match.url;
-        const routeParams = match.params;
+        const { docsRequestInProcess } = this.props.shower;
 
         const {
             menuOpened,
@@ -37,10 +26,10 @@ class App extends PureComponent {
             routesMap,
             routeTitle,
             viewType,
-            searchText
+            searchText,
         } = this.props.app;
 
-        const { docsRequestInProcess } = this.props.shower;
+        const routePath = match.url;
 
         return (
             <MuiThemeProvider muiTheme={theme}>
@@ -57,17 +46,15 @@ class App extends PureComponent {
 
                         opened={menuOpened}
                         routesMap={routesMap}
+                        viewType={viewType}
                         routePath={routePath}
-                        routeParams={routeParams}
                         categoriesRequestInProcess={categoriesRequestInProcess}
                         docsRequestInProcess={docsRequestInProcess} />
                     <Shower
                         onTagSelected={this._onTagSelected.bind(this)}
                         viewType={viewType}
                         searchText={searchText}
-                        filterTitle={routeTitle}
-                        routePath={routePath}
-                        routeParams={routeParams} />
+                        filterTitle={routeTitle} />
                 </div>
             </MuiThemeProvider>
         );

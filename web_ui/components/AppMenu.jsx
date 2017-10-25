@@ -7,7 +7,7 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 
-import * as util from '../util';
+import * as ViewTypes from '../constants/ViewTypes';
 
 const styles = {
     progress: {
@@ -64,9 +64,9 @@ class AppMenu extends PureComponent {
 
     _createFilterNodeList() {
         const {
-            routesMap,
+            viewType,
             routePath,
-            routeParams,
+            routesMap,
             categoriesRequestInProcess,
             docsRequestInProcess
         } = this.props;
@@ -74,16 +74,14 @@ class AppMenu extends PureComponent {
         const optionsAreDisabled = categoriesRequestInProcess || docsRequestInProcess;
 
         let defaultSelected = routePath;
-        if (util.isTextSearchRoute(routePath, routeParams)) {
+        if (viewType === ViewTypes.TEXT_SEARCH) {
             defaultSelected = '/search';
-        } else if (util.isTagSearchRoute(routePath, routeParams)) {
+        } else if (viewType === ViewTypes.TAG_SEARCH) {
             defaultSelected = '/tag';
         }
 
         const options = Object.entries(routesMap).map(([pathName, params], idx) => {
             const disabled = optionsAreDisabled || pathName === '/search' || pathName === '/tag';
-
-            console.log(params);
 
             return (
                 <RadioButton

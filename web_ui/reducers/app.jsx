@@ -2,6 +2,8 @@ import * as ActionTypes from '../constants/ActionTypes';
 import * as ViewTypes from '../constants/ViewTypes';
 import * as util from '../util';
 
+import {LOCATION_CHANGE} from 'react-router-redux';
+
 const initialState = {
     menuOpened: null,
     categoriesRequestInProcess: null,
@@ -32,100 +34,67 @@ const initialState = {
 
 export default function app(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.SYNC_ROUTES:
-            const { routePath, routeParams } = action;
-
-            const isTextSearch = util.isTextSearchRoute(routePath, routeParams);
-            const isTagSearch = util.isTagSearchRoute(routePath, routeParams);
-
-            const searchText = isTextSearch || isTagSearch ? routeParams.text : null;
-
-            let viewType = ViewTypes.CATEGORY;
-            if (isTextSearch) {
-                viewType = ViewTypes.TEXT_SEARCH;
-            } else if (isTagSearch) {
-                viewType = ViewTypes.TAG_SEARCH;
-            }
+        case LOCATION_CHANGE: {
+            const routePath = action.payload.pathname;
+            const viewType = util.getViewType(routePath);
+            const searchText = util.getSearchText(routePath);
 
             return {
                 ...state,
-                routeTitle: getRouteTitle(state, routePath, routeParams),
-                routePath: action.routePath,
-                routeParams: action.routeParams,
+                routeTitle: getRouteTitle(state, routePath, viewType, searchText),
                 routesSynced: true,
+                routePath,
                 viewType,
-                searchText
+                searchText,
             };
+        }
 
-        case ActionTypes.TOGGLE_MENU:
+        case ActionTypes.TOGGLE_MENU: {
             return {
                 ...state,
                 menuOpened: !state.menuOpened
             };
+        }
 
-        case ActionTypes.REQUEST_CATEGORIES:
+        case ActionTypes.REQUEST_CATEGORIES: {
             return {
                 ...state,
                 categoriesRequestInProcess: true
             };
+        }
 
-        case ActionTypes.RECEIVE_CATEGORIES:
+        case ActionTypes.RECEIVE_CATEGORIES: {
             return {
                 ...state,
                 categoriesRequestInProcess: false,
                 routesMap: action.routesMap,
                 categories: action.categories
             };
+        }
 
-        case ActionTypes.SELECT_FILTER:
-            return {
-                ...state,
-                routeTitle: getRouteTitle(state, action.routePath, action.routeParams),
-                routePath: action.routePath,
-                viewType: ViewTypes.CATEGORY
-            };
-
-        case ActionTypes.TEXT_SEARCH:
-            return {
-                ...state,
-                routeTitle: getTextSearchTitle(),
-                routePath: action.routePath,
-                searchText: action.text,
-                viewType: ViewTypes.TEXT_SEARCH
-            };
-
-        case ActionTypes.TAG_SEARCH:
-            return {
-                ...state,
-                routeTitle: getTagSearchTitle(action.text),
-                routePath: action.routePath,
-                searchText: action.text,
-                viewType: ViewTypes.TAG_SEARCH
-            };
-
-        default:
+        default: {
             return state;
+        }
     }
 }
 
-function getRouteTitle(state, routePath, routeParams) {
-    const routeData = state.routesMap[routePath];
+function getRouteTitle(state, routePath, viewType, searchText) {
+    const routeData = state.routesMap && state.routesMap[routePath];
 
     if (routeData) {
         return routeData.title;
     }
 
-    if (util.isTextSearchRoute(routePath, routeParams)) {
+    if (viewType === ViewTypes.TEXT_SEARCH) {
         return getTextSearchTitle();
     }
 
-    if (util.isTagSearchRoute(routePath, routeParams)) {
-        return getTagSearchTitle(routeParams.tag);
+    if (viewType === ViewTypes.TAG_SEARCH) {
+        return getTagSearchTitle(searchText);
     }
 
-    const catMatches = /\/category\/([^/]+)/.exec(routePath);
-    if (catMatches) {
-        return getCategoryTitle(catMatches[1]);
+    if (viewType === ViewTypes.CATEGORY) {
+        return getCategoryTitle(searchText);
     }
 
     return 'Unknown';
@@ -135,10 +104,10 @@ function getTextSearchTitle() {
     return 'Text search';
 }
 
-function getTagSearchTitle(tag) {
-    return `Tag “${tag}”`;
+function getTagSearchTitle(searchText) {
+    return searchText ? `Tag “${searchText}”` : 'Tag search';
 }
 
 function getCategoryTitle(name) {
-    return `Cat “${name}”`;
+    return name ? `Cat “${name}”` : 'Digest';
 }

@@ -1,4 +1,4 @@
-import {push, replace} from 'react-router-redux/actions';
+import {push} from 'react-router-redux/actions';
 
 import config from '../config';
 import * as ActionTypes from '../constants/ActionTypes';
@@ -7,12 +7,8 @@ export function toggleMenu() {
     return { type: ActionTypes.TOGGLE_MENU };
 }
 
-export function pushRoute(routePath, routeParams) {
-    return push(routePath, routeParams);
-}
-
-export function replaceRoute(routePath, routeParams) {
-    return replace(routePath, routeParams);
+export function pushRoute(routePath) {
+    return push(routePath);
 }
 
 export function selectFilter(routePath) {
@@ -83,14 +79,6 @@ export function receiveCategories(categories) {
         type: ActionTypes.RECEIVE_CATEGORIES,
         routesMap,
         categories
-    };
-}
-
-export function syncRoutes(routePath, routeParams) {
-    return {
-        type: ActionTypes.SYNC_ROUTES,
-        routePath,
-        routeParams
     };
 }
 

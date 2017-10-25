@@ -2,7 +2,7 @@ import config from '../config';
 import * as ActionTypes from '../constants/ActionTypes';
 import * as ViewTypes from '../constants/ViewTypes';
 
-export function fetchDocs(viewType, routePath, routeParams) {
+export function fetchDocs(viewType, searchText) {
     return (dispatch, getState) => {
         const state = getState();
 
@@ -11,7 +11,7 @@ export function fetchDocs(viewType, routePath, routeParams) {
         }
 
         dispatch(requestDocs());
-        return fetch(buildUrl(viewType, routePath, routeParams))
+        return fetch(buildUrl(viewType, searchText))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)))
             .catch(err => dispatch(receiveDocsError(err)));
@@ -48,7 +48,7 @@ export function changeCardExpand(docId, cardState) {
     };
 }
 
-function buildUrl(viewType, routePath, routeParams) {
+function buildUrl(viewType, searchText) {
     const noTags = config.excludeTags.join(',');
     let url;
 
@@ -57,7 +57,7 @@ function buildUrl(viewType, routePath, routeParams) {
             url = [
                 `${config.apiUrl}`,
                 `/get-documents`,
-                `?text=${encodeURIComponent(routeParams.text)}`,
+                `?text=${encodeURIComponent(searchText)}`,
                 `&no-tags=${noTags}`
             ].join('');
             break;
@@ -65,17 +65,17 @@ function buildUrl(viewType, routePath, routeParams) {
             url = [
                 `${config.apiUrl}`,
                 `/get-documents`,
-                `?tags=${encodeURIComponent(routeParams.tag)}`,
+                `?tags=${encodeURIComponent(searchText)}`,
                 `&no-tags=${noTags}`,
                 `&limit=${config.defaultDocsLimit}`
             ].join('');
             break;
         case ViewTypes.CATEGORY:
-            if (routePath.startsWith('/category/')) {
+            if (searchText) {
                 url =[
                     `${config.apiUrl}`,
                     `/get-documents-by-category`,
-                    `?name=${routeParams.name}`,
+                    `?name=${searchText}`,
                     `&limit=${config.defaultDocsLimit}`
                 ].join('');
             } else {
