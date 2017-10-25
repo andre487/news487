@@ -104,7 +104,10 @@ class MeaningExtractor(object):
         return self._content_data
 
     def get_card_type(self):
-        return self._get_meta_card_type()
+        card_type = self._get_meta_card_type()
+        if card_type.startswith('video'):
+            card_type = 'video'
+        return card_type
 
     def get_link(self):
         return self._get_meta_link()
@@ -203,6 +206,18 @@ class MeaningExtractor(object):
 
         return pic
 
+    def get_video(self):
+        return self._get_meta_general('og:video:secure_url', 'og:video:url')
+
+    def get_video_properties(self):
+        url = self.get_video()
+        return url and {
+            'url': url,
+            'type': self._get_meta_general('og:video:type'),
+            'width': self._get_meta_general('og:video:width'),
+            'height': self._get_meta_general('og:video:height'),
+        }
+
     def _get_meta_card_type(self):
         return self._get_meta_general('og:type', 'twitter:card')
 
@@ -282,6 +297,8 @@ def dress_email_document(doc):
     doc['picture'] = extr.get_picture()
     doc['dressed'] = True
 
+    doc['video'] = extr.get_video_properties()
+
     return doc
 
 
@@ -316,6 +333,8 @@ def dress_page_document(doc):
 
     doc['orig_picture'] = doc.get('picture')
     doc['picture'] = extr.get_picture() or doc['orig_picture']
+
+    doc['video'] = extr.get_video_properties()
 
     doc['orig_description'] = doc['description']
     doc['description'] = extr.get_description() or doc['description']
