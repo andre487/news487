@@ -209,25 +209,59 @@ def test_meaning_extractor_picture_from_content_skip_little():
     assert parser.get_picture() == 'foo.jpg'
 
 
-def test_meaning_extractor_picture_from_content_handle_incorrect_sizes():
-    parser = doc_handler.MeaningExtractor('<img src=bar.jpg alt=Bar width=10ass height=10ass>' + heavy_html)
+def test_meaning_extractor_picture_from_content_prefere_alt():
+    parser = doc_handler.MeaningExtractor('<img src=bar.jpg>' + heavy_html)
+
+    assert parser.get_picture() == 'foo.jpg'
+
+
+def test_meaning_extractor_picture_from_content_prefere_bigger_width():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=foo.jpg width=100 height=100><img src=bar.jpg width=200 height=100>' + heavy_html
+    )
 
     assert parser.get_picture() == 'bar.jpg'
 
 
-def test_meaning_extractor_picture_from_content_prefere_alt():
-    parser = doc_handler.MeaningExtractor('<img src=bar.jpg width=100 height=100>' + heavy_html)
+def test_meaning_extractor_picture_from_content_prefere_bigger_height():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=foo.jpg width=100 height=100><img src=bar.jpg width=100 height=200>' + heavy_html
+    )
+
+    assert parser.get_picture() == 'bar.jpg'
+
+
+def test_meaning_extractor_picture_from_content_prefere_100p_width():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=foo.jpg width=100 height=100><img src=bar.jpg width=100% height=100>' + heavy_html
+    )
+
+    assert parser.get_picture() == 'bar.jpg'
+
+
+def test_meaning_extractor_picture_from_content_prefere_100p_height():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=foo.jpg width=100 height=100><img src=bar.jpg width=100 height=100%>' + heavy_html
+    )
+
+    assert parser.get_picture() == 'bar.jpg'
+
+
+def test_meaning_extractor_picture_from_content_prefere_position():
+    parser = doc_handler.MeaningExtractor(
+        '<img src=foo.jpg width=100 height=100 alt=Foo><img src=bar.jpg width=100 height=100 alt=Bar>' + heavy_html
+    )
 
     assert parser.get_picture() == 'foo.jpg'
 
 
 def test_meaning_extractor_picture_from_content_with_base_url():
     parser = doc_handler.MeaningExtractor(
-        '<img src=bar.jpg width=100 height=100>' + heavy_html,
+        '<img src=bar.jpg width=100% height=100% alt=Bar>' + heavy_html,
         base_url='http://example.com/'
     )
 
-    assert parser.get_picture() == 'http://example.com/foo.jpg'
+    assert parser.get_picture() == 'http://example.com/bar.jpg'
 
 
 def test_meaning_extractor_picture_no():

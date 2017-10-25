@@ -18,6 +18,8 @@ words_splitter = re.compile(r'\s+', re.UNICODE)
 non_word_stripper = re.compile(r'(\w)\W+$', re.UNICODE)
 full_url_pattern = re.compile(r'^(?:https?:)?//')
 
+trailing_metric_pattern = re.compile(r'\D+$')
+
 
 class MeaningParser(HTMLParser):
     block_tags = {'title', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'}
@@ -33,6 +35,7 @@ class MeaningParser(HTMLParser):
         self._current_content = ''
 
         self._cur_level = 0
+        self._img_position = 0
         self._gathering_level = None
 
     def handle_starttag(self, tag, attrs):
@@ -79,10 +82,24 @@ class MeaningParser(HTMLParser):
         if src:
             self._content_data['img'].append({
                 'src': src,
-                'width': d_attrs.get('width'),
-                'height': d_attrs.get('height'),
-                'alt': d_attrs.get('alt', '')
+                'width': self._parse_dimension(d_attrs.get('width')),
+                'height': self._parse_dimension(d_attrs.get('height')),
+                'alt': d_attrs.get('alt', ''),
+                'pos': self._img_position
             })
+            self._img_position += 1
+
+    def _parse_dimension(self, x):
+        if not x:
+            return
+
+        if x == '100%':
+            return x
+
+        try:
+            return float(trailing_metric_pattern.sub('', x))
+        except Exception as e:
+            log.debug(e)
 
 
 class MeaningExtractor(object):
@@ -175,30 +192,10 @@ class MeaningExtractor(object):
         if 'img' not in self._content_data:
             return None
 
-        alt_images = []
-        no_alt_images = []
+        normal_images = filter(self._has_image_normal_size, self._content_data['img'])
+        normal_images.sort(self._rank_images, reverse=True)
 
-        for attrs in self._content_data['img']:
-            if attrs['width'] and attrs['height'] and attrs['width'] != '100%' and attrs['height'] != '100%':
-                try:
-                    width = int(attrs['width'].replace('px', ''))
-                    height = int(attrs['height'].replace('px', ''))
-                    if width < 50 and height < 50:
-                        continue
-                except Exception as e:
-                    log.debug(e.message)
-
-            if attrs['alt']:
-                alt_images.append(attrs['src'])
-            else:
-                no_alt_images.append(attrs['src'])
-
-        pic = None
-        if alt_images:
-            pic = alt_images[0]
-        elif no_alt_images:
-            pic = no_alt_images[0]
-
+        pic = normal_images[0]['src'] if normal_images else None
         if pic and not full_url_pattern.match(pic) and self._base_url:
             if not pic.startswith('/'):
                 pic = '/' + pic
@@ -237,6 +234,50 @@ class MeaningExtractor(object):
         for name in names:
             if name in self._meta_data:
                 return self._meta_data[name].strip()
+
+    def _has_image_normal_size(self, attrs):
+        if attrs['width'] and attrs['height'] and (attrs['width'] != '100%' or attrs['height'] != '100%'):
+            if attrs['width'] < 50 and attrs['height'] < 50:
+                return False
+
+        return True
+
+    def _rank_images(self, attrs1, attrs2):
+        w_factor1 = bool(
+            attrs1['width'] and not attrs2['width'] or
+            attrs1['width'] == '100%' and attrs2['width'] != '100%' or
+            attrs1['width'] > attrs2['width']
+        )
+        w_factor2 = bool(
+            attrs2['width'] and not attrs1['width'] or
+            attrs2['width'] == '100%' and attrs1['width'] != '100%' or
+            attrs2['width'] > attrs1['width']
+        )
+
+        h_factor1 = bool(
+            attrs1['height'] and not attrs2['height'] or
+            attrs1['height'] == '100%' and attrs2['height'] != '100%' or
+            attrs1['height'] > attrs2['height']
+        )
+        h_factor2 = bool(
+            attrs2['height'] and not attrs1['height'] or
+            attrs2['height'] == '100%' and attrs1['height'] != '100%' or
+            attrs2['height'] > attrs1['height']
+        )
+
+        sizes_factor1 = (w_factor1 + h_factor1) * 2
+        sizes_factor2 = (w_factor2 + h_factor2) * 2
+
+        alt_factor1 = bool(attrs1['alt'] and not attrs2['alt']) * 3
+        alt_factor2 = bool(attrs2['alt'] and not attrs1['alt']) * 3
+
+        diff_factor = sizes_factor1 + alt_factor1 - sizes_factor2 - alt_factor2
+
+        if diff_factor == 0:
+            # Order factor
+            return attrs2['pos'] - attrs1['pos']
+
+        return diff_factor
 
 
 class TagsStripper(HTMLParser):
