@@ -48,6 +48,17 @@ export function changeCardExpand(docId, cardState) {
     };
 }
 
+export function showVideo(videoData) {
+    return {
+        type: ActionTypes.SHOW_VIDEO,
+        videoData
+    };
+}
+
+export function hideVideo() {
+    return { type: ActionTypes.HIDE_VIDEO };
+}
+
 function buildUrl(viewType, searchText) {
     const noTags = config.excludeTags.join(',');
     let url;

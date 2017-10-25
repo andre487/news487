@@ -47,8 +47,16 @@ const styles = {
 };
 
 class DocumentPicture extends PureComponent {
+    constructor(props, state) {
+        super(props, state);
+
+        this._onPictureClick = this._onPictureClick.bind(this);
+    }
+
     render() {
-        const { src, alt, link, docType } = this.props;
+        const { src, alt, link, video, docType } = this.props;
+
+        this._videoData = video;
 
         if (!src) {
             return (null);
@@ -63,6 +71,7 @@ class DocumentPicture extends PureComponent {
 
         return (
             <a style={containerStyle}
+               onClick={this._onPictureClick}
                href={link}
                target="_blank"
                rel="noopener">
@@ -74,6 +83,13 @@ class DocumentPicture extends PureComponent {
                     (null)}
             </a>
         );
+    }
+
+    _onPictureClick(e) {
+        if (this._videoData && this._videoData.url && this._videoData.type === 'text/html') {
+            this.props.onOpenVideo(this._videoData);
+            e.preventDefault();
+        }
     }
 }
 

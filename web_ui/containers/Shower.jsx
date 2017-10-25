@@ -6,9 +6,20 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 
 import * as ShowerActions from '../actions/shower';
+import VideoPlayer from '../components/VideoPlayer';
 import DocumentsList from '../components/DocumentList';
 
 class Shower extends PureComponent {
+    constructor(props, state) {
+        super(props, state);
+
+        this._onCardExpandChange = this._onCardExpandChange.bind(this);
+        this._handleCloseError = this._handleCloseError.bind(this);
+
+        this._onOpenVideo = this._onOpenVideo.bind(this);
+        this._onCloseVideo = this._onCloseVideo.bind(this);
+    }
+
     componentDidMount() {
         const { viewType, searchText } = this.props;
 
@@ -28,22 +39,32 @@ class Shower extends PureComponent {
             docsRequestInProcess,
             docs,
             error,
-            expandedState
+            expandedState,
+            showVideoData,
         } = this.props.shower;
 
         if (error) {
             return this._showErrorWindow(error);
         }
 
-        return (
+        const elems = [
             <DocumentsList
-                onCardExpandChange={this._onCardExpandChange.bind(this)}
+                key="documents-list"
+
+                onCardExpandChange={this._onCardExpandChange}
+                onOpenVideo={this._onOpenVideo}
                 onTagSelected={this.props.onTagSelected}
 
                 requestInProgress={docsRequestInProcess}
                 expandedState={expandedState}
-                items={docs} />
-        );
+                items={docs} />,
+            <VideoPlayer
+                key="video-player"
+                onCloseVideo={this._onCloseVideo}
+                data={showVideoData} />
+        ];
+
+        return <div>{elems}</div>;
     }
 
     _fetchDocuments(viewType, searchText) {
@@ -59,7 +80,7 @@ class Shower extends PureComponent {
                 key="ok"
                 label="OK 😿"
                 primary={true}
-                onClick={this._handleCloseError.bind(this)} />
+                onClick={this._handleCloseError} />
         ];
 
         return (
@@ -68,7 +89,7 @@ class Shower extends PureComponent {
                 actions={actions}
                 modal={false}
                 open={true}
-                onRequestClose={this._handleCloseError.bind(this)}>
+                onRequestClose={this._handleCloseError}>
 
                 <pre>{error}</pre>
             </Dialog>
@@ -81,6 +102,14 @@ class Shower extends PureComponent {
 
     _onCardExpandChange(docId, state) {
         this.props.actions.changeCardExpand(docId, state);
+    }
+
+    _onOpenVideo(videoData) {
+        this.props.actions.showVideo(videoData);
+    }
+
+    _onCloseVideo() {
+        this.props.actions.hideVideo();
     }
 }
 

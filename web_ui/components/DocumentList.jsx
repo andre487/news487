@@ -93,11 +93,13 @@ class DocumentsList extends PureComponent {
                         expandable={true}
                         style={styles.cardText}>
                         <Document
+                            onOpenVideo={this.props.onOpenVideo}
                             cardType={doc.card_type}
                             isTwitter={isTwitter}
                             title={doc.title}
                             link={doc.link}
                             picture={doc.picture}
+                            video={doc.video}
                             description={doc.description} />
                     </CardText>
                     <CardActions>

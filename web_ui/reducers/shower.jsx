@@ -12,35 +12,38 @@ const initialState = {
 
 export default function shower(state = initialState, action) {
     switch (action.type) {
-        case ActionTypes.REQUEST_DOCS:
+        case ActionTypes.REQUEST_DOCS: {
             return {
                 ...state,
                 docsRequestInProcess: true,
                 error: null
             };
+        }
 
-        case ActionTypes.RECEIVE_DOCS:
+        case ActionTypes.RECEIVE_DOCS: {
             return {
                 ...state,
                 docsRequestInProcess: false,
                 docs: action.docs,
                 error: null
             };
+        }
 
-        case ActionTypes.RECEIVE_DOCS_ERROR:
-            return {
-                ...state,
-                docsRequestInProcess: false,
-                error: action.err.toString()
-            };
-
-        case ActionTypes.ERASE_ERROR:
+        case ActionTypes.RECEIVE_DOCS_ERROR: {
             return {
                 ...state,
                 error: null
             };
+        }
 
-        case ActionTypes.CHANGE_CARD_EXPAND:
+        case ActionTypes.ERASE_ERROR: {
+            return {
+                ...state,
+                error: null
+            };
+        }
+
+        case ActionTypes.CHANGE_CARD_EXPAND: {
             const nextState = {
                 ...state,
                 expandedState: {
@@ -52,8 +55,25 @@ export default function shower(state = initialState, action) {
             writeToStorage(expandedStorageKey, nextState.expandedState);
 
             return nextState;
+        }
 
-        default:
+        case ActionTypes.SHOW_VIDEO: {
+            return {
+                ...state,
+                showVideoData: action.videoData
+            };
+        }
+
+        case ActionTypes.HIDE_VIDEO: {
+            const newState = { ...state };
+
+            delete newState.showVideoData;
+
+            return newState;
+        }
+
+        default: {
             return state;
+        }
     }
 }

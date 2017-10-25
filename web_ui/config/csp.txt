@@ -3,4 +3,5 @@ style-src 'self' 'nonce-$NONCE' http://fonts.googleapis.com https://fonts.google
 script-src 'self' 'nonce-$NONCE' https://mc.yandex.ru;
 connect-src 'self' http://fonts.googleapis.com https://fonts.googleapis.com https://mc.yandex.ru https://fcm.googleapis.com $API_URL $PUSHER_URL;
 font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com;
+frame-src 'self' https://twitter.com/;
 img-src *;

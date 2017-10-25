@@ -19,6 +19,7 @@ class Document extends PureComponent {
             title,
             link,
             picture,
+            video,
         } = this.props;
 
         let { description } = this.props;
@@ -31,7 +32,11 @@ class Document extends PureComponent {
 
         return (
             <div style={styles.container} className={`document-card ${docType}`}>
-                <DocumentPicture src={picture} alt={title} link={link} docType={docType} />
+                <DocumentPicture
+                    onOpenVideo={this.props.onOpenVideo}
+                    src={picture} alt={title}
+                    video={video}
+                    link={link} docType={docType} />
                 <DocumentDescription description={description} docType={docType} isTwitter={isTwitter} />
             </div>
         );

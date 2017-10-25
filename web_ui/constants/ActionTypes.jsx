@@ -1,5 +1,3 @@
-export const SYNC_ROUTES = 'SYNC_ROUTES';
-
 export const TOGGLE_MENU = 'TOGGLE_MENU';
 export const SELECT_FILTER = 'SELECT_FILTER';
 
@@ -15,3 +13,6 @@ export const TEXT_SEARCH = 'TEXT_SEARCH';
 export const TAG_SEARCH = 'TAG_SEARCH';
 
 export const CHANGE_CARD_EXPAND = 'CHANGE_CARD_EXPAND';
+
+export const SHOW_VIDEO = 'SHOW_VIDEO';
+export const HIDE_VIDEO = 'HIDE_VIDEO';
