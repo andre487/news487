@@ -122,7 +122,7 @@ class MeaningExtractor(object):
 
     def get_card_type(self):
         card_type = self._get_meta_card_type()
-        if card_type.startswith('video'):
+        if card_type and card_type.startswith('video'):
             card_type = 'video'
         return card_type
 
