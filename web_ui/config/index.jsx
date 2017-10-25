@@ -3,7 +3,7 @@ export default {
     defaultDocsLimit: 30,
     fields: [
         'id', 'card_type', 'title', 'link', 'published', 'description',
-        'tags', 'source_title', 'picture', 'orig_picture',
+        'tags', 'source_title', 'picture', 'video',
     ],
 
     excludeTags: ['twitter'],

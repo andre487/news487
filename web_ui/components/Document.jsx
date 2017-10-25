@@ -19,22 +19,19 @@ class Document extends PureComponent {
             title,
             link,
             picture,
-            origPicture,
         } = this.props;
 
         let { description } = this.props;
 
-        const pictureSrc = origPicture || picture;
-
         let docType = cardType || '';
-        if (isTwitter && docType === 'article' && pictureSrc) {
+        if (isTwitter && docType === 'article' && picture) {
             docType = 'summary-large-image';
         }
         docType = docType.replace(/_/g, '-');
 
         return (
             <div style={styles.container} className={`document-card ${docType}`}>
-                <DocumentPicture src={pictureSrc} alt={title} link={link} docType={docType} />
+                <DocumentPicture src={picture} alt={title} link={link} docType={docType} />
                 <DocumentDescription description={description} docType={docType} isTwitter={isTwitter} />
             </div>
         );
