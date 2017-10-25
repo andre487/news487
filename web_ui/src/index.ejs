@@ -23,8 +23,14 @@
          }">
 
         <style nonce="${process.env.GIT_HASH}">
+            body
+            {
+                background: #757575;
+            }
+
             #page-loading-spinner-container
             {
+                display: none;
                 margin-top: 40px;
                 text-align: center;
             }
@@ -34,7 +40,6 @@
                 width: 80px;
                 height: 80px;
                 display: inline-block;
-                transition: transform 10s linear 0ms;
             }
 
             #page-loading-spinner svg
@@ -46,9 +51,8 @@
 
             #page-loading-spinner circle
             {
-                stroke: rgb(0, 188, 212);
+                stroke: rgb(144, 164, 174);
                 stroke-linecap: round;
-                transition: all 750ms ease-in-out 0ms;
                 stroke-dasharray: 160.535, 229.336;
                 stroke-dashoffset: -68.8009;
             }
@@ -81,13 +85,16 @@
 
                 window.pageStaticBundles = ${JSON.stringify(htmlWebpackPlugin.files.chunks)};
 
-                rotateSpinner();
                 loadFonts();
                 registerServiceWorker();
+
+                var startSpinnerId = setTimeout(rotateSpinner, 100);
 
                 window.stopPageLoadingRotation = function() {
                     var spinnerContainer = document.getElementById('page-loading-spinner-container');
                     spinnerContainer.parentNode.removeChild(spinnerContainer);
+
+                    clearTimeout(startSpinnerId);
 
                     spinner = null;
                     rotateDegree = null;
@@ -98,12 +105,10 @@
                         return;
                     }
 
-                    rotateDegree += 10;
+                    rotateDegree += 5;
                     spinner.style.transform = 'rotate(' + rotateDegree + 'deg)';
 
-                    setTimeout(function() {
-                        requestAnimationFrame(rotateSpinner);
-                    }, 16);
+                    requestAnimationFrame(rotateSpinner);
                 }
 
                 function loadFonts() {
