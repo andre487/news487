@@ -42,6 +42,11 @@ og_meta = """
 <meta name='og:title' content='Тайтл OgTitle'>
 <meta name='og:description' content='Описание OgDescription'>
 <meta name='og:image' content='og-image.png'>
+
+<meta property='og:video:type' content='text/html'>
+<meta property='og:video:width' content='300'>
+<meta property='og:video:height' content='300'>
+<meta property='og:video:url' content='foo.avi'>
 """
 
 twitter_meta = """
@@ -229,3 +234,20 @@ def test_meaning_extractor_picture_no():
     parser = doc_handler.MeaningExtractor(light_html)
 
     assert parser.get_picture() is None
+
+
+def test_meaning_extractor_video_from_og():
+    parser = doc_handler.MeaningExtractor(heavy_html_with_og_meta)
+
+    assert parser.get_video() == 'foo.avi'
+
+
+def test_meaning_extractor_video_properties_from_og():
+    parser = doc_handler.MeaningExtractor(heavy_html_with_og_meta)
+
+    properties = parser.get_video_properties()
+
+    assert properties['type'] == 'text/html'
+    assert properties['url'] == 'foo.avi'
+    assert properties['width'] == '300'
+    assert properties['height'] == '300'
