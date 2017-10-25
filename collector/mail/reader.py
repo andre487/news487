@@ -42,52 +42,61 @@ def parse(replace_redirects=True):
 
 
 def handle_mailbox_folder(server, folder_name, readonly=True, replace_redirects=True):
-    server.select_folder(folder_name, readonly=readonly)
+    server.select_folder(folder_name, readonly=True)
 
-    responses = (server.fetch(message_id, ['RFC822']) for message_id in server.search('UNSEEN'))
     data = []
+    handled_messages = []
 
-    for res in responses:
-        for msg_id, resp_item in res.items():
-            log.info('Handling email with ID %s', msg_id)
+    for res in (server.fetch(msg_id, ['RFC822']) for msg_id in server.search('UNSEEN')):
+        for msg_id, resp_item in res.iteritems():
+            try:
+                doc = handle_message(msg_id, resp_item, folder_name, replace_redirects)
+                data.append(doc)
+                handled_messages.append(msg_id)
+            except Exception as e:
+                log.error('Error when handling email %s: %s', msg_id, e.message)
 
-            message = email.message_from_string(resp_item['RFC822'])
-
-            published = date.utc_format(message['date'])
-
-            from_name, from_email, full_from = parse_email_field(message['from'])
-            to_name, to_email, full_to = parse_email_field(message['to'])
-
-            subj = parse_header(message['subject'])
-            content_type, body = parse_message_body(message)
-
-            tags_list = parse_tags(folder_name)
-
-            doc = handle_doc_links({
-                'from_mail': True,
-
-                'title': subj,
-                'description': subj,
-                'link': 'EmailID(%s,%s)' % (to_email, msg_id),
-                'published': published,
-
-                'text': body,
-                'text_content_type': content_type,
-
-                'source_name': 'Mail: ' + full_from,
-                'source_title': from_name,
-                'source_link': 'mailto:' + from_email,
-                'source_type': 'email',
-                'source_composite': True,
-
-                'author_name': from_name,
-
-                'tags': tags.create_tags_list(*tags_list),
-            }, replace_redirects)
-
-            data.append(doc)
+    if handled_messages and not readonly:
+        server.select_folder(folder_name)
+        server.set_flags(handled_messages, imapclient.SEEN)
 
     return data
+
+
+def handle_message(msg_id, resp_item, folder_name, replace_redirects):
+    log.info('Handling email with ID %s', msg_id)
+
+    message = email.message_from_string(resp_item['RFC822'])
+
+    published = date.utc_format(message['date'])
+    from_name, from_email, full_from = parse_email_field(message['from'])
+    to_name, to_email, full_to = parse_email_field(message['to'])
+    subj = parse_header(message['subject'])
+    content_type, body = parse_message_body(message)
+
+    base_doc = {
+        'from_mail': True,
+
+        'title': subj,
+        'description': subj,
+        'link': 'EmailID(%s,%s)' % (to_email, msg_id),
+        'published': published,
+
+        'text': body,
+        'text_content_type': content_type,
+
+        'source_name': 'Mail: ' + full_from,
+        'source_title': from_name,
+        'source_link': 'mailto:' + from_email,
+        'source_type': 'email',
+        'source_composite': True,
+
+        'author_name': from_name,
+
+        'tags': tags.create_tags_list(*parse_tags(folder_name)),
+    }
+
+    return handle_doc_links(base_doc.copy(), replace_redirects)
 
 
 def parse_header(val):
