@@ -27,6 +27,7 @@ class DocumentDescription extends PureComponent {
 
         return (
             <div
+                data-news-description="text"
                 style={descriptionStyle}
                 dangerouslySetInnerHTML={{ __html: description }} />
         );

@@ -1,3 +1,4 @@
+// noinspection SpellCheckingInspection
 export default {
     apiUrl: process.env.API_URL,
     defaultDocsLimit: 30,
@@ -7,7 +8,7 @@ export default {
     ],
 
     excludeTags: ['twitter'],
-    hideTags: ['from_mail', 'composite', 'no_tech'],
+    hideTags: ['from_mail', 'no_tech'],
 
     firebase: {
         apiKey: 'AIzaSyBuqkpAmGrVFB6NlojlPuSyOq3_L5ZnG6E',
@@ -16,5 +17,7 @@ export default {
         projectId: 'news-487',
         storageBucket: 'news-487.appspot.com',
         messagingSenderId: '634669586377'
-    }
+    },
+
+    speechKitKey: '1cd3775d-03e1-42d9-bf4f-64cfbf8a375a',
 };

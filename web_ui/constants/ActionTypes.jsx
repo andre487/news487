@@ -16,3 +16,7 @@ export const CHANGE_CARD_EXPAND = 'CHANGE_CARD_EXPAND';
 
 export const SHOW_VIDEO = 'SHOW_VIDEO';
 export const HIDE_VIDEO = 'HIDE_VIDEO';
+
+export const READING_STARTED = 'READING_STARTED';
+export const READING_FINISHED = 'READING_FINISHED';
+export const STOP_READING = 'STOP_READING';

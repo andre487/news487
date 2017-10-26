@@ -74,7 +74,7 @@ class DocumentsList extends PureComponent {
         const isTwitter = doc.tags.includes('twitter');
 
         return (
-            <Paper key={doc.id} zDepth={1} style={styles.paper}>
+            <Paper key={doc.id} zDepth={1} style={styles.paper} data-news-description="document">
                 <Card
                     initiallyExpanded={expanded}
                     onExpandChange={this._onCardExpandChange.bind(this, doc.id)}>
@@ -86,9 +86,16 @@ class DocumentsList extends PureComponent {
                             <a href={doc.link}
                                target="_blank"
                                rel="noopener"
+                               data-news-description="header"
                                dangerouslySetInnerHTML={{ __html: doc.title }} />
                         }
-                        subtitle={`${doc.source_title} – ${this._renderDate(doc)}`} />
+                        subtitle={
+                            <span>
+                                <span data-news-description="source-title">{doc.source_title}</span>
+                                <span> – </span>
+                                <span data-news-description="date">{this._renderDate(doc)}</span>
+                            </span>
+                        } />
                     <CardText
                         expandable={true}
                         style={styles.cardText}>
