@@ -25,6 +25,7 @@ const darkTheme = {
         clockCircleColor: fade(Colors.fullWhite, 0.12)
     },
     customStyle: {
+        bgColor: Colors.grey800,
         lightHintColor: Colors.grey300,
         lightInputColor: Colors.grey200
     },

@@ -10,7 +10,8 @@ import './TextReader.css';
 
 const styles = {
     button: {
-        margin: '20px 8px 10px',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
     },
 };
 

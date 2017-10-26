@@ -6,7 +6,7 @@ import * as AppActions from '../actions/app';
 
 import Header from '../components/Header';
 import AppMenu from '../components/AppMenu';
-import TextReader from './TextReader';
+import Toolbar from '../components/Toolbar';
 import Shower from './Shower';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -44,9 +44,6 @@ class App extends PureComponent {
                 <div>
                     <Header
                         onMenuButtonTap={actions.toggleMenu}
-                        onTextSearch={this._onTextSearch}
-                        viewType={viewType}
-                        searchText={searchText}
                         filterTitle={routeTitle} />
                     <AppMenu
                         onMenuClose={actions.toggleMenu}
@@ -58,7 +55,10 @@ class App extends PureComponent {
                         routePath={routePath}
                         categoriesRequestInProcess={categoriesRequestInProcess}
                         docsRequestInProcess={docsRequestInProcess} />
-                    <TextReader />
+                    <Toolbar
+                        onTextSearch={this._onTextSearch}
+                        viewType={viewType}
+                        searchText={searchText} />
                     <Shower
                         onTagSelected={this._onTagSelected}
                         viewType={viewType}
