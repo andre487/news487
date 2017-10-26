@@ -20,4 +20,10 @@ export default {
     },
 
     speechKitKey: '1cd3775d-03e1-42d9-bf4f-64cfbf8a375a',
+    speechParams: {
+        emotions: [['good', 0.5], ['neutral', 0.35], ['evil', 0.15]],
+        speaker: 'ermil',
+        speed: 0.9,
+        fast: true,
+    }
 };

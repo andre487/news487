@@ -29,3 +29,8 @@ export function getSearchText(routePath) {
     }
     return '';
 }
+
+export function removeMarkup(text) {
+    return text.replace(/<\/?[^>]+?>/ig, '')
+        .replace(/&nbsp;/gi, ' ');
+}

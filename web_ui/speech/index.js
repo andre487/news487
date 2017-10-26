@@ -1,4 +1,5 @@
 import config from '../config';
+import * as util from '../util';
 
 const loadCallbacks = [];
 let readingQueue = [];
@@ -11,21 +12,18 @@ export function readAllNews() {
 
     for (let node of newsNodes) {
         const headerNode = node.querySelector('[data-news-description="header"]');
-        const sourceTitleNode = node.querySelector('[data-news-description="source-title"]');
-        const dateNode = node.querySelector('[data-news-description="date"]');
         const textNode = node.querySelector('[data-news-description="text"]');
+        const sourceTitleNode = node.querySelector('[data-news-description="source-title"]');
 
         const headerText = headerNode ? headerNode.innerHTML : '';
         const sourceTitleText = sourceTitleNode ? sourceTitleNode.innerHTML : '';
 
-        let textToRead = [
+        const textToRead = util.removeMarkup([
             headerText,
-            headerText.includes(sourceTitleText) ? '' : headerText,
-            dateNode ? dateNode.innerHTML : '',
-            textNode ? textNode.innerHTML : '',
-        ].join('.');
-
-        textToRead = textToRead.replace(/\s{2,}/, ' ')
+            textNode ? (textNode.innerHTML.includes(headerText) ? '' : textNode.innerHTML) : '',
+            headerText.includes(sourceTitleText) ? '' : sourceTitleText,
+        ].join('.'))
+            .replace(/\s{2,}/, ' ')
             .replace(/\.{2,}/, '.')
             .replace(/\.([\wа-яё])/ig, '. $1');
 
@@ -39,14 +37,11 @@ export function readAllNews() {
 }
 
 export function readText(text) {
-    const lang = /а-яё/i.test(text) ? 'ru-RU' : 'en-US';
+    const lang = /[а-яё]/i.test(text) ? 'ru-RU' : 'en-US';
 
     return getSpeechKit().then(speechKit => {
         const tts = speechKit.Tts({
-            emotions: [['good', 0.5], ['neutral', 0.35], ['evil', 0.15]],
-            speaker: 'ermil',
-            speed: 0.7,
-            fast: true,
+            ...config.speechParams,
             lang,
         });
 
