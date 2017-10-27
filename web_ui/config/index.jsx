@@ -23,7 +23,6 @@ export default {
     speechParams: {
         emotions: [['good', 0.5], ['neutral', 0.35], ['evil', 0.15]],
         speaker: 'ermil',
-        speed: 0.9,
         fast: true,
     }
 };
