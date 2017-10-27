@@ -104,6 +104,9 @@ class MeaningParser(HTMLParser):
 
 class MeaningExtractor(object):
     def __init__(self, html, base_url=None):
+        if isinstance(html, str):
+            html = unicode(html, 'utf-8', errors='ignore')
+
         if base_url and base_url.endswith('/'):
             base_url = base_url[:-1]
         self._base_url = base_url
@@ -116,7 +119,7 @@ class MeaningExtractor(object):
 
     def is_captcha(self):
         title = self.get_title()
-        return title == 'Ой!'
+        return title == u'Ой!'
 
     def get_meta_data(self):
         return self._meta_data
@@ -373,6 +376,7 @@ def dress_page_document(doc):
     extr = MeaningExtractor(result.text, base_url=base_url)
 
     if extr.is_captcha():
+        doc['is_captcha'] = True
         log.warn('Captcha for URL: %s', url)
         return doc
 

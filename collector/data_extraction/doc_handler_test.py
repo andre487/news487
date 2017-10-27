@@ -108,19 +108,19 @@ def test_meaning_extractor_title_no():
 def test_meaning_extractor_title_no_but_og():
     parser = doc_handler.MeaningExtractor(light_html_og_meta)
 
-    assert parser.get_title() == 'Тайтл OgTitle'
+    assert parser.get_title() == u'Тайтл OgTitle'
 
 
 def test_meaning_extractor_title_no_but_twitter():
     parser = doc_handler.MeaningExtractor(light_html_twitter_meta)
 
-    assert parser.get_title() == 'TwitterTitle'
+    assert parser.get_title() == u'TwitterTitle'
 
 
 def test_meaning_extractor_header_yes():
     parser = doc_handler.MeaningExtractor(heavy_html)
 
-    assert parser.get_header() == 'Test document'
+    assert parser.get_header() == u'Test document'
 
 
 def test_meaning_extractor_header_no():
@@ -132,19 +132,19 @@ def test_meaning_extractor_header_no():
 def test_meaning_extractor_description_og():
     parser = doc_handler.MeaningExtractor(heavy_html_with_og_meta)
 
-    assert parser.get_description() == 'Описание OgDescription'
+    assert parser.get_description() == u'Описание OgDescription'
 
 
 def test_meaning_extractor_description_twitter():
     parser = doc_handler.MeaningExtractor(heavy_html_with_twitter_meta)
 
-    assert parser.get_description() == 'TwitterDescription'
+    assert parser.get_description() == u'TwitterDescription'
 
 
 def test_meaning_extractor_description_from_content():
     parser = doc_handler.MeaningExtractor(heavy_html)
 
-    assert parser.guess_description() == 'Hello world!'
+    assert parser.guess_description() == u'Hello world!'
 
 
 def test_meaning_extractor_description_no():
@@ -156,7 +156,7 @@ def test_meaning_extractor_description_no():
 def test_meaning_extractor_short_description_yes_short():
     parser = doc_handler.MeaningExtractor(heavy_html)
 
-    assert parser.guess_short_description() == 'Hello world!'
+    assert parser.guess_short_description() == u'Hello world!'
 
 
 def test_meaning_extractor_short_description_yes_long():
@@ -172,7 +172,7 @@ def test_meaning_extractor_short_description_no():
 
 
 def test_meaning_extractor_short_description_no_but_og():
-    html = '<meta name="og:description" content="Heavy metal!!!!!!!!!!!!!!!!!!!!!!!!">'
+    html = u'<meta name="og:description" content="Heavy metal!!!!!!!!!!!!!!!!!!!!!!!!">'
     parser = doc_handler.MeaningExtractor(html)
 
     assert parser.guess_short_description(length=32) == u'Heavy metal…'
