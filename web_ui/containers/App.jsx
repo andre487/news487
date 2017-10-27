@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import AppMenu from '../components/AppMenu';
 import Toolbar from '../components/Toolbar';
 import Shower from './Shower';
+import ErrorReporter from './ErrorReporter';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import theme from '../config/theme';
@@ -64,6 +65,7 @@ class App extends PureComponent {
                         viewType={viewType}
                         searchText={searchText}
                         filterTitle={routeTitle} />
+                    <ErrorReporter />
                 </div>
             </MuiThemeProvider>
         );
