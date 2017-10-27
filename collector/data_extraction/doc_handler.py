@@ -9,7 +9,7 @@ import urlparse
 
 from collections import defaultdict
 from HTMLParser import HTMLParser
-from params import REQUEST_HEADERS
+from params import REQUEST_HEADERS, USER_AGENTS
 from util import db
 
 log = logging.getLogger('app')
@@ -355,8 +355,11 @@ def dress_email_document(doc):
 def dress_page_document(doc):
     url = doc['link']
 
-    timeout = random.randint(1000, 2500) / 1000.0
+    timeout = random.randint(2500, 5000) / 1000.0
     time.sleep(timeout)
+
+    headers = REQUEST_HEADERS.copy()
+    headers['User-Agent'] = random.choice(USER_AGENTS)
 
     result = requests.get(url, headers=REQUEST_HEADERS)
 
