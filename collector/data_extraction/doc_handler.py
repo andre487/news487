@@ -114,6 +114,10 @@ class MeaningExtractor(object):
         self._meta_data = parser.get_meta_data()
         self._content_data = parser.get_content_data()
 
+    def is_captcha(self):
+        title = self.get_title()
+        return title == 'Ой!'
+
     def get_meta_data(self):
         return self._meta_data
 
@@ -131,9 +135,11 @@ class MeaningExtractor(object):
 
     def get_title(self):
         if 'title' in self._content_data and self._content_data['title']:
-            return self._content_data['title'][0]['content']
+            title = self._content_data['title'][0]['content']
+        else:
+            title = self._get_meta_title() or self.get_header()
 
-        return self._get_meta_title() or self.get_header()
+        return title and title.strip()
 
     def get_header(self):
         for i in range(1, 7):
@@ -365,6 +371,10 @@ def dress_page_document(doc):
     url_data = urlparse.urlparse(url)
     base_url = '{}://{}'.format(url_data.scheme, url_data.netloc)
     extr = MeaningExtractor(result.text, base_url=base_url)
+
+    if extr.is_captcha():
+        log.warn('Captcha for URL: %s', url)
+        return doc
 
     doc['link'] = link_handler.clean_url(result.url)
     doc['card_type'] = extr.get_card_type()

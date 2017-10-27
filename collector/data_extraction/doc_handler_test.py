@@ -285,3 +285,11 @@ def test_meaning_extractor_video_properties_from_og():
     assert properties['url'] == 'foo.avi'
     assert properties['width'] == '300'
     assert properties['height'] == '300'
+
+
+def test_title_is_captcha():
+    html = '<title> Ой! </title>'
+
+    parser = doc_handler.MeaningExtractor(html)
+
+    assert parser.is_captcha()
