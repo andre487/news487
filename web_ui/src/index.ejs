@@ -80,6 +80,7 @@
                 'use strict';
                 var fontCssUrl = '//fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic';
 
+                var spinnerContainer = document.getElementById('page-loading-spinner-container');
                 var spinner = document.getElementById('page-loading-spinner');
                 var rotateDegree = 0;
 
@@ -88,7 +89,10 @@
                 loadFonts();
                 registerServiceWorker();
 
-                var startSpinnerId = setTimeout(rotateSpinner, 100);
+                var startSpinnerId = setTimeout(function() {
+                    spinnerContainer.style.display = 'block';
+                    rotateSpinner();
+                }, 100);
 
                 window.stopPageLoadingRotation = function() {
                     var spinnerContainer = document.getElementById('page-loading-spinner-container');
@@ -96,6 +100,7 @@
 
                     clearTimeout(startSpinnerId);
 
+                    spinnerContainer = null;
                     spinner = null;
                     rotateDegree = null;
                 };
