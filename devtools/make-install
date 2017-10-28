@@ -28,4 +28,4 @@ if [[ "$HAS_STATIC_PACKAGE" == 1 ]]; then
 fi
 
 log_info "Making update on server"
-ansible-playbook -i ~/.private/home-server-inventory "$DEVTOOLS_PARAMS_DIR/setup.yml"
+ansible-playbook -i ~/.private/ansible-inventory.yml "$DEVTOOLS_PARAMS_DIR/setup.yml"

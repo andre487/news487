@@ -1,14 +1,35 @@
+- name: Check SSL certificates
+  stat:
+    path: /etc/letsencrypt/live/{{ service_host }}
+  register: nginx_ssl_result
+
+- name: Setup NGINX no SSL host config
+  template:
+    src: templates/nginx-no-ssl.conf.j2
+    dest: /etc/nginx/sites-available/{{ module_name }}.conf
+  when: nginx_ssl_result.stat.exists == False
+  register: no_ssl_config_res
+
+- name: Enable NGINX host config
+  file:
+    state: link
+    src: /etc/nginx/sites-available/{{ module_name }}.conf
+    dest: /etc/nginx/sites-enabled/{{ module_name }}.conf
+
+- name: Reload NGINX
+  service:
+    name: nginx
+    state: reloaded
+  when: no_ssl_config_res.changed
+
 - name: Install certificate
   shell: |
-    certbot certonly \
-      --webroot \
-      -w /var/www/common \
+    certbot --nginx \
       -d {{ service_host }} \
       -n \
       --agree-tos \
       -m '{{ admin_email }}'
-  args:
-    creates: /etc/letsencrypt/live/{{ service_host }}
+  when: nginx_ssl_result.stat.exists == False
   register: certificate_res
 
 - name: Create web root

@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: news487
   remote_user: '{{ remote_user }}'
   become: True
   become_method: sudo

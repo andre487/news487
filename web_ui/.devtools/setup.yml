@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: news487
   become: True
   become_method: sudo
 
