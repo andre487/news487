@@ -1,6 +1,8 @@
 import config from '../config';
 import * as util from '../util';
 
+const synthesis = window.speechSynthesis;
+
 const loadCallbacks = [];
 let readingQueue = [];
 let speechKit;
@@ -41,7 +43,7 @@ export function readAllNews() {
 export function readText(text) {
     const lang = /[а-яё]/i.test(text) ? 'ru-RU' : 'en-US';
 
-    if (!autoPlayEnabled) {
+    if (!autoPlayEnabled && synthesis) {
         return readTextByBrowserSynthesis(text, lang);
     }
 
@@ -49,31 +51,30 @@ export function readText(text) {
 }
 
 function readTextByBrowserSynthesis(text, lang) {
-    const synthesis = window.speechSynthesis;
-    lang = lang.replace(/-/g, '_');
-
     const utter = new SpeechSynthesisUtterance(text);
     utter.lang = lang;
-    utter.rate = lang === 'ru_RU' ? 1 : 0.8;
+    utter.rate = lang.startsWith('ru') ? 1 : 0.8;
 
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
+        const endTimeout = setTimeout(onEnd, 30000);
+
         function onEnd() {
+            if (synthesis.speaking) {
+                synthesis.cancel();
+            }
             clear();
-            resolve();
-        }
-
-        function onError(err) {
-            clear();
-            reject(err);
+            setTimeout(resolve, 2500);
         }
 
         function clear() {
+            clearTimeout(endTimeout);
+
             utter.removeEventListener('end', onEnd);
-            utter.removeEventListener('error', onError);
+            utter.removeEventListener('error', onEnd);
         }
 
         utter.addEventListener('end', onEnd);
-        utter.addEventListener('error', onError);
+        utter.addEventListener('error', onEnd);
 
         synthesis.speak(utter);
     });
@@ -83,7 +84,7 @@ function readTextBySpeechKit(text, lang) {
     return getSpeechKit().then(speechKit => {
         const tts = speechKit.Tts({
             ...config.speechParams,
-            speed: lang === 'ru-RU' ? 1 : 0.8,
+            speed: lang.startsWith('ru') ? 1 : 0.8,
             lang,
         });
 
@@ -113,10 +114,6 @@ function init() {
 }
 
 function checkAutoPlay() {
-    if (typeof Audio === 'undefined') {
-        return;
-    }
-
     try {
         const audio = new Audio();
         audio.play()
