@@ -15,6 +15,7 @@
     state: link
     src: /etc/nginx/sites-available/{{ module_name }}.conf
     dest: /etc/nginx/sites-enabled/{{ module_name }}.conf
+  when: no_ssl_config_res.changed
 
 - name: Reload NGINX
   service:
