@@ -134,6 +134,11 @@ FEEDS = {
         'url': 'https://www.soasta.com/feed/',
         'tags': ('tech', 'perf'),
     },
+    'speed_checker': {
+        'name': 'SpeedChecker',
+        'url': 'https://blog.speedchecker.xyz/feed/',
+        'tags': ('tech', 'perf'),
+    },
     'tinkoff_journal': {
         'name': 'TinkoffJournal',
         'url': 'https://journal.tinkoff.ru/feed/atom/',
@@ -154,6 +159,11 @@ FEEDS = {
         'name': 'WebStandards',
         'url': 'https://web-standards.ru/category/news/feed/',
         'tags': ('tech', 'web'),
+    },
+    'website_pulse': {
+        'name': 'WebSitePulse',
+        'url': 'https://www.websitepulse.com/blog/feed',
+        'tags': ('perf', 'tech', 'web'),
     },
     'yandex_news': {
         'name': 'YandexNews',
