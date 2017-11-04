@@ -17,6 +17,7 @@ log = logging.getLogger('app')
 words_splitter = re.compile(r'\s+', re.UNICODE)
 non_word_stripper = re.compile(r'(\w)\W+$', re.UNICODE)
 full_url_pattern = re.compile(r'^(?:https?:)?//')
+link_only_pattern = re.compile('^<a[^>]+?>[^<]+?</a>$')
 
 trailing_metric_pattern = re.compile(r'\D+$')
 
@@ -395,7 +396,11 @@ def dress_page_document(doc):
     doc['video'] = extr.get_video_properties()
 
     doc['orig_description'] = doc['description']
+
     doc['description'] = extr.get_description() or doc['description']
+    if link_only_pattern.match(doc['description']):
+        doc['description'] = extr.guess_description()
+
     doc['short_description'] = extr.guess_short_description()
 
     doc['dressed'] = True

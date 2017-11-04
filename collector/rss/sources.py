@@ -45,6 +45,11 @@ FEEDS = {
         'author_name': 'Dr. Axel Rauschmayer',
         'author_link': 'http://2ality.com/',
     },
+    'brad_frosts': {
+        'name': 'BradFrostsBlog',
+        'url': 'https://feeds.feedburner.com/brad-frosts-blog',
+        'tags': ('tech', 'web'),
+    },
     'chromium_blog': {
         'name': 'ChromiumBlog',
         'url': 'http://blog.chromium.org/atom.xml',
@@ -75,6 +80,11 @@ FEEDS = {
         'url': 'https://habrahabr.ru/rss/hub/client_side_optimization/all/',
         'tags': ('tech', 'habr', 'web', 'perf'),
     },
+    'html5rocks': {
+        'name': 'Html5Rocks',
+        'url': 'https://feeds.feedburner.com/html5rocks',
+        'tags': ('tech', 'web')
+    },
     'igvita': {
         'name': 'igvita',
         'url': 'http://feeds.igvita.com/igvita',
@@ -97,6 +107,16 @@ FEEDS = {
         'url': 'https://hacks.mozilla.org/feed/',
         'tags': ('tech', 'services', 'mozilla'),
     },
+    'mraleph': {
+        'name': 'MrAleph',
+        'url': 'http://mrale.ph/atom.xml',
+        'tags': ('tech', 'js', 'perf'),
+    },
+    'nczonline': {
+        'name': 'NCZOnline',
+        'url': 'https://feeds.feedburner.com/nczonline/',
+        'tags': ('tech', 'js', 'web'),
+    },
     'perf_calendar': {
         'name': 'PerformanceCalendar',
         'url': 'https://calendar.perfplanet.com/feed/',
@@ -106,7 +126,6 @@ FEEDS = {
         'name': 'RadioTNews',
         'url': 'https://news.radio-t.com/rss',
         'tags': ('tech', 'services'),
-        'disabled': True,
     },
     'reddit_perf': {
         'name': 'Reddit',
@@ -164,6 +183,11 @@ FEEDS = {
         'name': 'WebSitePulse',
         'url': 'https://www.websitepulse.com/blog/feed',
         'tags': ('perf', 'tech', 'web'),
+    },
+    'wilsonpage': {
+        'name': 'WilsonPage',
+        'url': 'http://wilsonpage.co.uk/feed.xml',
+        'tags': ('tech', 'perf', 'web'),
     },
     'yandex_news': {
         'name': 'YandexNews',

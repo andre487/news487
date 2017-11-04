@@ -44,7 +44,7 @@ def create_doc(source_name, feed, entry, additional_tags, default_author_name, d
         dict_tool.get_alternative(entry, 'published', 'updated', assert_val=True)
     )
 
-    description = dict_tool.get_alternative(entry, 'summary', 'description', assert_val=True)
+    description = dict_tool.get_alternative(entry, 'summary', 'description', 'title', assert_val=True)
     picture = dict_tool.get_deep(entry, 'gd_image', 'src')
     text = dict_tool.get_deep(entry, 'content', 0, 'value')
 
