@@ -45,6 +45,11 @@ FEEDS = {
         'author_name': 'Dr. Axel Rauschmayer',
         'author_link': 'http://2ality.com/',
     },
+    'badoo': {
+        'name': 'Badoo',
+        'url': 'https://tech.badoo.com/ru/rss/',
+        'tags': ('tech', 'web'),
+    },
     'brad_frosts': {
         'name': 'BradFrostsBlog',
         'url': 'https://feeds.feedburner.com/brad-frosts-blog',
@@ -131,6 +136,16 @@ FEEDS = {
         'name': 'Reddit',
         'url': 'https://www.reddit.com/r/perfmatters/.rss',
         'tags': ('tech', 'web', 'perf'),
+    },
+    'redware': {
+        'name': 'Redware',
+        'url': 'https://blog.radware.com/feed/',
+        'tags': ('tech', 'web', 'security'),
+    },
+    'robert_nystrom': {
+        'name': 'RobertNystrom',
+        'url': 'http://journal.stuffwithstuff.com/atom.xml',
+        'tags': ('tech',)
     },
     'search_engines': {
         'name': 'SearchEngines',
