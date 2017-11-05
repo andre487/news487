@@ -56,6 +56,7 @@ def get_scrappers():
 
 
 def run_scrappers(args, scrappers):
+    log.measure_start('run_scrappers')
     log.info('Start scrappers run')
 
     names_set = set(args.names)
@@ -91,7 +92,9 @@ def run_scrappers(args, scrappers):
         docs += feed_data
 
     log.info('End scrappers run')
+    log.measure_end('run_scrappers')
 
+    log.measure_start('handle_docs')
     log.info('Start cleaning urls')
     docs = map(_clean_doc_url, docs)
     log.info('End cleaning urls')
@@ -113,10 +116,13 @@ def run_scrappers(args, scrappers):
     log.info('Start sorting data')
     new_docs.sort(key=lambda item: item['published'], reverse=True)
     log.info('End sorting data')
+    log.measure_end('handle_docs')
 
+    log.measure_start('write_data')
     log.info('Start write data')
     write_data(args, new_docs)
     log.info('End write data')
+    log.measure_end('write_data')
 
 
 def _run_rss_handler(args, feed):
