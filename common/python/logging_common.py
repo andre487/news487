@@ -26,7 +26,7 @@ class NewsLogger(logging.Logger):
         if name not in self._measure_registry:
             return None
 
-        duration = time.time() - self._measure_registry[name]
+        duration = (time.time() - self._measure_registry[name]) * 1000
         self.info('Measure::duration::%s: %f', name, duration)
 
         del self._measure_registry[name]
