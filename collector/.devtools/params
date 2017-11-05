@@ -7,6 +7,8 @@ run_project_for_dev() {
 }
 
 run_project_for_docker_test() {
+    set -e
+
     log_file="/tmp/scrapper487-docker-test-out"
 
     docker run \
