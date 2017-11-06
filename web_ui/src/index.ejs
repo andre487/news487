@@ -30,9 +30,16 @@
 
             #page-loading-spinner-container
             {
-                display: none;
                 margin-top: 40px;
                 text-align: center;
+            }
+
+            @keyframes rotate-spinner
+            {
+                to
+                {
+                    transform: rotate(360deg);
+                }
             }
 
             #page-loading-spinner
@@ -40,6 +47,7 @@
                 width: 80px;
                 height: 80px;
                 display: inline-block;
+                animation: 1s rotate-spinner infinite linear;
             }
 
             #page-loading-spinner svg
@@ -80,41 +88,15 @@
                 'use strict';
                 var fontCssUrl = '//fonts.googleapis.com/css?family=Roboto:400,300,500&subset=latin,cyrillic';
 
-                var spinnerContainer = document.getElementById('page-loading-spinner-container');
-                var spinner = document.getElementById('page-loading-spinner');
-                var rotateDegree = 0;
-
                 window.pageStaticBundles = ${JSON.stringify(htmlWebpackPlugin.files.chunks)};
 
                 loadFonts();
                 registerServiceWorker();
 
-                var startSpinnerId = setTimeout(function() {
-                    spinnerContainer.style.display = 'block';
-                    rotateSpinner();
-                }, 100);
-
                 window.stopPageLoadingRotation = function() {
                     var spinnerContainer = document.getElementById('page-loading-spinner-container');
                     spinnerContainer.parentNode.removeChild(spinnerContainer);
-
-                    clearTimeout(startSpinnerId);
-
-                    spinnerContainer = null;
-                    spinner = null;
-                    rotateDegree = null;
                 };
-
-                function rotateSpinner() {
-                    if (!spinner) {
-                        return;
-                    }
-
-                    rotateDegree += 5;
-                    spinner.style.transform = 'rotate(' + rotateDegree + 'deg)';
-
-                    requestAnimationFrame(rotateSpinner);
-                }
 
                 function loadFonts() {
                     var loader = new XMLHttpRequest();
@@ -141,7 +123,10 @@
 
                 function registerServiceWorker() {
                     if (navigator.serviceWorker) {
-                        navigator.serviceWorker.register('/<%=htmlWebpackPlugin.files.chunks.sw.entry%>', { scope: '/' });
+                        navigator.serviceWorker.register(
+                            '/<%=htmlWebpackPlugin.files.chunks.sw.entry%>',
+                            { scope: '/' }
+                        );
                     }
                 }
             })();
