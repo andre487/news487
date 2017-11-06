@@ -117,16 +117,16 @@ def get_documents(**kwargs):
     db = _get_mongo_db()
 
     if 'text' in kwargs:
-        query, limit, doc_ids = create_query_text_search(**kwargs)
+        query, limit, offset, doc_ids = create_query_text_search(**kwargs)
         if query is None:
             return []
-        docs = make_query(db, query, None, limit)
+        docs = make_query(db, query, None, limit, offset)
         res = reorder_docs_by_ids(docs, doc_ids)
     else:
-        query, order, limit = create_query_general(**kwargs)
+        query, order, limit, offset = create_query_general(**kwargs)
         if query is None:
             return []
-        res = make_query(db, query, order, limit)
+        res = make_query(db, query, order, limit, offset)
 
     log.info('End search documents')
     return res
@@ -205,9 +205,9 @@ def get_documents_by_category(**kwargs):
     args['op'] = ['and']
     del args['name']
 
-    query, order, limit = create_query_general(**args)
+    query, order, limit, offset = create_query_general(**args)
 
-    res = make_query(db, query, order, limit)
+    res = make_query(db, query, order, limit, offset)
 
     log.info('End search documents by category')
     return res
@@ -230,6 +230,7 @@ def get_digest(**kwargs):
 
     order = -1
     limit = 10
+    offset = 0
 
     big_query = {'$or': []}
     or_part = big_query['$or']
@@ -251,10 +252,10 @@ def get_digest(**kwargs):
 
         args['op'] = ['and']
 
-        query, order, limit = create_query_general(**args)
+        query, order, limit, offset = create_query_general(**args)
         or_part.append(query)
 
-    data = make_query(db, big_query, order, limit)
+    data = make_query(db, big_query, order, limit, offset)
 
     log.info('End creating digest')
     return data
@@ -284,6 +285,7 @@ def get_stats(**kwargs):
 def create_query_general(**kwargs):
     order = -1
     limit = 0
+    offset = 0
     op = 'and'
     from_date = None
 
@@ -298,6 +300,12 @@ def create_query_general(**kwargs):
             limit = int(kwargs['limit'][-1])
         except ValueError:
             raise ParamsError('Invalid limit value')
+
+    if 'offset' in kwargs:
+        try:
+            offset = int(kwargs['offset'][-1])
+        except ValueError:
+            raise ParamsError('Invalid offset value')
 
     if 'op' in kwargs and kwargs['op'][-1] == 'or':
         op = 'or'
@@ -329,7 +337,7 @@ def create_query_general(**kwargs):
     if not full_query['$and']:
         full_query = {}
 
-    return full_query, order, limit
+    return full_query, order, limit, offset
 
 
 def add_find_by_tags(query, tags, op):
@@ -385,15 +393,15 @@ def create_query_text_search(**kwargs):
     _close_sphinx_connection()
 
     if not doc_ids:
-        return None, None, None
+        return (None,) * 4
 
     args = kwargs.copy()
     del args['text']
     args['doc-ids'] = [','.join(doc_ids)]
 
-    query, _, limit = create_query_general(**args)
+    query, _, limit, offset = create_query_general(**args)
 
-    return query, limit, doc_ids
+    return query, limit, offset, doc_ids
 
 
 def _get_mongo_db():
@@ -431,10 +439,13 @@ def _close_sphinx_connection():
         _sphinx_client = None
 
 
-def make_query(db, query, order, limit):
+def make_query(db, query, order, limit, offset):
     cursor = db[const.NEWS_COLLECTION].find(query)
     if order is not None:
         cursor = cursor.sort([('published', order)])
+
+    if offset:
+        cursor = cursor.skip(offset)
 
     if limit:
         cursor = cursor.limit(limit)
