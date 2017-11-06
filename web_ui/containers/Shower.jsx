@@ -17,23 +17,18 @@ class Shower extends PureComponent {
         this._onCardExpandChange = this._onCardExpandChange.bind(this);
         this._handleCloseError = this._handleCloseError.bind(this);
 
-        this._onPrevPage = this._onPrevPage.bind(this);
-        this._onNextPage = this._onNextPage.bind(this);
-
         this._onOpenVideo = this._onOpenVideo.bind(this);
         this._onCloseVideo = this._onCloseVideo.bind(this);
     }
 
     componentDidMount() {
-        const { viewType, searchText } = this.props;
-        const { page } = this.props.shower;
+        const { viewType, searchText, page } = this.props;
 
         this._fetchDocuments(viewType, searchText, page);
     }
 
     componentWillUpdate(newProps) {
-        const { viewType, searchText } = newProps;
-        const { page } = newProps.shower;
+        const { viewType, searchText, page } = newProps;
 
         if (viewType !== this._viewType || searchText !== this._searchText || page !== this._page) {
             this._fetchDocuments(viewType, searchText, page);
@@ -41,10 +36,11 @@ class Shower extends PureComponent {
     }
 
     render() {
+        const { page } = this.props;
+
         const {
             docsRequestInProcess,
             docs,
-            page,
             error,
             expandedState,
             showVideoData,
@@ -69,8 +65,8 @@ class Shower extends PureComponent {
                 key="pagination-buttons"
                 page={page}
                 disabled={docsRequestInProcess}
-                onPreviousClick={this._onPrevPage}
-                onNextClick={this._onNextPage} /> : (null),
+                onPreviousClick={this.props.onPrevPage}
+                onNextClick={this.props.onNextPage} /> : (null),
             <VideoPlayer
                 key="video-player"
                 onCloseVideo={this._onCloseVideo}
@@ -86,14 +82,6 @@ class Shower extends PureComponent {
         this._page = page;
 
         this.props.actions.fetchDocs(viewType, searchText, page);
-    }
-
-    _onPrevPage() {
-        this.props.actions.goToPrevPage();
-    }
-
-    _onNextPage() {
-        this.props.actions.goToNextPage();
     }
 
     _showErrorWindow(error) {

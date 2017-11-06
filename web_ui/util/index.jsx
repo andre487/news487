@@ -30,6 +30,14 @@ export function getSearchText(routePath) {
     return '';
 }
 
+export function getPage(searchString) {
+    const matches = /page=(\d+)/.exec(searchString);
+    if (matches) {
+        return parseInt(matches[1]);
+    }
+    return 0;
+}
+
 export function removeMarkup(text) {
     return text.replace(/<\/?[^>]+?>/ig, '')
         .replace(/&nbsp;/gi, ' ');

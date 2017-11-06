@@ -19,6 +19,9 @@ class App extends PureComponent {
 
         this._onTextSearch = this._onTextSearch.bind(this);
         this._onTagSelected = this._onTagSelected.bind(this);
+
+        this._onPrevPage = this._onPrevPage.bind(this);
+        this._onNextPage = this._onNextPage.bind(this);
     }
 
     componentWillMount() {
@@ -36,6 +39,7 @@ class App extends PureComponent {
             routeTitle,
             viewType,
             searchText,
+            page,
         } = this.props.app;
 
         const routePath = match.url;
@@ -62,8 +66,11 @@ class App extends PureComponent {
                         searchText={searchText} />
                     <Shower
                         onTagSelected={this._onTagSelected}
+                        onPrevPage={this._onPrevPage}
+                        onNextPage={this._onNextPage}
                         viewType={viewType}
                         searchText={searchText}
+                        page={page}
                         filterTitle={routeTitle} />
                     <ErrorReporter />
                 </div>
@@ -77,6 +84,14 @@ class App extends PureComponent {
 
     _onTagSelected(tag) {
         this.props.actions.searchByTag(tag);
+    }
+
+    _onPrevPage() {
+        this.props.actions.goToPrevPage();
+    }
+
+    _onNextPage() {
+        this.props.actions.goToNextPage();
     }
 }
 

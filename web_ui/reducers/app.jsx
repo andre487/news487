@@ -38,6 +38,7 @@ export default function app(state = initialState, action) {
             const routePath = action.payload.pathname;
             const viewType = util.getViewType(routePath);
             const searchText = util.getSearchText(routePath);
+            const page = util.getPage(action.payload.search);
 
             return {
                 ...state,
@@ -46,6 +47,7 @@ export default function app(state = initialState, action) {
                 routePath,
                 viewType,
                 searchText,
+                page,
             };
         }
 

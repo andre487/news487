@@ -119,3 +119,33 @@ export function searchByTag(tag) {
         });
     };
 }
+
+export function goToPrevPage() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { page } = state.app;
+        const prevPage = page > 0 ? page - 1 : page;
+
+        dispatch(pushRoute(`?page=${prevPage}`));
+
+        dispatch({
+            type: ActionTypes.SHOW_PREV,
+            page: prevPage,
+        });
+    };
+}
+
+export function goToNextPage() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { page } = state.app;
+        const nextPage = page + 1;
+
+        dispatch(pushRoute(`?page=${nextPage}`));
+
+        dispatch({
+            type: ActionTypes.SHOW_NEXT,
+            page: nextPage,
+        });
+    };
+}

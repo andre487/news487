@@ -36,30 +36,6 @@ export function eraseError() {
     return { type: ActionTypes.ERASE_ERROR };
 }
 
-export function goToPrevPage() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const { page } = state.shower;
-
-        dispatch({
-            type: ActionTypes.SHOW_PREV,
-            page: page > 0 ? page - 1 : page,
-        });
-    };
-}
-
-export function goToNextPage() {
-    return (dispatch, getState) => {
-        const state = getState();
-        const { page } = state.shower;
-
-        dispatch({
-            type: ActionTypes.SHOW_NEXT,
-            page: page + 1,
-        });
-    };
-}
-
 export function changeCardExpand(docId, cardState) {
     return {
         type: ActionTypes.CHANGE_CARD_EXPAND,
