@@ -69,7 +69,7 @@ def test_highlight_urls():
 def test_clean_url_utm_params():
     url = (
         'https://developers.google.com/web/updates/2016/10/navigator-share?'
-        'utm_source=feed&foo=bar&utm_medium=feed&utm_campaign=updates_feed'
+        'utm_source=feed&foo=bar&utm_medium=feed&utm_campaign=updates_feed&----12d1b859d4e4---4'
     )
 
     res = link_handler.clean_url(url)
@@ -80,7 +80,7 @@ def test_clean_url_utm_params():
 def test_clean_url_from_rss():
     url = (
         'https://developers.google.com/web/updates/2016/10/navigator-share?'
-        'source=rss&utm_source=feed&utm_medium=feed&utm_campaign=updates_feed&from=rss&foo=bar'
+        'source=rss&utm_source=feed&utm_medium=feed&utm_campaign=updates_feed&from=rss&foo=bar&----12d1b859d4e4---4=1'
     )
 
     res = link_handler.clean_url(url)

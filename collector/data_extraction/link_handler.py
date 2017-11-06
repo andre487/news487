@@ -36,7 +36,7 @@ url_pattern = re.compile(
     re.UNICODE | re.IGNORECASE
 )
 
-garbage_params_pattern = re.compile(r'(?:&?utm_[^&]+)|(?:&?from=rss)|(?:&?source=rss)')
+garbage_params_pattern = re.compile(r'(?:&?utm_[^&]+)|(?:&?from=rss)|(?:&?source=rss)|(&?----[^&]+)|(&?gi=\w+)')
 double_amp_pattern = re.compile(r'&&')
 leading_amp_pattern = re.compile(r'\?&')
 
