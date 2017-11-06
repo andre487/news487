@@ -88,7 +88,8 @@ FEEDS = {
     'html5rocks': {
         'name': 'Html5Rocks',
         'url': 'https://feeds.feedburner.com/html5rocks',
-        'tags': ('tech', 'web')
+        'tags': ('tech', 'web'),
+        'disabled': True,
     },
     'igvita': {
         'name': 'igvita',
