@@ -15,20 +15,8 @@ CATEGORIES = OrderedDict((
         'tags': 'tech',
         'no-tags': 'css,no_tech,search,twitter',
     }),
-    ('web', {
-        'tags': 'tech,web',
-        'no-tags': 'no_tech,services,twitter',
-    }),
     ('perf', {
         'tags': 'tech,perf',
-        'no-tags': 'no_tech,twitter',
-    }),
-    ('browsers', {
-        'tags': 'tech,browsers',
-        'no-tags': 'no_tech,twitter',
-    }),
-    ('js', {
-        'tags': 'tech,js',
         'no-tags': 'no_tech,twitter',
     }),
     ('css', {
@@ -64,6 +52,16 @@ CATEGORIES = OrderedDict((
         'digest': False,
     }),
 
+    ('browsers', {
+        'tags': 'tech,browsers',
+        'no-tags': 'no_tech,twitter',
+        'disabled': True,
+    }),
+    ('js', {
+        'tags': 'tech,js',
+        'no-tags': 'no_tech,twitter',
+        'disabled': True,
+    }),
     ('node', {
         'tags': 'tech,node',
         'no-tags': 'no_tech,twitter',
@@ -73,6 +71,11 @@ CATEGORIES = OrderedDict((
         'tags': 'twitter',
         'no-tags': 'buzzinga',
         'digest': False,
+        'disabled': True,
+    }),
+    ('web', {
+        'tags': 'tech,web',
+        'no-tags': 'no_tech,services,twitter',
         'disabled': True,
     }),
 ))
