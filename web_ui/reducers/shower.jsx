@@ -7,11 +7,20 @@ const initialState = {
     docsRequestInProcess: true,
     docs: [],
     error: null,
+    page: 0,
     expandedState: readFromStorage(expandedStorageKey, {})
 };
 
 export default function shower(state = initialState, action) {
     switch (action.type) {
+        case ActionTypes.SHOW_PREV:
+        case ActionTypes.SHOW_NEXT: {
+            return {
+                ...state,
+                page: action.page,
+            };
+        }
+
         case ActionTypes.REQUEST_DOCS: {
             return {
                 ...state,

@@ -2,16 +2,12 @@ import config from '../config';
 import * as ActionTypes from '../constants/ActionTypes';
 import * as ViewTypes from '../constants/ViewTypes';
 
-export function fetchDocs(viewType, searchText) {
-    return (dispatch, getState) => {
-        const state = getState();
-
-        if (state.docsRequestInProcess) {
-            return;
-        }
+export function fetchDocs(viewType, searchText, page) {
+    return dispatch => {
+        const offset = page * config.defaultDocsLimit;
 
         dispatch(requestDocs());
-        return fetch(buildUrl(viewType, searchText))
+        return fetch(buildUrl(viewType, searchText, config.defaultDocsLimit, offset))
             .then(response => response.json())
             .then(docs => dispatch(receiveDocs(docs)))
             .catch(err => dispatch(receiveDocsError(err)));
@@ -40,6 +36,30 @@ export function eraseError() {
     return { type: ActionTypes.ERASE_ERROR };
 }
 
+export function goToPrevPage() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { page } = state.shower;
+
+        dispatch({
+            type: ActionTypes.SHOW_PREV,
+            page: page > 0 ? page - 1 : page,
+        });
+    };
+}
+
+export function goToNextPage() {
+    return (dispatch, getState) => {
+        const state = getState();
+        const { page } = state.shower;
+
+        dispatch({
+            type: ActionTypes.SHOW_NEXT,
+            page: page + 1,
+        });
+    };
+}
+
 export function changeCardExpand(docId, cardState) {
     return {
         type: ActionTypes.CHANGE_CARD_EXPAND,
@@ -59,7 +79,7 @@ export function hideVideo() {
     return { type: ActionTypes.HIDE_VIDEO };
 }
 
-function buildUrl(viewType, searchText) {
+function buildUrl(viewType, searchText, limit, offset) {
     const noTags = config.excludeTags.join(',');
     let url;
 
@@ -78,21 +98,21 @@ function buildUrl(viewType, searchText) {
                 `/get-documents`,
                 `?tags=${encodeURIComponent(searchText)}`,
                 `&no-tags=${noTags}`,
-                `&limit=${config.defaultDocsLimit}`
+                `&limit=${limit}&offset=${offset}`
             ].join('');
             break;
         case ViewTypes.CATEGORY:
             if (searchText) {
-                url =[
+                url = [
                     `${config.apiUrl}`,
                     `/get-documents-by-category`,
                     `?name=${searchText}`,
-                    `&limit=${config.defaultDocsLimit}`
+                    `&limit=${limit}&offset=${offset}`
                 ].join('');
             } else {
                 url = [
                     `${config.apiUrl}`,
-                    `/get-digest?limit=${config.defaultDocsLimit}`
+                    `/get-digest?limit=${limit}&offset=${offset}`
                 ].join('');
             }
             break;

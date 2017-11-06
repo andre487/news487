@@ -23,3 +23,6 @@ export const STOP_READING = 'STOP_READING';
 
 export const DISPATCH_CLIENT_ERROR = 'DISPATCH_CLIENT_ERROR';
 export const ERASE_CLIENT_ERRORS = 'ERASE_CLIENT_ERRORS';
+
+export const SHOW_PREV = 'SHOW_PREV';
+export const SHOW_NEXT = 'SHOW_NEXT';

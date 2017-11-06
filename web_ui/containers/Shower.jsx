@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import * as ShowerActions from '../actions/shower';
 import VideoPlayer from '../components/VideoPlayer';
 import DocumentsList from '../components/DocumentList';
+import Pagination from '../components/Pagination';
 
 class Shower extends PureComponent {
     constructor(props, state) {
@@ -16,21 +17,26 @@ class Shower extends PureComponent {
         this._onCardExpandChange = this._onCardExpandChange.bind(this);
         this._handleCloseError = this._handleCloseError.bind(this);
 
+        this._onPrevPage = this._onPrevPage.bind(this);
+        this._onNextPage = this._onNextPage.bind(this);
+
         this._onOpenVideo = this._onOpenVideo.bind(this);
         this._onCloseVideo = this._onCloseVideo.bind(this);
     }
 
     componentDidMount() {
         const { viewType, searchText } = this.props;
+        const { page } = this.props.shower;
 
-        this._fetchDocuments(viewType, searchText);
+        this._fetchDocuments(viewType, searchText, page);
     }
 
     componentWillUpdate(newProps) {
         const { viewType, searchText } = newProps;
+        const { page } = newProps.shower;
 
-        if (viewType !== this._viewType || searchText !== this._searchText) {
-            this._fetchDocuments(viewType, searchText);
+        if (viewType !== this._viewType || searchText !== this._searchText || page !== this._page) {
+            this._fetchDocuments(viewType, searchText, page);
         }
     }
 
@@ -38,6 +44,7 @@ class Shower extends PureComponent {
         const {
             docsRequestInProcess,
             docs,
+            page,
             error,
             expandedState,
             showVideoData,
@@ -58,6 +65,12 @@ class Shower extends PureComponent {
                 requestInProgress={docsRequestInProcess}
                 expandedState={expandedState}
                 items={docs} />,
+            docs && docs.length ? <Pagination
+                key="pagination-buttons"
+                page={page}
+                disabled={docsRequestInProcess}
+                onPreviousClick={this._onPrevPage}
+                onNextClick={this._onNextPage} /> : (null),
             <VideoPlayer
                 key="video-player"
                 onCloseVideo={this._onCloseVideo}
@@ -67,11 +80,20 @@ class Shower extends PureComponent {
         return <div>{elems}</div>;
     }
 
-    _fetchDocuments(viewType, searchText) {
+    _fetchDocuments(viewType, searchText, page) {
         this._viewType = viewType;
         this._searchText = searchText;
+        this._page = page;
 
-        this.props.actions.fetchDocs(viewType, searchText);
+        this.props.actions.fetchDocs(viewType, searchText, page);
+    }
+
+    _onPrevPage() {
+        this.props.actions.goToPrevPage();
+    }
+
+    _onNextPage() {
+        this.props.actions.goToNextPage();
     }
 
     _showErrorWindow(error) {
