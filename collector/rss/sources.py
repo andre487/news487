@@ -133,6 +133,7 @@ FEEDS = {
         'url': 'https://news.radio-t.com/rss',
         'tags': ('tech', 'services'),
         'dressing_params': ('description', 'picture', 'video'),
+        'disabled': True,
     },
     'reddit_perf': {
         'name': 'Reddit',
