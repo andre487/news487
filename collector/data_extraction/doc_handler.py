@@ -331,6 +331,10 @@ def dress_document_with_metadata(doc):
         dressing_params = doc['__dressing_params']
         del doc['__dressing_params']
 
+    if dressing_params is not None and not dressing_params:
+        doc['dressed'] = True
+        return doc
+
     if doc.get('dressed'):
         return doc
 

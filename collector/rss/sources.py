@@ -138,7 +138,7 @@ FEEDS = {
         'name': 'Reddit',
         'url': 'https://www.reddit.com/r/perfmatters/.rss',
         'tags': ('tech', 'web', 'perf'),
-        'dressing_params': ('title',),
+        'dressing_params': (),
     },
     'redware': {
         'name': 'Redware',
@@ -165,7 +165,6 @@ FEEDS = {
         'url': 'https://www.sitepoint.com/feed/',
         'tags': ('tech', 'web'),
     },
-    # TODO fix SSL error
     'soasta': {
         'name': 'Soasta',
         'url': 'https://www.soasta.com/feed/',
@@ -213,6 +212,7 @@ FEEDS = {
         'tags': ('world', 'no_tech'),
         'author_name': ya_news_parse_author_name,
         'author_link': ya_news_parse_author_link,
+        'dressing_params': (),
     },
 }
 
