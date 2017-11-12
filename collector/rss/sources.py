@@ -132,11 +132,13 @@ FEEDS = {
         'name': 'RadioTNews',
         'url': 'https://news.radio-t.com/rss',
         'tags': ('tech', 'services'),
+        'dressing_params': ('description', 'picture', 'video'),
     },
     'reddit_perf': {
         'name': 'Reddit',
         'url': 'https://www.reddit.com/r/perfmatters/.rss',
         'tags': ('tech', 'web', 'perf'),
+        'dressing_params': ('title',),
     },
     'redware': {
         'name': 'Redware',

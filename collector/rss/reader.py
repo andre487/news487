@@ -12,24 +12,19 @@ def parse_feed_by_name(name):
     if not feed_params:
         raise ValueError('There is no feed with name %s' % name)
 
-    return parse_feed_by_url(
-        feed_params['name'], feed_params['url'],
-        additional_tags=feed_params.get('tags', ()),
-        author_name=feed_params.get('author_name'),
-        author_link=feed_params.get('author_link'),
-    )
-
-
-def parse_feed_by_url(source_name, feed_url, additional_tags=(), author_name=None, author_link=None):
-    default_author_name = author_name
-    default_author_link = author_link
-
-    feed = feedparser.parse(feed_url)
+    source_name = feed_params['name']
+    feed = feedparser.parse(feed_params['url'])
     data = []
 
     for entry in feed['entries']:
         data.append(
-            create_doc(source_name, feed, entry, additional_tags, default_author_name, default_author_link)
+            create_doc(
+                source_name, feed, entry,
+                feed_params.get('tags', ()),
+                feed_params.get('author_name'),
+                feed_params.get('author_link'),
+                feed_params.get('dressing_params'),
+            )
         )
 
     log.info('%s: got %d documents', source_name, len(data))
@@ -37,7 +32,7 @@ def parse_feed_by_url(source_name, feed_url, additional_tags=(), author_name=Non
     return data
 
 
-def create_doc(source_name, feed, entry, additional_tags, default_author_name, default_author_link):
+def create_doc(source_name, feed, entry, additional_tags, default_author_name, default_author_link, dressing_params):
     link = dict_tool.get_alternative(entry, 'feedburner_origlink', 'link', assert_val=True)
 
     published = date.utc_format(
@@ -92,6 +87,8 @@ def create_doc(source_name, feed, entry, additional_tags, default_author_name, d
         'comments_count': comments_count,
 
         'tags': tags.create_tags_list(*additional_tags),
+
+        '__dressing_params': dressing_params,
     }
 
 

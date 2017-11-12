@@ -326,34 +326,43 @@ class TagsStripper(HTMLParser):
 
 
 def dress_document_with_metadata(doc):
+    dressing_params = None
+    if '__dressing_params' in doc:
+        dressing_params = doc['__dressing_params']
+        del doc['__dressing_params']
+
     if doc.get('dressed'):
         return doc
 
     try:
         if doc.get('from_mail'):
-            return dress_email_document(doc)
+            return dress_email_document(doc, dressing_params)
 
-        return dress_page_document(doc)
+        return dress_page_document(doc, dressing_params)
     except Exception as e:
         log.warn(e)
         return doc
 
 
-def dress_email_document(doc):
+def dress_email_document(doc, dressing_params):
     extr = MeaningExtractor(doc['text'])
 
-    doc['orig_description'] = doc['description']
-    doc['description'] = extr.get_description() or doc['description']
+    if not dressing_params or 'description' in dressing_params:
+        doc['orig_description'] = doc['description']
+        doc['description'] = extr.get_description() or doc['description']
 
-    doc['picture'] = extr.get_picture()
+    if not dressing_params or 'picture' in dressing_params:
+        doc['picture'] = extr.get_picture()
+
+    if not dressing_params or 'video' in dressing_params:
+        doc['video'] = extr.get_video_properties()
+
     doc['dressed'] = True
-
-    doc['video'] = extr.get_video_properties()
 
     return doc
 
 
-def dress_page_document(doc):
+def dress_page_document(doc, dressing_params):
     url = doc['link']
 
     timeout = random.randint(2500, 5000) / 1000.0
@@ -387,21 +396,25 @@ def dress_page_document(doc):
     doc['link'] = link_handler.clean_url(result.url)
     doc['card_type'] = extr.get_card_type()
 
-    doc['orig_title'] = doc['title']
-    doc['title'] = extr.get_title() or doc['title']
+    if not dressing_params or 'title' in dressing_params:
+        doc['orig_title'] = doc['title']
+        doc['title'] = extr.get_title() or doc['title']
 
-    doc['orig_picture'] = doc.get('picture')
-    doc['picture'] = extr.get_picture() or doc['orig_picture']
+    if not dressing_params or 'picture' in dressing_params:
+        doc['orig_picture'] = doc.get('picture')
+        doc['picture'] = extr.get_picture() or doc['orig_picture']
 
-    doc['video'] = extr.get_video_properties()
+    if not dressing_params or 'video' in dressing_params:
+        doc['video'] = extr.get_video_properties()
 
-    doc['orig_description'] = doc['description']
+    if not dressing_params or 'description' in dressing_params:
+        doc['orig_description'] = doc['description']
 
-    doc['description'] = extr.get_description() or doc['description']
-    if link_only_pattern.match(doc['description']):
-        doc['description'] = extr.guess_description()
+        doc['description'] = extr.get_description() or doc['description']
+        if link_only_pattern.match(doc['description']):
+            doc['description'] = extr.guess_description()
 
-    doc['short_description'] = extr.guess_short_description()
+        doc['short_description'] = extr.guess_short_description()
 
     doc['dressed'] = True
 
