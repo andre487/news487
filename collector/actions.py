@@ -69,7 +69,7 @@ def run_scrappers(args, scrappers):
     rss_result = pool.map_async(partial(_run_rss_handler, args), rss_handlers)
 
     twitter_result = None
-    if 'twitter' in names_set or 'all' in names_set:
+    if 'twitter' in names_set:
         twitter_result = pool.apply_async(partial(_run_twitter_handler, args))
 
     mail_result = None
