@@ -46,15 +46,16 @@ CATEGORIES = OrderedDict((
         'no-tags': 'twitter',
         'digest': False,
     }),
-    ('buzzinga', {
-        'tags': 'buzzinga',
-        'no-tags': '',
-        'digest': False,
-    }),
 
     ('browsers', {
         'tags': 'tech,browsers',
         'no-tags': 'no_tech,twitter',
+        'disabled': True,
+    }),
+    ('buzzinga', {
+        'tags': 'buzzinga',
+        'no-tags': '',
+        'digest': False,
         'disabled': True,
     }),
     ('js', {
