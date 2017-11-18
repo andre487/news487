@@ -41,7 +41,12 @@ module.exports = {
                             attrs: { nonce: gitHash }
                         }
                     },
-                    'css-loader'
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            minimize: process.env.NODE_ENV === 'production'
+                        }
+                    }
                 ]
             },
             { test: /\.txt?$/, loaders: ['raw-loader'] },

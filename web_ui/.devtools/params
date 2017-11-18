@@ -47,7 +47,7 @@ run_project_for_dev() {
 
 build_static_package() {
     cd "$WEB_UI_DIR"
-    ./node_modules/.bin/webpack --config webpack.prod.js
+    NODE_ENV=production ./node_modules/.bin/webpack --config webpack.prod.js
 }
 
 run_project_tests() {
