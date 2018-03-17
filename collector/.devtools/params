@@ -26,10 +26,10 @@ run_project_for_docker_test() {
         -e MONGO_HOST=dev-mongo \
         "$DOCKER_REPO_NAME" \
         /usr/local/bin/app/scrap.py run all \
-        | tee "$log_file"
+        |& tee "$log_file"
 
     set +e
-    errors="$(grep ERROR "$log_file")"
+    errors="$(grep -i ERROR "$log_file")"
     set -e
 
     if [[ -n "$errors" ]]; then
