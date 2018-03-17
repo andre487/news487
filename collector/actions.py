@@ -11,6 +11,8 @@ from multiprocessing.pool import ThreadPool
 from rss.reader import parse_feed_by_name, sources as rss_sources
 from util.write import write_data
 
+ACTION_TIMEOUT = 2 * 60 * 60  # 2 hours
+
 file_name_getter = re.compile(r'(.+?)\.py')
 
 logging_common.setup()
@@ -28,8 +30,10 @@ def get_cli_args(scrappers=None):
 
     run_parser = action_parsers.add_parser('run', help='Run scrappers')
     run_parser.add_argument('names', nargs='+', choices=scrappers['all'])
-    run_parser.add_argument('--no-replace-redirects', action='store_true',
-        help='Disable redirects replacing inside email documents')
+    run_parser.add_argument(
+        '--no-replace-redirects', action='store_true',
+        help='Disable redirects replacing inside email documents',
+    )
 
     action_parsers.add_parser('list', help='List scrappers')
 
@@ -76,13 +80,13 @@ def run_scrappers(args, scrappers):
     if 'mail' in names_set or 'all' in names_set:
         mail_result = pool.apply_async(partial(_run_mail_handler, args))
 
-    rss_data = rss_result.get()
+    rss_data = rss_result.get(timeout=ACTION_TIMEOUT)
     log.info('Got RSS docs')
 
-    twitter_data = twitter_result.get() if twitter_result else []
+    twitter_data = twitter_result.get(timeout=ACTION_TIMEOUT) if twitter_result else []
     log.info('Got Twitter docs')
 
-    mail_data = mail_result.get() if mail_result else []
+    mail_data = mail_result.get(timeout=ACTION_TIMEOUT) if mail_result else []
     log.info('Got Mail docs')
 
     pool.close()
@@ -109,7 +113,7 @@ def run_scrappers(args, scrappers):
 
     log.info('Start dressing %d docs', len(new_docs))
     pool = ThreadPool()
-    new_docs = pool.map(partial(_run_dress_document, args), new_docs)
+    new_docs = pool.map_async(partial(_run_dress_document, args), new_docs).get(timeout=ACTION_TIMEOUT)
     pool.close()
     log.info('End dressing docs')
 
