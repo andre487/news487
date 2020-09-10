@@ -25,7 +25,7 @@
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "mongodb": "^2.2.31",
-    "node-fetch": "^1.7.2",
+    "node-fetch": "^2.6.1",
     "striptags": "^3.1.0",
     "telebot": "^1.2.3",
     "winston": "^2.3.1"
