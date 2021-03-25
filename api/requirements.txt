@@ -11,6 +11,6 @@ pyresttest==1.7.1
 pytest==3.2.2
 python-dateutil==2.6.1
 pytz==2017.2
-PyYAML==3.12
+PyYAML==5.4
 six==1.10.0
 Werkzeug==0.12.2
